@@ -1,4 +1,5 @@
 import ClientProfileForm from "@/components/ClientProfileForm";
+import NotificationPreferences from "@/components/NotificationPreferences";
 import { requireClientPortal } from "@/lib/client-portal";
 
 export default async function PerfilPage() {
@@ -18,6 +19,9 @@ export default async function PerfilPage() {
       state:company?.state,
     }}/>
     <p className="mt-4 text-xs text-zinc-400">Para alterar o e-mail de acesso, fale com o suporte da Zenfy.</p>
+    <div className="mt-6">
+      <NotificationPreferences />
+    </div>
   </div>;
 }
 function Card({label,value}:{label:string;value:string}){return <div className="surface p-5"><p className="text-xs font-black uppercase tracking-[.12em] text-zinc-400">{label}</p><p className="mt-2 truncate font-black text-[#09113f]">{value}</p></div>}
