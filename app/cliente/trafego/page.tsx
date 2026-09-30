@@ -27,7 +27,10 @@ export default async function TrafegoPage() {
     </div>;
   }
 
-  const totals = reports.reduce((acc,r)=>({
+  const dailyReports = reports.filter((r)=>r.period_start===r.period_end);
+  const reportsForTotals = dailyReports.length ? dailyReports : reports;
+
+  const totals = reportsForTotals.reduce((acc,r)=>({
     spend:acc.spend+Number(r.spend||0),
     impressions:acc.impressions+Number(r.impressions||0),
     clicks:acc.clicks+Number(r.clicks||0),
@@ -38,7 +41,7 @@ export default async function TrafegoPage() {
   const roas = totals.spend ? totals.revenue / totals.spend : 0;
 
   return <div className="mx-auto max-w-7xl">
-    <div className="mb-7"><p className="eyebrow">Gestão de tráfego</p><h1 className="mt-2 text-3xl font-black tracking-tight text-[#09113f]">Tráfego pago</h1><p className="mt-2 max-w-2xl text-zinc-600">Acompanhe quanto foi investido, quantos cliques e leads vieram das campanhas e o retorno registrado pela gestão.</p><p className="mt-2 text-xs font-semibold text-zinc-400">Atualizado pela Zenfy em {new Date(reports[0].created_at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</p></div>
+    <div className="mb-7"><p className="eyebrow">Gestão de tráfego</p><h1 className="mt-2 text-3xl font-black tracking-tight text-[#09113f]">Tráfego pago</h1><p className="mt-2 max-w-2xl text-zinc-600">Acompanhe quanto foi investido, quantos cliques e leads vieram das campanhas e o retorno registrado pela gestão.</p><p className="mt-2 text-xs font-semibold text-zinc-400">Atualizado pela Zenfy em {new Date(reports[0].updated_at||reports[0].created_at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</p>{dailyReports.length>0&&<p className="mt-1 text-xs font-semibold text-brand">Totais calculados a partir dos registros diários.</p>}</div>
 
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
       <Kpi label="Investimento" value={brl(totals.spend)} />
