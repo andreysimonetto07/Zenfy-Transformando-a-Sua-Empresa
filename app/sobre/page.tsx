@@ -33,7 +33,7 @@ export default function Sobre() {
             </p>
           </div>
           <div className="py-5">
-            <BrandShowcase variant="growth" compact label="Identidade de crescimento" />
+            <BrandShowcase variant="growth" compact />
           </div>
         </div>
       </section>
