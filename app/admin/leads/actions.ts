@@ -101,8 +101,8 @@ export async function updateLeadAction(raw: unknown): Promise<ActionResult> {
     const parsed = leadSchema.safeParse(raw);
     if (!parsed.success) return { ok: false, error: "Confira os campos do lead." };
     const d = parsed.data;
+    const leadId = d.id;
     if (!leadId) return { ok: false, error: "Lead inválido." };
-    const leadId = leadId;
     const { supabase, profile } = await requireProfile(ADMIN_ROLES);
     const { data: before, error: beforeError } = await supabase.from("leads").select("assigned_to,status").eq("id", leadId).single();
     if (beforeError) throw new Error(beforeError.message);
