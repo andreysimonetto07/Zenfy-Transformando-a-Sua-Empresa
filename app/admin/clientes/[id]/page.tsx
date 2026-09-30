@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AdminClientForms from "@/components/AdminClientForms";
 import TrafficReportManager from "@/components/TrafficReportManager";
+import DailyMetricsQuickUpdate from "@/components/DailyMetricsQuickUpdate";
 import { requireProfile } from "@/lib/auth";
 import { ADMIN_ROLES } from "@/lib/permissions";
 import { brl, dateBr, statusLabel } from "@/lib/client-portal";
@@ -24,7 +25,7 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
   const [projectsRes,sitesRes,trafficRes,invoicesRes,requestsRes]=await Promise.all([
     supabase.from("projects").select("*").eq("client_id",id).order("created_at",{ascending:false}),
     supabase.from("client_sites").select("*").eq("client_id",id).order("created_at",{ascending:false}),
-    supabase.from("traffic_reports").select("*").eq("client_id",id).order("period_end",{ascending:false}).limit(6),
+    supabase.from("traffic_reports").select("*").eq("client_id",id).order("created_at",{ascending:false}).limit(30),
     supabase.from("invoices").select("*").eq("client_id",id).order("created_at",{ascending:false}).limit(10),
     profile?.id?supabase.from("service_requests").select("*").eq("client_id",profile.id).order("created_at",{ascending:false}).limit(10):Promise.resolve({data:[]}),
   ]);
@@ -34,10 +35,12 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
   const traffic=trafficRes.data??[];
   const invoices=invoicesRes.data??[];
   const requests=(requestsRes as any).data??[];
+  const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+  const todayReport=traffic.find((r:any)=>r.period_start===today&&r.period_end===today)??null;
 
   return <div className="mx-auto max-w-7xl">
     <section className="surface p-6 sm:p-8">
-      <p className="eyebrow">Cliente</p>
+      <p className="eyebrow">Painel da empresa</p>
       <div className="mt-2 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h1 className="text-3xl font-black text-[#09113f]">{company?.name||profile?.name||"Cliente"}</h1>
@@ -56,6 +59,10 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
         </div>
       </div>
     </section>
+
+    <div className="mt-6">
+      <DailyMetricsQuickUpdate clientId={id} today={today} initial={todayReport as any} />
+    </div>
 
     <div className="mt-6">
       <AdminClientForms clientId={id} companyId={(client as any).company_id} projects={projects.map((p:any)=>({id:p.id,name:p.name}))}/>
