@@ -25,7 +25,10 @@ export default async function TrafegoAdminPage() {
   }));
 
   const rows = reports ?? [];
-  const totals = rows.reduce((acc: any, r: any) => ({
+  const clientsWithDaily = new Set(rows.filter((r: any) => r.period_start === r.period_end).map((r: any) => r.client_id));
+  const rowsForTotals = rows.filter((r: any) => clientsWithDaily.has(r.client_id) ? r.period_start === r.period_end : true);
+
+  const totals = rowsForTotals.reduce((acc: any, r: any) => ({
     spend: acc.spend + Number(r.spend || 0),
     leads: acc.leads + Number(r.leads || 0),
     clicks: acc.clicks + Number(r.clicks || 0),
@@ -40,7 +43,7 @@ export default async function TrafegoAdminPage() {
       <div className="mb-7">
         <p className="eyebrow">Gestão de tráfego</p>
         <h1 className="mt-2 text-3xl font-black tracking-tight text-[#09113f]">Campanhas e resultados</h1>
-        <p className="mt-2 max-w-2xl text-zinc-600">Visão consolidada dos relatórios publicados para os clientes. Para adicionar um novo período, abra o cliente e use a aba Tráfego.</p>
+        <p className="mt-2 max-w-2xl text-zinc-600">Visão consolidada dos dados publicados para os clientes. Quando um cliente possui lançamentos diários, os totais priorizam esses registros para evitar contagem duplicada.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
