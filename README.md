@@ -105,3 +105,5 @@ Depois do primeiro deploy, use a URL de produção em `NEXT_PUBLIC_SITE_URL`, au
 ---
 
 **Zenfy — Uma empresa da Companhia A & P.**
+
+<!-- deployment trigger: Vercel production -->
