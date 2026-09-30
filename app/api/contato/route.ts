@@ -34,6 +34,5 @@ export async function POST(req: Request) {
 
   await db.from("contact_requests").insert({ lead_id: lead.id, payload: d });
   await db.from("activities").insert({ lead_id: lead.id, action: "lead_criado", description: "Lead recebido pelo formulário do site." });
-  await db.from("notifications").insert({ type: "novo_lead", title: "Novo lead recebido", body: `${d.name} — ${d.service}` });
   return NextResponse.json({ ok: true });
 }
