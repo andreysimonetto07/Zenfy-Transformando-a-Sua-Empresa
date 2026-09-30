@@ -42,6 +42,7 @@ export default function NotificationBell() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const wrapper = useRef<HTMLDivElement>(null);
+  const prefsRef = useRef<Prefs>(defaultPrefs);
   const knownIds = useRef<Set<string>>(new Set());
   const initialized = useRef(false);
 
@@ -54,7 +55,9 @@ export default function NotificationBell() {
       const res = await fetch("/api/notification-preferences", { cache: "no-store", credentials: "include" });
       if (!res.ok) return;
       const json = await res.json();
-      setPrefs({ ...defaultPrefs, ...(json.preferences || {}) });
+      const nextPrefs = { ...defaultPrefs, ...(json.preferences || {}) };
+      prefsRef.current = nextPrefs;
+      setPrefs(nextPrefs);
     } catch {}
   }
 
@@ -98,7 +101,7 @@ export default function NotificationBell() {
         initialized.current = true;
       } else {
         const fresh = nextItems.filter((item) => !knownIds.current.has(item.id) && !item.read);
-        fresh.forEach((item) => showBrowserNotification(item, prefs));
+        fresh.forEach((item) => showBrowserNotification(item, prefsRef.current));
         nextItems.forEach((item) => knownIds.current.add(item.id));
       }
 
@@ -119,8 +122,11 @@ export default function NotificationBell() {
     };
     const onPreferences = (event: Event) => {
       const custom = event as CustomEvent<Partial<Prefs>>;
-      if (custom.detail) setPrefs((current) => ({ ...current, ...custom.detail }));
-      else loadPreferences();
+      if (custom.detail) {
+        const nextPrefs = { ...prefsRef.current, ...custom.detail };
+        prefsRef.current = nextPrefs;
+        setPrefs(nextPrefs);
+      } else loadPreferences();
     };
 
     window.addEventListener("focus", onFocus);
