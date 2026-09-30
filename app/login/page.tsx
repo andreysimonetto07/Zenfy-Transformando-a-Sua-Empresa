@@ -7,16 +7,24 @@ export default function Login() {
   return (
     <main className="grid min-h-[calc(100vh-73px)] lg:grid-cols-2">
       <section className="relative hidden overflow-hidden bg-[#06114f] lg:block">
-        <Image src="/brand/zenfy/bg-dark.webp" alt="" fill priority sizes="50vw" className="object-cover" />
-        <div className="absolute inset-0 bg-[#06114f]/35" />
-        <div className="absolute inset-x-10 bottom-10 rounded-3xl border border-white/15 bg-white/10 p-7 text-white backdrop-blur-md">
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-cyan-200">Zenfy</p>
+        <Image src="/brand/zenfy/bg-dark.webp" alt="" fill priority sizes="50vw" className="object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#03072a]/85 via-[#06114f]/20 to-transparent" />
+        <div className="absolute left-10 top-10 w-40 rounded-2xl border border-white/20 bg-white/95 p-3 shadow-2xl">
+          <Image src="/brand/zenfy/logo-primary.webp" alt="Zenfy" width={1254} height={1254} className="h-auto w-full" />
+        </div>
+        <div className="absolute inset-x-10 bottom-10 rounded-3xl border border-white/20 bg-[#06114f]/45 p-7 text-white shadow-2xl backdrop-blur-md">
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-cyan-100">Zenfy</p>
           <h2 className="mt-3 text-3xl font-bold">Seu projeto, organizado em um só lugar.</h2>
-          <p className="mt-3 text-blue-50/75">Acompanhe projetos, mensagens e arquivos da sua empresa com a equipe Zenfy.</p>
+          <p className="mt-3 text-blue-50/85">Acompanhe projetos, mensagens e arquivos da sua empresa com a equipe Zenfy.</p>
         </div>
       </section>
       <section className="flex items-center justify-center px-5 py-16">
         <div className="w-full max-w-sm">
+          <div className="mb-8 flex justify-center lg:hidden">
+            <div className="w-36 rounded-2xl border border-zinc-200 bg-white p-2 shadow-sm">
+              <Image src="/brand/zenfy/logo-primary.webp" alt="Zenfy" width={1254} height={1254} className="h-auto w-full" />
+            </div>
+          </div>
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand">Área do Cliente</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight">Entrar na Zenfy</h1>
           <p className="mb-8 mt-2 text-sm text-zinc-600">Acesse com o e-mail cadastrado pela equipe Zenfy.</p>

@@ -10,21 +10,21 @@ type Props = {
 
 export default function BrandLogo({ href = "/", compact = false, light = false, className = "" }: Props) {
   const content = (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <span className="relative block h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
+    <span className={`inline-flex items-center gap-3 ${className}`}>
+      <span className="relative block h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-black/5">
         <Image
           src="/brand/zenfy/logo-primary.webp"
-          alt="Símbolo da Zenfy"
+          alt="Símbolo Zenfy"
           fill
-          sizes="40px"
-          className="scale-[2.65] object-cover object-[50%_25%]"
+          sizes="44px"
+          className="scale-[2.5] object-cover object-[50%_24%]"
           priority
         />
       </span>
       {!compact && (
         <span className="leading-none">
-          <span className={`block text-xl font-extrabold tracking-[-0.04em] ${light ? "text-white" : "text-[#09113f]"}`}>Zenfy</span>
-          <span className={`mt-1 block text-[10px] font-medium uppercase tracking-[0.16em] ${light ? "text-white/65" : "text-zinc-500"}`}>Agência Digital</span>
+          <span className={`block text-[22px] font-extrabold tracking-[-0.05em] ${light ? "text-white" : "text-[#09113f]"}`}>Zenfy</span>
+          <span className={`mt-1.5 block text-[9px] font-semibold uppercase tracking-[0.18em] ${light ? "text-cyan-100/75" : "text-zinc-500"}`}>Companhia A &amp; P</span>
         </span>
       )}
     </span>
