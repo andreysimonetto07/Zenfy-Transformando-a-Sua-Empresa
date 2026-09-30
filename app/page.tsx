@@ -43,7 +43,7 @@ export default function Home() {
           </div>
 
           <div className="pb-5 pt-2 lg:pb-0">
-            <BrandShowcase variant="primary" />
+            <BrandShowcase />
           </div>
         </div>
       </section>
@@ -97,7 +97,7 @@ export default function Home() {
         <div className="surface overflow-hidden">
           <div className="grid lg:grid-cols-[1fr_1.05fr]">
             <div className="zenfy-light-art relative flex min-h-[390px] items-center justify-center p-7 sm:min-h-[470px] sm:p-10">
-              <BrandShowcase variant="growth" compact />
+              <BrandShowcase compact />
             </div>
             <div className="flex flex-col justify-center p-7 sm:p-10 lg:p-12">
               <p className="eyebrow">Companhia A &amp; P</p>
