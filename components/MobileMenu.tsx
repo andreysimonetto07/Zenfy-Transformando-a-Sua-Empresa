@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { PublicAccount } from "@/types/account";
 
@@ -18,7 +18,6 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -37,11 +36,19 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
   }, [open]);
 
   async function logout() {
+    if (pending) return;
     setPending(true);
-    await createClient().auth.signOut();
-    setOpen(false);
-    router.replace("/");
-    router.refresh();
+    try {
+      await Promise.race([
+        createClient().auth.signOut(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000)),
+      ]);
+    } catch {
+      // Força uma nova navegação para nunca deixar o botão travado em "Saindo...".
+    } finally {
+      setOpen(false);
+      window.location.assign("/");
+    }
   }
 
   return (
