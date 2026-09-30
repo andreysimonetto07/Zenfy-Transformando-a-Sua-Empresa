@@ -6,6 +6,27 @@ export default async function TrafegoPage() {
   const { data } = await supabase.from("traffic_reports").select("*").eq("client_id",clientId).order("period_end",{ascending:false}).limit(24);
   const reports = data ?? [];
 
+  if (!reports.length) {
+    return <div className="mx-auto max-w-7xl">
+      <div className="mb-7"><p className="eyebrow">Gestão de tráfego</p><h1 className="mt-2 text-3xl font-black tracking-tight text-[#09113f]">Tráfego pago</h1><p className="mt-2 max-w-2xl text-zinc-600">Este espaço recebe os relatórios publicados manualmente pela equipe Zenfy.</p></div>
+      <section className="surface overflow-hidden p-6 sm:p-10">
+        <div className="grid items-center gap-8 lg:grid-cols-[1fr_.8fr]">
+          <div>
+            <p className="eyebrow">Em preparação</p>
+            <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#09113f]">Seu primeiro relatório ainda não foi publicado.</h2>
+            <p className="mt-4 leading-relaxed text-zinc-600">Quando a gestão cadastrar os dados da campanha, você verá investimento, impressões, cliques, leads, CPL, faturamento atribuído e ROAS. Até lá, não exibimos números zerados como se fossem resultados reais.</p>
+          </div>
+          <div className="rounded-[1.5rem] bg-[#06114f] p-6 text-white">
+            <p className="text-xs font-black uppercase tracking-[.14em] text-cyan-100">Quando houver dados</p>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              {["Investimento","Cliques","Leads","CPL","Faturamento","ROAS"].map((item)=><div key={item} className="rounded-xl border border-white/10 bg-white/5 p-3"><p className="text-sm font-bold">{item}</p><p className="mt-1 text-xs text-blue-50/55">Publicado pela Zenfy</p></div>)}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>;
+  }
+
   const totals = reports.reduce((acc,r)=>({
     spend:acc.spend+Number(r.spend||0),
     impressions:acc.impressions+Number(r.impressions||0),
@@ -17,7 +38,7 @@ export default async function TrafegoPage() {
   const roas = totals.spend ? totals.revenue / totals.spend : 0;
 
   return <div className="mx-auto max-w-7xl">
-    <div className="mb-7"><p className="eyebrow">Gestão de tráfego</p><h1 className="mt-2 text-3xl font-black tracking-tight text-[#09113f]">Tráfego pago</h1><p className="mt-2 max-w-2xl text-zinc-600">Acompanhe quanto foi investido, quantos cliques e leads vieram das campanhas e o retorno registrado pela gestão.</p></div>
+    <div className="mb-7"><p className="eyebrow">Gestão de tráfego</p><h1 className="mt-2 text-3xl font-black tracking-tight text-[#09113f]">Tráfego pago</h1><p className="mt-2 max-w-2xl text-zinc-600">Acompanhe quanto foi investido, quantos cliques e leads vieram das campanhas e o retorno registrado pela gestão.</p><p className="mt-2 text-xs font-semibold text-zinc-400">Atualizado pela Zenfy em {new Date(reports[0].created_at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</p></div>
 
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
       <Kpi label="Investimento" value={brl(totals.spend)} />
