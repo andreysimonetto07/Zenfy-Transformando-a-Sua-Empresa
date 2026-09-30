@@ -45,6 +45,7 @@ export default function NotificationPreferences({ showLeads = false }: { showLea
   async function save(next: Partial<Prefs>) {
     const merged = { ...prefs, ...next };
     setPrefs(merged);
+    window.dispatchEvent(new CustomEvent("zenfy:notification-preferences", { detail: next }));
     setSaving(true);
     setFeedback(null);
     try {
