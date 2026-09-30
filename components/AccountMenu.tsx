@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import type { PublicAccount } from "@/types/account";
 
 export default function AccountMenu({ account }: { account: PublicAccount }) {
@@ -29,15 +28,9 @@ export default function AccountMenu({ account }: { account: PublicAccount }) {
     if (pending) return;
     setPending(true);
     try {
-      await Promise.race([
-        createClient().auth.signOut(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000)),
-      ]);
-    } catch {
-      // Evita deixar o menu preso em "Saindo..." caso a rede demore.
+      await fetch("/auth/logout", { method: "POST", cache: "no-store", credentials: "include" });
     } finally {
-      setOpen(false);
-      window.location.assign("/");
+      window.location.replace("/?logout=1");
     }
   }
 
@@ -62,10 +55,7 @@ export default function AccountMenu({ account }: { account: PublicAccount }) {
         <span className={`hidden text-xs text-zinc-400 transition-transform duration-200 xl:block ${open ? "rotate-180" : ""}`}>⌄</span>
       </button>
 
-      <div
-        className={`absolute right-0 top-[calc(100%+10px)] z-[70] w-72 origin-top-right rounded-2xl border border-zinc-200 bg-white p-3 shadow-2xl shadow-blue-950/15 transition-all duration-200 ${open ? "visible translate-y-0 scale-100 opacity-100" : "invisible -translate-y-2 scale-[.98] opacity-0"}`}
-        role="menu"
-      >
+      <div className={`absolute right-0 top-[calc(100%+10px)] z-[70] w-72 origin-top-right rounded-2xl border border-zinc-200 bg-white p-3 shadow-2xl shadow-blue-950/15 transition-all duration-200 ${open ? "visible translate-y-0 scale-100 opacity-100" : "invisible -translate-y-2 scale-[.98] opacity-0"}`} role="menu">
         <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-violet-50 p-4">
           <div className="flex items-center gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl brand-gradient text-sm font-black text-white shadow-md">
@@ -80,11 +70,7 @@ export default function AccountMenu({ account }: { account: PublicAccount }) {
         </div>
 
         <div className="mt-2 grid gap-1">
-          <Link
-            href={account.dashboardHref}
-            onClick={() => setOpen(false)}
-            className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-[#09113f] transition hover:bg-blue-50"
-          >
+          <Link href={account.dashboardHref} onClick={() => setOpen(false)} className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-[#09113f] transition hover:bg-blue-50">
             <span>{account.role === "client" ? "Minha área" : "Painel administrativo"}</span>
             <span className="text-brand">→</span>
           </Link>
