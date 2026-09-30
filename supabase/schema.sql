@@ -21,6 +21,7 @@ create table message_templates (id uuid primary key default gen_random_uuid(), n
 create table portfolio_projects (id uuid primary key default gen_random_uuid(), name text, client_name text, image_url text, description text, service text, technologies text[], url text, date date, results text, published boolean default false);
 
 create unique index clients_lead_id_unique on clients(lead_id) where lead_id is not null;
+create unique index clients_profile_id_unique on clients(profile_id) where profile_id is not null;
 create index leads_status_idx on leads(status);
 create index leads_assigned_to_idx on leads(assigned_to);
 create index leads_next_contact_idx on leads(next_contact);
@@ -30,12 +31,34 @@ create index activities_lead_id_created_at_idx on activities(lead_id, created_at
 create function is_admin() returns boolean language sql stable security definer as $$
   select exists (select 1 from profiles where id = auth.uid() and role in ('admin','super_admin')) $$;
 
-create function public.handle_new_user() returns trigger language plpgsql security definer set search_path = '' as $$
+create function public.handle_new_user() returns trigger language plpgsql security definer set search_path = '' as $
+declare
+  v_company_name text;
+  v_whatsapp text;
+  v_company_id uuid;
 begin
   insert into public.profiles (id, name, email, role)
-  values (new.id, coalesce(new.raw_user_meta_data->>'name', split_part(new.email,'@',1), 'Usuário'), new.email, 'client');
+  values (
+    new.id,
+    coalesce(nullif(trim(new.raw_user_meta_data->>'name'), ''), split_part(new.email,'@',1), 'Usuário'),
+    new.email,
+    'client'
+  );
+
+  v_company_name := nullif(trim(coalesce(new.raw_user_meta_data->>'company_name', '')), '');
+  v_whatsapp := nullif(trim(coalesce(new.raw_user_meta_data->>'whatsapp', '')), '');
+
+  if v_company_name is not null then
+    insert into public.companies (name, email, whatsapp)
+    values (v_company_name, new.email, v_whatsapp)
+    returning id into v_company_id;
+
+    insert into public.clients (profile_id, company_id, status)
+    values (new.id, v_company_id, 'ativo');
+  end if;
+
   return new;
-end $$;
+end $;
 create trigger on_auth_user_created after insert on auth.users for each row execute function public.handle_new_user();
 
 do $$ declare t text; begin
