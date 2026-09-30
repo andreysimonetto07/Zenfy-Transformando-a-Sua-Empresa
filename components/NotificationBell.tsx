@@ -12,33 +12,124 @@ type NotificationItem = {
   created_at: string | null;
 };
 
+type Prefs = {
+  in_app_enabled: boolean;
+  browser_enabled: boolean;
+  messages: boolean;
+  files: boolean;
+  billing: boolean;
+  traffic: boolean;
+  projects: boolean;
+  support: boolean;
+  leads: boolean;
+};
+
+const defaultPrefs: Prefs = {
+  in_app_enabled: true,
+  browser_enabled: false,
+  messages: true,
+  files: true,
+  billing: true,
+  traffic: true,
+  projects: true,
+  support: true,
+  leads: true,
+};
+
 export default function NotificationBell() {
   const [items, setItems] = useState<NotificationItem[]>([]);
+  const [prefs, setPrefs] = useState<Prefs>(defaultPrefs);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const wrapper = useRef<HTMLDivElement>(null);
+  const knownIds = useRef<Set<string>>(new Set());
+  const initialized = useRef(false);
 
-  const unread = useMemo(() => items.filter((item) => !item.read).length, [items]);
+  const filteredItems = useMemo(() => items.filter((item) => categoryEnabled(item.type, prefs)), [items, prefs]);
+  const visibleItems = prefs.in_app_enabled ? filteredItems : [];
+  const unread = useMemo(() => visibleItems.filter((item) => !item.read).length, [visibleItems]);
+
+  async function loadPreferences() {
+    try {
+      const res = await fetch("/api/notification-preferences", { cache: "no-store", credentials: "include" });
+      if (!res.ok) return;
+      const json = await res.json();
+      setPrefs({ ...defaultPrefs, ...(json.preferences || {}) });
+    } catch {}
+  }
+
+  async function showBrowserNotification(item: NotificationItem, currentPrefs: Prefs) {
+    if (!currentPrefs.browser_enabled || !categoryEnabled(item.type, currentPrefs)) return;
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+
+    const title = item.title || "Zenfy";
+    const options: NotificationOptions & { image?: string } = {
+      body: item.body || "Você recebeu uma nova atualização.",
+      icon: "/brand/zenfy/icon-64.png",
+      badge: "/brand/zenfy/icon-32.png",
+      tag: "zenfy-" + item.id,
+      data: { link: item.link || "/" },
+    };
+
+    try {
+      if ("serviceWorker" in navigator) {
+        const registration = await navigator.serviceWorker.register("/zenfy-sw.js");
+        await registration.showNotification(title, options);
+      } else {
+        const notification = new Notification(title, options);
+        notification.onclick = () => {
+          window.focus();
+          if (item.link) window.location.href = item.link;
+          notification.close();
+        };
+      }
+    } catch {}
+  }
 
   async function refresh() {
     try {
       const res = await fetch("/api/notifications", { cache: "no-store", credentials: "include" });
       if (!res.ok) return;
       const json = await res.json();
-      setItems(Array.isArray(json.notifications) ? json.notifications : []);
+      const nextItems: NotificationItem[] = Array.isArray(json.notifications) ? json.notifications : [];
+
+      if (!initialized.current) {
+        knownIds.current = new Set(nextItems.map((item) => item.id));
+        initialized.current = true;
+      } else {
+        const fresh = nextItems.filter((item) => !knownIds.current.has(item.id) && !item.read);
+        fresh.forEach((item) => showBrowserNotification(item, prefs));
+        nextItems.forEach((item) => knownIds.current.add(item.id));
+      }
+
+      setItems(nextItems);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
+    loadPreferences();
     refresh();
-    const timer = window.setInterval(refresh, 30000);
-    const onFocus = () => refresh();
+
+    const timer = window.setInterval(refresh, 15000);
+    const onFocus = () => {
+      loadPreferences();
+      refresh();
+    };
+    const onPreferences = (event: Event) => {
+      const custom = event as CustomEvent<Partial<Prefs>>;
+      if (custom.detail) setPrefs((current) => ({ ...current, ...custom.detail }));
+      else loadPreferences();
+    };
+
     window.addEventListener("focus", onFocus);
+    window.addEventListener("zenfy:notification-preferences", onPreferences as EventListener);
+
     return () => {
       window.clearInterval(timer);
       window.removeEventListener("focus", onFocus);
+      window.removeEventListener("zenfy:notification-preferences", onPreferences as EventListener);
     };
   }, []);
 
@@ -72,7 +163,8 @@ export default function NotificationBell() {
   }
 
   async function markAll() {
-    setItems((current) => current.map((n) => ({ ...n, read: true })));
+    const ids = new Set(visibleItems.map((item) => item.id));
+    setItems((current) => current.map((n) => ids.has(n.id) ? { ...n, read: true } : n));
     await fetch("/api/notifications", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -82,7 +174,7 @@ export default function NotificationBell() {
   }
 
   return (
-    <div ref={wrapper} className="relative">
+    <div ref={wrapper} className="relative z-[120]">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -101,21 +193,27 @@ export default function NotificationBell() {
         )}
       </button>
 
-      <div className={`absolute right-0 top-[calc(100%+10px)] z-[90] w-[min(92vw,390px)] origin-top-right overflow-hidden rounded-[1.5rem] border border-zinc-200 bg-white shadow-2xl shadow-blue-950/20 transition-all duration-200 ${open ? "visible translate-y-0 scale-100 opacity-100" : "invisible -translate-y-2 scale-[.98] opacity-0"}`}>
-        <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3.5">
+      <div className={`absolute right-0 top-[calc(100%+10px)] z-[200] w-[min(92vw,390px)] origin-top-right overflow-hidden rounded-[1.5rem] border border-zinc-200 bg-white shadow-[0_24px_80px_rgba(2,6,36,.30)] transition-all duration-200 ${open ? "visible translate-y-0 scale-100 opacity-100" : "invisible -translate-y-2 scale-[.98] opacity-0"}`}>
+        <div className="flex items-center justify-between border-b border-zinc-100 bg-white px-4 py-3.5">
           <div>
             <p className="font-black text-[#09113f]">Notificações</p>
-            <p className="text-xs text-zinc-400">{unread ? unread + " não lida" + (unread > 1 ? "s" : "") : "Tudo em dia"}</p>
+            <p className="text-xs text-zinc-400">{prefs.in_app_enabled ? (unread ? unread + " não lida" + (unread > 1 ? "s" : "") : "Tudo em dia") : "Central interna desativada"}</p>
           </div>
-          {unread > 0 && <button type="button" onClick={markAll} className="text-xs font-black text-brand hover:underline">Marcar todas</button>}
+          {prefs.in_app_enabled && unread > 0 && <button type="button" onClick={markAll} className="text-xs font-black text-brand hover:underline">Marcar todas</button>}
         </div>
 
-        <div className="max-h-[430px] overflow-y-auto">
-          {loading ? (
+        <div className="max-h-[min(430px,65vh)] overflow-y-auto bg-white">
+          {!prefs.in_app_enabled ? (
+            <div className="p-8 text-center">
+              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-500">🔕</div>
+              <p className="mt-3 font-bold text-[#09113f]">Central interna desativada</p>
+              <p className="mt-1 text-sm text-zinc-400">Você pode ativá-la novamente nas configurações da conta.</p>
+            </div>
+          ) : loading ? (
             <div className="p-8 text-center text-sm text-zinc-400">Carregando...</div>
-          ) : items.length ? (
+          ) : visibleItems.length ? (
             <div className="divide-y divide-zinc-100">
-              {items.map((item) => (
+              {visibleItems.map((item) => (
                 <button
                   key={item.id}
                   type="button"
@@ -144,6 +242,18 @@ export default function NotificationBell() {
       </div>
     </div>
   );
+}
+
+function categoryEnabled(type: string | null, prefs: Prefs) {
+  const value = (type || "").toLowerCase();
+  if (value === "message") return prefs.messages;
+  if (value === "file") return prefs.files;
+  if (value === "invoice") return prefs.billing;
+  if (value === "traffic") return prefs.traffic;
+  if (value === "project" || value === "site") return prefs.projects;
+  if (value === "support") return prefs.support;
+  if (value === "lead" || value === "client" || value === "novo_lead") return prefs.leads;
+  return true;
 }
 
 function timeAgo(value: string | null) {
