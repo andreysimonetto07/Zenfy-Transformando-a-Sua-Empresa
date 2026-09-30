@@ -34,7 +34,7 @@ export default function Home() {
               Transformando sua empresa <span className="text-cyan-200">no digital.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-blue-50/90 sm:text-lg lg:text-xl">
-              A Zenfy cria sites, landing pages, sistemas e soluções digitais para empresas que querem transmitir mais confiança, organizar processos e crescer com estrutura.
+              A Zenfy une sites, landing pages, sistemas e gestão de tráfego pago para transformar presença digital em uma estrutura que atrai, acompanha e converte oportunidades.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link href="/solicitar-orcamento" className="btn btn-primary">Solicitar análise gratuita</Link>
@@ -69,6 +69,40 @@ export default function Home() {
               <p className="mt-2 text-sm leading-relaxed text-zinc-600">{text}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[#050b2d] text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(25,211,231,.18),transparent_28rem),radial-gradient(circle_at_90%_80%,rgba(116,55,255,.22),transparent_30rem)]" />
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-6 sm:py-24 lg:grid-cols-[1fr_.95fr] lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[.18em] text-cyan-200">Gestão de tráfego pago</p>
+            <h2 className="mt-3 max-w-3xl text-3xl font-black tracking-[-0.045em] sm:text-4xl lg:text-5xl">
+              Não basta anunciar. É preciso saber quanto entrou, quantos leads vieram e o que otimizar.
+            </h2>
+            <p className="mt-5 max-w-2xl leading-relaxed text-blue-50/75">
+              A Zenfy planeja e acompanha campanhas de mídia paga e conecta os resultados ao seu ambiente de cliente. Você consegue visualizar investimento, cliques, leads, custo por lead e faturamento atribuído aos relatórios publicados pela gestão.
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link href="/servicos" className="btn btn-primary">Conhecer a gestão de tráfego</Link>
+              <Link href="/solicitar-orcamento" className="btn btn-dark">Pedir análise</Link>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              ["Investimento", "Acompanhe quanto foi aplicado nas campanhas."],
+              ["Leads", "Veja quantas oportunidades foram registradas nos relatórios."],
+              ["CPL", "Entenda o custo médio por lead gerado."],
+              ["Faturamento", "Compare mídia e receita atribuída quando houver dados."],
+            ].map(([title,text]) => (
+              <article key={title} className="rounded-2xl border border-white/10 bg-white/[.07] p-5 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:bg-white/[.1]">
+                <p className="brand-text text-2xl font-black">↗</p>
+                <h3 className="mt-3 text-lg font-black">{title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-blue-50/60">{text}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
