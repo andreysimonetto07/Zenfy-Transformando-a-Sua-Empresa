@@ -25,6 +25,35 @@ export default async function ClientDashboard() {
   const report = reportsRes.data?.[0] ?? null;
   const invoice = invoicesRes.data?.[0] ?? null;
   const cpl = report && Number(report.leads) > 0 ? Number(report.spend) / Number(report.leads) : 0;
+  const hasOperationalData = Boolean(report || projects.length || (sitesRes.count ?? 0) || invoice);
+
+  if (!hasOperationalData) {
+    return (
+      <div className="mx-auto max-w-7xl">
+        <section className="relative overflow-hidden rounded-[2rem] bg-[#06114f] p-6 text-white shadow-2xl shadow-blue-950/10 sm:p-8 lg:p-10">
+          <div className="absolute inset-0 zenfy-dark-art opacity-80" />
+          <div className="relative">
+            <p className="text-xs font-black uppercase tracking-[.18em] text-cyan-100">Área do Cliente</p>
+            <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Bem-vindo à Zenfy, {company?.name || profile.name}.</h1>
+            <p className="mt-3 max-w-2xl text-blue-50/85">Sua área já está criada. A equipe Zenfy está preparando seus projetos, campanhas e indicadores.</p>
+          </div>
+        </section>
+
+        <section className="surface mt-6 p-6 sm:p-8">
+          <p className="eyebrow">Sua conta está pronta</p>
+          <h2 className="mt-3 max-w-3xl text-3xl font-black tracking-[-0.04em] text-[#09113f]">Os módulos ganham vida conforme a equipe publica dados reais.</h2>
+          <p className="mt-4 max-w-3xl leading-relaxed text-zinc-600">Em vez de mostrar um painel cheio de zeros, a Zenfy só exibe métricas quando elas forem cadastradas pela equipe. Quando o primeiro relatório for publicado, você verá investimento, leads, CPL, faturamento atribuído e ROAS.</p>
+
+          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Quick href="/cliente/mensagens" title="Falar com a equipe" text="Envie uma mensagem direto para a Zenfy." />
+            <Quick href="/cliente/arquivos" title="Enviar arquivos" text="Envie briefing, imagens e documentos." />
+            <Quick href="/cliente/suporte" title="Abrir solicitação" text="Peça suporte ou alguma alteração." />
+            <Quick href="/cliente/perfil" title="Completar meus dados" text="Revise os dados da sua empresa." />
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -43,6 +72,8 @@ export default async function ClientDashboard() {
           Sua conta existe, mas ainda não está vinculada a um registro de cliente. A equipe Zenfy precisa concluir essa vinculação.
         </div>
       )}
+
+      {report?.created_at && <p className="mt-4 text-right text-xs font-semibold text-zinc-400">Atualizado pela Zenfy em {new Date(report.created_at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</p>}
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Stat label="Investimento em tráfego" value={report ? brl(report.spend) : "Sem relatório"} hint={report ? `${report.platform} · até ${dateBr(report.period_end)}` : "Seu gestor publica aqui"} href="/cliente/trafego" />
