@@ -40,7 +40,7 @@ export default function Sobre() {
               Isso permite que produtos futuros, inclusive SaaS, tenham identidade própria sem perder a ligação com a companhia.
             </p>
           </div>
-          <div className="py-5"><BrandShowcase variant="growth" compact /></div>
+          <div className="py-5"><BrandShowcase compact /></div>
         </div>
       </section>
 
