@@ -1,10 +1,14 @@
 import BrandShowcase from "@/components/BrandShowcase";
 import RegisterForm from "@/components/RegisterForm";
 import { pageMeta } from "@/lib/seo";
+import { redirect } from "next/navigation";
+import { getCurrentAccount } from "@/lib/account";
 
 export const metadata = pageMeta("Criar conta", "Crie a conta da sua empresa na Zenfy.", "/cadastro");
 
-export default function Cadastro() {
+export default async function Cadastro() {
+  const account = await getCurrentAccount();
+  if (account) redirect(account.dashboardHref);
   return (
     <main className="zenfy-light-art relative min-h-[calc(100vh-73px)] overflow-hidden">
       <div className="relative mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-6 sm:py-16 lg:grid-cols-[.85fr_1.15fr] lg:items-center lg:py-20">
