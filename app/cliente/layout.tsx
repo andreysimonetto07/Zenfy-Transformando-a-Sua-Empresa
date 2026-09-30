@@ -1,4 +1,5 @@
 import Sidebar from "@/components/Sidebar";
+import InternalTopbar from "@/components/InternalTopbar";
 import { requireProfile } from "@/lib/auth";
 
 const items: [string,string][] = [
@@ -15,10 +16,14 @@ const items: [string,string][] = [
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
   const { profile } = await requireProfile(["client"]);
+
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="min-h-screen bg-[#f3f7fc] md:flex">
       <Sidebar items={items} title="Zenfy" subtitle="Área do Cliente" userName={profile.name} />
-      <div className="min-w-0 flex-1 bg-[#f6f8fc] p-4 sm:p-6 lg:p-8">{children}</div>
+      <div className="min-w-0 flex-1">
+        <InternalTopbar mode="client" name={profile.name} />
+        <main className="min-w-0 p-4 sm:p-6 lg:p-8">{children}</main>
+      </div>
     </div>
   );
 }

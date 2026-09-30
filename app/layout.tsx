@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
+import PublicChrome from "@/components/PublicChrome";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -30,5 +31,13 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="pt-BR"><body><Header /><PageTransition>{children}</PageTransition><Footer /></body></html>;
+  return (
+    <html lang="pt-BR">
+      <body>
+        <PublicChrome><Header /></PublicChrome>
+        <PageTransition>{children}</PageTransition>
+        <PublicChrome><Footer /></PublicChrome>
+      </body>
+    </html>
+  );
 }
