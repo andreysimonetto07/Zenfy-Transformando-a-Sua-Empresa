@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import type { PublicAccount } from "@/types/account";
 
 const links = [
@@ -39,15 +38,10 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
     if (pending) return;
     setPending(true);
     try {
-      await Promise.race([
-        createClient().auth.signOut(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000)),
-      ]);
-    } catch {
-      // Força uma nova navegação para nunca deixar o botão travado em "Saindo...".
+      await fetch("/auth/logout", { method: "POST", cache: "no-store", credentials: "include" });
     } finally {
       setOpen(false);
-      window.location.assign("/");
+      window.location.replace("/?logout=1");
     }
   }
 

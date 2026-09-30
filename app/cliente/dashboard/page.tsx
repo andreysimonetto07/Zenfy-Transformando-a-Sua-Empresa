@@ -34,7 +34,7 @@ export default async function ClientDashboard() {
           <p className="text-xs font-black uppercase tracking-[.18em] text-cyan-100">Área do Cliente</p>
           <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Olá, {profile.name}.</h1>
           <p className="mt-3 max-w-2xl text-blue-50/85">{company?.name ? `${company.name} está conectada à Zenfy.` : "Sua conta está conectada à Zenfy."} Acompanhe projetos, tráfego, mensagens e faturamento em um só lugar.</p>
-          <p className="mt-5 text-lg font-black text-cyan-100">Zenfy hoje. Mais oportunidades amanhã.</p>
+          <p className="mt-5 text-lg font-black text-cyan-100">Zenfy hoje. Mais vendas amanhã.</p>
         </div>
       </section>
 
