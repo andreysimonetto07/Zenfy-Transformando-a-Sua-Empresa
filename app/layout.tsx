@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Zenfy | Transformando sua empresa",
   description: "Zenfy é uma empresa da Companhia A & P focada em sites, landing pages, sistemas e soluções digitais para transformar empresas.",
-  twitter: { card: "summary_large_image", title: "Zenfy | Transformando sua empresa", images: ["/brand/zenfy/bg-dark.webp"] },
+  twitter: { card: "summary_large_image", title: "Zenfy | Transformando sua empresa", images: ["/brand/zenfy/Zenfy-BackGround1.webp"] },
   alternates: { canonical: "/" },
   openGraph: {
     title: "Zenfy | Transformando sua empresa",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "Zenfy",
-    images: [{ url: "/brand/zenfy/bg-dark.webp", width: 1920, height: 1080, alt: "Zenfy" }],
+    images: [{ url: "/brand/zenfy/Zenfy-BackGround1.webp", width: 1672, height: 941, alt: "Zenfy" }],
   },
 };
 

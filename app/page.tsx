@@ -2,123 +2,109 @@ import Image from "next/image";
 import Link from "next/link";
 
 const services = [
-  ["Desenvolvimento de Sites", "Sites profissionais, rápidos e responsivos para apresentar sua empresa com credibilidade."],
-  ["Landing Pages", "Páginas estratégicas para campanhas, captação de leads e conversão."],
-  ["Desenvolvimento Web", "Sistemas, painéis e aplicações sob medida para organizar processos e operações."],
-  ["Tráfego Pago", "Campanhas digitais planejadas para levar sua oferta até as pessoas certas."],
-  ["Automação", "Integrações e fluxos que reduzem tarefas repetitivas e aceleram o atendimento."],
-  ["Copy & Criativos", "Comunicação e materiais visuais pensados para apresentar sua oferta com clareza."],
+  ["Sites profissionais", "Presença digital sólida, responsiva e pensada para passar confiança."],
+  ["Landing pages", "Páginas focadas em campanhas, captação de leads e conversão."],
+  ["Sistemas web", "Painéis, portais e soluções sob medida para organizar sua operação."],
+  ["Automação", "Fluxos e integrações para reduzir tarefas repetitivas e ganhar velocidade."],
+  ["Tráfego pago", "Campanhas para colocar sua oferta na frente das pessoas certas."],
+  ["Criativos & copy", "Comunicação visual e textual mais clara, moderna e persuasiva."],
 ];
+
 const steps = [
-  ["Análise", "Entendemos sua empresa, mercado, público e objetivos."],
-  ["Estratégia", "Definimos prioridades e uma solução adequada ao momento do negócio."],
-  ["Desenvolvimento", "Construímos com tecnologia, design e foco na experiência do cliente."],
-  ["Publicação", "Configuramos, validamos e colocamos toda a estrutura no ar."],
-  ["Evolução", "Acompanhamos o projeto e identificamos novas oportunidades de melhoria."],
+  ["01", "Análise", "Entendemos sua empresa e o que realmente precisa melhorar."],
+  ["02", "Estratégia", "Definimos uma direção clara antes de começar a construir."],
+  ["03", "Criação", "Design, tecnologia e conteúdo trabalhando juntos."],
+  ["04", "Publicação", "Validamos e colocamos sua estrutura digital no ar."],
+  ["05", "Evolução", "Acompanhamos e abrimos espaço para próximos produtos e melhorias."],
 ];
 
 export default function Home() {
   return (
     <main>
       <section className="relative isolate overflow-hidden bg-[#06114f] text-white">
-        <Image src="/brand/zenfy/bg-dark.webp" alt="" fill priority sizes="100vw" className="-z-20 object-cover object-center" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#020624]/92 via-[#06114f]/55 to-[#06114f]/5" />
-        <div className="mx-auto grid min-h-[720px] max-w-6xl items-center gap-12 px-5 py-20 md:grid-cols-[1.08fr_.92fr] md:py-28">
+        <div className="absolute inset-0 -z-20 bg-cover bg-center" style={{ backgroundImage: "url('/brand/zenfy/Zenfy-BackGround1.webp')" }} />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#020624]/95 via-[#06114f]/65 to-[#06114f]/15" />
+        <div className="mx-auto grid min-h-[680px] max-w-7xl items-center gap-12 px-5 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_.95fr] lg:py-24">
           <div>
-            <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-cyan-50 shadow-sm backdrop-blur-md">Uma empresa da Companhia A &amp; P</span>
-            <h1 className="mt-6 max-w-3xl text-5xl font-extrabold leading-[1.02] tracking-[-0.045em] drop-shadow-sm md:text-7xl">Transformando sua empresa no digital.</h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-blue-50/90 md:text-xl">A Zenfy cria sites, landing pages, sistemas e estruturas digitais que ajudam empresas a transmitir confiança, organizar processos e gerar novas oportunidades.</p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <Link href="/solicitar-orcamento" className="btn btn-primary shadow-lg shadow-blue-950/20">Solicitar análise gratuita</Link>
-              <Link href="/servicos" className="btn border border-white/25 bg-white/10 text-white hover:bg-white/15">Conhecer serviços</Link>
+            <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-cyan-50 backdrop-blur-md">Uma empresa da Companhia A &amp; P</span>
+            <h1 className="mt-6 max-w-3xl text-[2.75rem] font-black leading-[.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">Transformando sua empresa <span className="text-cyan-200">no digital.</span></h1>
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-blue-50/90 sm:text-lg lg:text-xl">A Zenfy cria sites, landing pages, sistemas e soluções digitais para empresas que querem transmitir mais confiança, organizar processos e crescer com estrutura.</p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link href="/solicitar-orcamento" className="btn btn-primary">Solicitar análise gratuita</Link>
+              <Link href="/servicos" className="btn btn-dark">Conhecer soluções</Link>
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[430px] md:mx-0 md:justify-self-end">
-            <div className="rounded-[2rem] border border-white/25 bg-white/95 p-5 shadow-2xl shadow-blue-950/40 backdrop-blur">
-              <Image src="/brand/zenfy/logo-primary.webp" alt="Logo principal Zenfy" width={1254} height={1254} priority className="h-auto w-full rounded-2xl" />
+          <div className="relative mx-auto w-full max-w-[470px] lg:justify-self-end">
+            <div className="absolute -left-8 top-8 h-32 w-32 rounded-full bg-cyan-300/20 blur-3xl" />
+            <div className="absolute -right-8 bottom-0 h-36 w-36 rounded-full bg-fuchsia-400/20 blur-3xl" />
+            <div className="relative rounded-[2rem] border border-white/20 bg-white/95 p-3 shadow-2xl shadow-blue-950/45 sm:p-5">
+              <Image src="/brand/zenfy/Zenfy-logo1.webp" alt="Zenfy" width={1254} height={1254} priority className="h-auto w-full rounded-[1.4rem]" />
             </div>
-            <div className="absolute -bottom-7 -right-2 w-[44%] rounded-2xl border border-white/30 bg-white/95 p-2 shadow-2xl shadow-blue-950/30 sm:-right-8">
-              <Image src="/brand/zenfy/logo-growth.webp" alt="Logo alternativa Zenfy" width={1254} height={1254} className="h-auto w-full rounded-xl" />
+            <div className="absolute -bottom-5 right-1 w-[42%] rounded-2xl border border-white/25 bg-white/95 p-2 shadow-2xl sm:-right-5 sm:-bottom-8">
+              <Image src="/brand/zenfy/Zenfy-logo2.webp" alt="Zenfy crescimento" width={1254} height={1254} className="h-auto w-full rounded-xl" />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
-        <div className="max-w-2xl">
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand">O que fazemos</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">Estrutura digital para empresas que querem crescer com mais profissionalismo.</h2>
+      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
+        <div className="max-w-3xl">
+          <p className="eyebrow">O que a Zenfy constrói</p>
+          <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#09113f] sm:text-4xl lg:text-5xl">Estrutura digital bonita por fora e funcional por dentro.</h2>
+          <p className="mt-4 max-w-2xl leading-relaxed text-zinc-600">Não é só “ter um site”. A ideia é criar uma presença que faça sentido para o negócio e possa evoluir junto com ele.</p>
         </div>
-        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {services.map(([t, d], i) => (
-            <article key={t} className="group rounded-2xl border border-zinc-200 bg-white p-7 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-950/5">
-              <span className="text-xs font-bold text-brand">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-4 text-lg font-bold">{t}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-600">{d}</p>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map(([title,text],index) => (
+            <article key={title} className="surface group p-6 transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-2xl">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl brand-gradient text-xs font-black text-white shadow-lg">{String(index+1).padStart(2,"0")}</span>
+              <h3 className="mt-5 text-xl font-black tracking-tight text-[#09113f]">{title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-600">{text}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-y border-blue-100 bg-[#eef8ff]">
-        <Image src="/brand/zenfy/bg-light.webp" alt="" fill sizes="100vw" className="object-cover object-center opacity-95" />
-        <div className="absolute inset-0 bg-white/15" />
-        <div className="relative mx-auto max-w-6xl px-5 py-20 md:py-24">
-          <div className="max-w-2xl rounded-3xl border border-white/90 bg-white/80 p-7 shadow-xl shadow-blue-950/10 backdrop-blur-lg md:p-10">
-            <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand">Nosso processo</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight">Da ideia à publicação, com clareza em cada etapa.</h2>
-            <p className="mt-4 text-zinc-600">O background claro faz parte da identidade Zenfy e separa visualmente o processo sem perder leveza.</p>
+      <section className="relative overflow-hidden border-y border-blue-100/80">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/brand/zenfy/Zenfy-BackGround2.webp')" }} />
+        <div className="absolute inset-0 bg-white/18" />
+        <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
+          <div className="surface max-w-3xl p-7 sm:p-10">
+            <p className="eyebrow">Como trabalhamos</p>
+            <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#09113f] sm:text-4xl">Do primeiro contato ao projeto publicado.</h2>
           </div>
-          <ol className="mt-10 grid gap-4 md:grid-cols-5">
-            {steps.map(([t, d], i) => (
-              <li key={t} className="rounded-2xl border border-white/90 bg-white/88 p-6 shadow-lg shadow-blue-950/5 backdrop-blur-md">
-                <span className="text-sm font-extrabold text-brand">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="mt-3 font-bold">{t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-600">{d}</p>
-              </li>
-            ))}
-          </ol>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {steps.map(([n,title,text]) => <article key={n} className="rounded-[1.5rem] border border-white/90 bg-white/88 p-5 shadow-xl shadow-blue-950/5 backdrop-blur-md"><span className="brand-text text-xl font-black">{n}</span><h3 className="mt-3 font-black text-[#09113f]">{title}</h3><p className="mt-2 text-sm leading-relaxed text-zinc-600">{text}</p></article>)}
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
-        <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-xl shadow-blue-950/5">
-          <div className="grid md:grid-cols-[1fr_1.05fr]">
-            <div className="relative min-h-[420px] overflow-hidden bg-[#f5fbff] p-6">
-              <Image src="/brand/zenfy/bg-light.webp" alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover opacity-75" />
+      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
+        <div className="surface overflow-hidden">
+          <div className="grid lg:grid-cols-[1fr_1.05fr]">
+            <div className="relative min-h-[360px] overflow-hidden sm:min-h-[450px]">
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/brand/zenfy/Zenfy-BackGround2.webp')" }} />
               <div className="absolute inset-0 bg-white/25" />
-              <div className="relative grid h-full grid-cols-2 items-center gap-4">
-                <div className="rounded-2xl border border-white bg-white/95 p-3 shadow-xl">
-                  <Image src="/brand/zenfy/logo-primary.webp" alt="Logo Zenfy em Z" width={1254} height={1254} className="h-auto w-full rounded-xl" />
-                </div>
-                <div className="translate-y-8 rounded-2xl border border-white bg-white/95 p-3 shadow-xl">
-                  <Image src="/brand/zenfy/logo-growth.webp" alt="Logo Zenfy com seta de crescimento" width={1254} height={1254} className="h-auto w-full rounded-xl" />
-                </div>
+              <div className="relative flex h-full items-center justify-center gap-3 p-5 sm:gap-5 sm:p-10">
+                <div className="w-[48%] rounded-2xl border border-white bg-white/95 p-2 shadow-2xl sm:p-3"><Image src="/brand/zenfy/Zenfy-logo1.webp" alt="Zenfy logo 1" width={1254} height={1254} className="h-auto w-full rounded-xl" /></div>
+                <div className="mt-12 w-[48%] rounded-2xl border border-white bg-white/95 p-2 shadow-2xl sm:p-3"><Image src="/brand/zenfy/Zenfy-logo2.webp" alt="Zenfy logo 2" width={1254} height={1254} className="h-auto w-full rounded-xl" /></div>
               </div>
             </div>
-            <div className="flex flex-col justify-center p-8 md:p-12">
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand">Companhia A &amp; P</p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight">Duas assinaturas visuais, uma única marca.</h2>
-              <p className="mt-5 leading-relaxed text-zinc-600">A Zenfy integra a Companhia A &amp; P. As duas versões da identidade aparecem no site de forma complementar: uma reforça a marca e a outra representa movimento, crescimento e evolução.</p>
-              <p className="mt-4 leading-relaxed text-zinc-600">Essa estrutura também deixa a Companhia A &amp; P preparada para reunir novos produtos, empresas e SaaS no futuro.</p>
-              <Link href="/sobre" className="mt-7 font-semibold text-brand hover:underline">Conheça a Zenfy e a Companhia A &amp; P →</Link>
+            <div className="flex flex-col justify-center p-7 sm:p-10 lg:p-12">
+              <p className="eyebrow">Companhia A &amp; P</p>
+              <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#09113f] sm:text-4xl">Zenfy hoje. Novos produtos amanhã.</h2>
+              <p className="mt-5 leading-relaxed text-zinc-600">A Zenfy é uma empresa da Companhia A &amp; P. Essa estrutura deixa espaço para novos negócios, produtos digitais e SaaS sem misturar tudo em uma única marca.</p>
+              <Link href="/sobre" className="btn btn-ghost mt-7 w-full sm:w-fit">Conhecer a estrutura →</Link>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 pb-20">
-        <div className="relative overflow-hidden rounded-[2rem] bg-[#06114f] p-10 text-white shadow-2xl shadow-blue-950/15 md:p-14">
-          <Image src="/brand/zenfy/bg-dark.webp" alt="" fill sizes="100vw" className="object-cover object-center opacity-80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#020624]/95 via-[#06114f]/68 to-transparent" />
-          <div className="relative">
-            <h2 className="max-w-xl text-3xl font-bold tracking-tight md:text-4xl">Vamos analisar como sua empresa pode se apresentar melhor no digital?</h2>
-            <p className="mt-4 max-w-xl text-blue-50/90">Conte sobre seu negócio. A Zenfy identifica oportunidades e mostra um caminho inicial para fortalecer sua presença digital.</p>
-            <Link href="/solicitar-orcamento" className="btn btn-primary mt-8">Solicitar análise gratuita</Link>
-          </div>
-        </div>
-      </section>
+      <Cta />
     </main>
   );
+}
+
+function Cta() {
+  return <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-6 sm:pb-24"><div className="relative overflow-hidden rounded-[2rem] bg-[#06114f] p-7 text-white shadow-2xl sm:p-10 lg:p-14"><div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage:"url('/brand/zenfy/Zenfy-BackGround1.webp')"}}/><div className="absolute inset-0 bg-gradient-to-r from-[#020624]/96 via-[#06114f]/76 to-transparent"/><div className="relative"><p className="eyebrow !text-cyan-100">Próximo passo</p><h2 className="mt-3 max-w-2xl text-3xl font-black tracking-[-0.04em] sm:text-4xl">Quer ver como sua empresa pode ficar mais profissional no digital?</h2><p className="mt-4 max-w-xl text-blue-50/90">Conte sobre seu negócio e a Zenfy identifica um caminho inicial.</p><Link href="/solicitar-orcamento" className="btn btn-primary mt-7 w-full sm:w-auto">Solicitar análise gratuita</Link></div></div></section>;
 }
