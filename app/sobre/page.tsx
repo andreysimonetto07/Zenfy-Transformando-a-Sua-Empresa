@@ -6,8 +6,16 @@ import { pageMeta } from "@/lib/seo";
 export const metadata = pageMeta("Sobre", "Conheça a Zenfy, empresa da Companhia A & P, e seus fundadores Andrey Simoneto e Pedro Henrique.", "/sobre");
 
 const founders = [
-  { name: "Andrey Simoneto", role: "Desenvolvimento Web & Estratégia Digital", text: "Responsável por desenvolvimento de sites, landing pages, sistemas, integrações e soluções digitais." },
-  { name: "Pedro Henrique", role: "Estratégia, Marketing & Desenvolvimento de Negócios", text: "Responsável por estratégia comercial, comunicação, marketing e desenvolvimento de oportunidades." },
+  {
+    name: "Andrey Simoneto",
+    role: "Desenvolvimento Web & Soluções Digitais",
+    text: "Desenvolvimento de landing pages estratégicas e de alta conversão, sistemas personalizados, integrações com plataformas e ferramentas, automações e soluções web sob medida para as necessidades de cada negócio. Cada projeto é planejado para transformar demandas operacionais em experiências digitais modernas, seguras, responsivas e eficientes, contribuindo para a otimização de processos, o fortalecimento da presença online e resultados consistentes para a sua empresa."
+  },
+  {
+    name: "Pedro Henrique",
+    role: "Estratégia, Marketing & Desenvolvimento de Negócios",
+    text: "Responsável por estratégia comercial, comunicação, marketing e desenvolvimento de oportunidades."
+  },
 ];
 
 export default function Sobre() {
@@ -32,15 +40,14 @@ export default function Sobre() {
               Isso permite que produtos futuros, inclusive SaaS, tenham identidade própria sem perder a ligação com a companhia.
             </p>
           </div>
-          <div className="py-5">
-            <BrandShowcase variant="growth" compact />
-          </div>
+          <div className="py-5"><BrandShowcase variant="growth" compact /></div>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
         <p className="eyebrow">Fundadores</p>
         <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#09113f] sm:text-4xl">Quem está por trás da Zenfy</h2>
+
         <div className="mt-8 grid gap-5 md:grid-cols-2">
           {founders.map((f) => (
             <article key={f.name} className="surface p-6 transition duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-8">
@@ -49,7 +56,7 @@ export default function Sobre() {
               </div>
               <h3 className="mt-5 text-2xl font-black tracking-tight text-[#09113f]">{f.name}</h3>
               <p className="mt-1 text-sm font-bold text-brand">{f.role}</p>
-              <p className="mt-3 leading-relaxed text-zinc-600">{f.text}</p>
+              <p className="mt-3 whitespace-pre-line leading-relaxed text-zinc-600">{f.text}</p>
             </article>
           ))}
         </div>

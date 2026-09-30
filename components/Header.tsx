@@ -1,6 +1,8 @@
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 import MobileMenu from "@/components/MobileMenu";
+import AccountMenu from "@/components/AccountMenu";
+import { getCurrentAccount } from "@/lib/account";
 
 const links = [
   ["/", "Início"],
@@ -10,11 +12,14 @@ const links = [
   ["/contato", "Contato"],
 ];
 
-export default function Header() {
+export default async function Header() {
+  const account = await getCurrentAccount();
+
   return (
     <header className="sticky top-0 z-50 h-[68px] border-b border-zinc-200/70 bg-white shadow-sm shadow-blue-950/[0.03]">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <BrandLogo />
+
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Navegação principal">
           {links.map(([href,label]) => (
             <Link
@@ -26,11 +31,19 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+
         <div className="hidden items-center gap-2 sm:flex">
-          <Link href="/login" className="btn btn-ghost">Entrar</Link>
-          <Link href="/cadastro" className="btn btn-primary">Criar conta</Link>
+          {account ? (
+            <AccountMenu account={account} />
+          ) : (
+            <>
+              <Link href="/login" className="btn btn-ghost">Entrar</Link>
+              <Link href="/cadastro" className="btn btn-primary">Criar conta</Link>
+            </>
+          )}
         </div>
-        <MobileMenu />
+
+        <MobileMenu account={account} />
       </div>
     </header>
   );
