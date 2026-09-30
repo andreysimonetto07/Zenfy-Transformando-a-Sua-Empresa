@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AdminClientForms from "@/components/AdminClientForms";
+import TrafficReportManager from "@/components/TrafficReportManager";
 import { requireProfile } from "@/lib/auth";
 import { ADMIN_ROLES } from "@/lib/permissions";
 import { brl, dateBr, statusLabel } from "@/lib/client-portal";
@@ -63,7 +64,7 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
     <div className="mt-6 grid gap-6 xl:grid-cols-2">
       <List title="Projetos" empty="Nenhum projeto." items={projects.map((p:any)=>({title:p.name,meta:`${statusLabel(p.status)} · ${p.progress??0}% · prazo ${dateBr(p.deadline)}`}))}/>
       <List title="Sites" empty="Nenhum site vinculado." items={sites.map((s:any)=>({title:s.name,meta:`${statusLabel(s.status)} · ${s.domain||s.url||"sem domínio"}`}))}/>
-      <List title="Tráfego recente" empty="Nenhum relatório de tráfego." items={traffic.map((r:any)=>({title:`${r.platform} · ${dateBr(r.period_start)} a ${dateBr(r.period_end)}`,meta:`${brl(r.spend)} investidos · ${r.leads} leads · ${brl(r.revenue)} faturamento`}))}/>
+      <TrafficReportManager clientId={id} reports={traffic as any} />
       <List title="Faturamento" empty="Nenhuma cobrança." items={invoices.map((i:any)=>({title:i.description,meta:`${brl(i.amount)} · ${statusLabel(i.status)} · vence ${dateBr(i.due_date)}`}))}/>
       <List title="Suporte" empty="Nenhuma solicitação." items={requests.map((r:any)=>({title:r.subject,meta:`${r.kind} · ${statusLabel(r.status)} · ${r.priority}`}))}/>
 
