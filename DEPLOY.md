@@ -24,3 +24,5 @@ Em **Authentication → URL Configuration**:
 ## Segurança
 
 Nunca coloque `.env.local`, `SUPABASE_SERVICE_ROLE_KEY` ou a chave secreta em commits públicos.
+
+> O Build Check do GitHub deve estar verde antes de publicar em produção.
