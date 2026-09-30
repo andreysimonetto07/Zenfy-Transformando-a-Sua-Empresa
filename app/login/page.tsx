@@ -1,6 +1,5 @@
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
-import GrowthMark from "@/components/GrowthMark";
 import LoginForm from "@/components/LoginForm";
 import { redirect } from "next/navigation";
 import { getCurrentAccount } from "@/lib/account";
@@ -17,7 +16,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<Re
       <section className="zenfy-dark-art relative hidden overflow-hidden lg:flex lg:flex-col lg:justify-between lg:p-10">
         <BrandLogo light />
         <div className="relative z-10">
-          <div className="mb-8 w-44 rounded-3xl border border-white/15 bg-white/10 p-5 backdrop-blur-lg"><GrowthMark className="h-auto w-full" /></div>
+          <div className="mb-8 max-w-[230px] rounded-3xl border border-white/15 bg-white p-3 shadow-xl"><BrandLogo href="" /></div>
           <p className="text-xs font-black uppercase tracking-[.18em] text-cyan-100">Zenfy · Companhia A &amp; P</p>
           <h2 className="mt-3 max-w-xl text-4xl font-black tracking-[-0.045em] text-white">Seu projeto, organizado em um só lugar.</h2>
           <p className="mt-4 max-w-lg text-blue-50/85">Clientes e equipe usam a mesma entrada. O sistema reconhece o tipo de conta e abre o painel correto.</p>
