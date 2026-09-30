@@ -11,7 +11,7 @@ export default function AdminMessageComposer({clients}:{clients:{id:string;name:
     e.preventDefault(); const form=e.currentTarget; const fd=new FormData(form); setFeedback(null);
     startTransition(async()=>{
       const result=await sendAdminMessageAction(Object.fromEntries(fd.entries()));
-      if(!result.ok)return setFeedback({ok:false,text:result.error});
+      if(!result.ok)return setFeedback({ok:false,text:result.error || "Não foi possível enviar."});
       form.reset(); setFeedback({ok:true,text:result.message||"Enviado."});
     });
   }
