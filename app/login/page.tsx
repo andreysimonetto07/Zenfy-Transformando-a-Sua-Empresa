@@ -1,9 +1,14 @@
 import Image from "next/image";
+import Link from "next/link";
 import LoginForm from "@/components/LoginForm";
 
 export const metadata = { title: "Entrar | Zenfy", robots: { index: false } };
 
-export default function Login() {
+export default async function Login({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const params = await searchParams;
+  const passwordChanged = params.senha === "alterada";
+  const linkError = params.erro === "link";
+
   return (
     <main className="grid min-h-[calc(100vh-73px)] lg:grid-cols-2">
       <section className="relative hidden overflow-hidden bg-[#06114f] lg:block">
@@ -20,16 +25,17 @@ export default function Login() {
       </section>
       <section className="flex items-center justify-center px-5 py-16">
         <div className="w-full max-w-sm">
-          <div className="mb-8 flex justify-center lg:hidden">
-            <div className="w-36 rounded-2xl border border-zinc-200 bg-white p-2 shadow-sm">
-              <Image src="/brand/zenfy/logo-primary.webp" alt="Zenfy" width={1254} height={1254} className="h-auto w-full" />
-            </div>
-          </div>
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand">Área do Cliente</p>
+          <div className="mb-8 flex justify-center lg:hidden"><div className="w-36 rounded-2xl border border-zinc-200 bg-white p-2 shadow-sm"><Image src="/brand/zenfy/logo-primary.webp" alt="Zenfy" width={1254} height={1254} className="h-auto w-full" /></div></div>
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand">Área do Cliente e Equipe</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight">Entrar na Zenfy</h1>
-          <p className="mb-8 mt-2 text-sm text-zinc-600">Acesse com o e-mail cadastrado pela equipe Zenfy.</p>
+          <p className="mb-6 mt-2 text-sm text-zinc-600">Clientes, Andrey e Pedro usam a mesma tela. O sistema direciona cada conta para o painel correto.</p>
+          {passwordChanged && <p className="mb-4 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">Senha alterada com sucesso. Entre novamente.</p>}
+          {linkError && <p className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">Este link não é mais válido. Solicite um novo link de recuperação.</p>}
           <LoginForm />
-          <p className="mt-8 text-center text-xs text-zinc-400">Zenfy · Uma empresa da Companhia A &amp; P</p>
+          <div className="mt-8 border-t border-zinc-200 pt-6 text-center text-sm text-zinc-500">
+            Sua empresa ainda não tem acesso? <Link href="/cadastro" className="font-semibold text-brand hover:underline">Criar conta</Link>
+          </div>
+          <p className="mt-5 text-center text-xs text-zinc-400">Zenfy · Uma empresa da Companhia A &amp; P</p>
         </div>
       </section>
     </main>
