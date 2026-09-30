@@ -73,7 +73,7 @@ export default async function ClientDashboard() {
         </div>
       )}
 
-      {report?.created_at && <p className="mt-4 text-right text-xs font-semibold text-zinc-400">Atualizado pela Zenfy em {new Date(report.created_at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</p>}
+      {(report?.updated_at||report?.created_at) && <p className="mt-4 text-right text-xs font-semibold text-zinc-400">Atualizado pela Zenfy em {new Date(report.updated_at||report.created_at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</p>}
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Stat label="Investimento em tráfego" value={report ? brl(report.spend) : "Sem relatório"} hint={report ? `${report.platform} · até ${dateBr(report.period_end)}` : "Seu gestor publica aqui"} href="/cliente/trafego" />
