@@ -1,6 +1,10 @@
 import Link from "next/link";
 import BrandShowcase from "@/components/BrandShowcase";
 import TrafficShowcase from "@/components/TrafficShowcase";
+import VslSection from "@/components/VslSection";
+import PortfolioCard from "@/components/PortfolioCard";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import { getFeaturedProjects, getPublishedTestimonials } from "@/lib/portfolio";
 
 const services = [
   ["Gestão de tráfego pago", "Planejamento, acompanhamento e otimização de campanhas para gerar oportunidades com mais controle."],
@@ -19,7 +23,8 @@ const steps = [
   ["05", "Otimização", "Usamos os dados para ajustar campanhas e melhorar o processo comercial."],
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [featuredProjects, testimonials] = await Promise.all([getFeaturedProjects(), getPublishedTestimonials()]);
   return (
     <main>
       <section className="zenfy-dark-art relative isolate overflow-hidden text-white">
@@ -77,6 +82,8 @@ export default function Home() {
           <TrafficShowcase />
         </div>
       </section>
+
+      <VslSection />
 
       <section className="border-y border-zinc-100 bg-[#f8fbff]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
@@ -141,6 +148,23 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {featuredProjects.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="eyebrow">Projetos e cases</p>
+              <h2 className="mt-3 max-w-3xl text-3xl font-black tracking-[-0.04em] text-[#09113f] sm:text-4xl">Trabalhos reais publicados pela equipe Zenfy.</h2>
+            </div>
+            <Link href="/portfolio" className="btn btn-ghost">Ver portfólio completo →</Link>
+          </div>
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredProjects.map((project)=><PortfolioCard key={project.id} p={project} />)}
+          </div>
+        </section>
+      )}
+
+      <TestimonialsSection testimonials={testimonials.filter((item)=>item.featured)} />
 
       <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-6 sm:pb-24">
         <div className="zenfy-dark-art relative overflow-hidden rounded-[2rem] p-7 text-white shadow-2xl sm:p-10 lg:p-14">
