@@ -6,6 +6,8 @@ import PortfolioCard from "@/components/PortfolioCard";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import { getFeaturedProjects, getPublishedTestimonials } from "@/lib/portfolio";
 
+export const revalidate = 300;
+
 const services = [
   ["Gestão de tráfego pago", "Planejamento, acompanhamento e otimização de campanhas para gerar oportunidades com mais controle."],
   ["Landing pages", "Páginas focadas em campanhas, captação de leads e conversão."],
