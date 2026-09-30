@@ -99,10 +99,12 @@ export async function createLeadAction(raw: unknown): Promise<ActionResult> {
 export async function updateLeadAction(raw: unknown): Promise<ActionResult> {
   try {
     const parsed = leadSchema.safeParse(raw);
-    if (!parsed.success || !parsed.data.id) return { ok: false, error: "Confira os campos do lead." };
+    if (!parsed.success) return { ok: false, error: "Confira os campos do lead." };
     const d = parsed.data;
+    if (!leadId) return { ok: false, error: "Lead inválido." };
+    const leadId = leadId;
     const { supabase, profile } = await requireProfile(ADMIN_ROLES);
-    const { data: before, error: beforeError } = await supabase.from("leads").select("assigned_to,status").eq("id", d.id).single();
+    const { data: before, error: beforeError } = await supabase.from("leads").select("assigned_to,status").eq("id", leadId).single();
     if (beforeError) throw new Error(beforeError.message);
 
     const companyId = await findOrCreateCompany(supabase, d, d.company_id || undefined);
@@ -123,22 +125,22 @@ export async function updateLeadAction(raw: unknown): Promise<ActionResult> {
         next_contact: nullable(d.next_contact),
         updated_at: new Date().toISOString(),
       })
-      .eq("id", d.id);
+      .eq("id", leadId);
     if (error) throw new Error(error.message);
 
-    await addActivity(supabase, profile.id, d.id, "lead_atualizado", "Dados do lead atualizados.");
+    await addActivity(supabase, profile.id, leadId, "lead_atualizado", "Dados do lead atualizados.");
     if (before.assigned_to !== nullable(d.assigned_to)) {
-      await addActivity(supabase, profile.id, d.id, "responsavel_alterado", "Responsável do lead alterado.");
+      await addActivity(supabase, profile.id, leadId, "responsavel_alterado", "Responsável do lead alterado.");
     }
     if (before.status !== d.status) {
-      await addActivity(supabase, profile.id, d.id, "status_alterado", `Status alterado de ${leadStatusLabel(before.status)} para ${leadStatusLabel(d.status)}.`);
+      await addActivity(supabase, profile.id, leadId, "status_alterado", `Status alterado de ${leadStatusLabel(before.status)} para ${leadStatusLabel(d.status)}.`);
     }
 
     revalidatePath("/admin/leads");
-    revalidatePath(`/admin/leads/${d.id}`);
+    revalidatePath(`/admin/leads/${leadId}`);
     revalidatePath("/admin/empresas");
     revalidatePath("/admin/dashboard");
-    return { ok: true, id: d.id };
+    return { ok: true, id: leadId };
   } catch (error) {
     return { ok: false, error: error instanceof Error ? error.message : "Não foi possível salvar as alterações." };
   }
