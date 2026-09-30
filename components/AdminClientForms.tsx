@@ -18,7 +18,7 @@ export default function AdminClientForms({clientId,companyId,projects}:Props){
     startTransition(async()=>{
       const action=kind==="project"?createProjectAction:kind==="site"?createSiteAction:kind==="traffic"?createTrafficReportAction:createInvoiceAction;
       const result=await action(raw);
-      if(!result.ok)return setFeedback({ok:false,text:result.error});
+      if(!result.ok)return setFeedback({ok:false,text:result.error || "Não foi possível salvar."});
       form.reset(); setFeedback({ok:true,text:result.message||"Salvo."});
     });
   }
