@@ -2,10 +2,15 @@ import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 import GrowthMark from "@/components/GrowthMark";
 import LoginForm from "@/components/LoginForm";
+import { redirect } from "next/navigation";
+import { getCurrentAccount } from "@/lib/account";
 
 export const metadata = { title: "Entrar | Zenfy", robots: { index: false } };
 
 export default async function Login({ searchParams }: { searchParams: Promise<Record<string,string|string[]|undefined>> }) {
+  const account = await getCurrentAccount();
+  if (account) redirect(account.dashboardHref);
+
   const params=await searchParams;
   return <main className="zenfy-light-art relative min-h-[calc(100vh-73px)] overflow-hidden">
     <div className="relative grid min-h-[calc(100vh-73px)] lg:grid-cols-2">
