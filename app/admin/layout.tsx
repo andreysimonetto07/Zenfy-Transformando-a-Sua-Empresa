@@ -9,6 +9,7 @@ const items: [string, string][] = [
   ["/admin/clientes", "Clientes"],
   ["/admin/trafego", "Gestão de tráfego"],
   ["/admin/projetos", "Projetos"],
+  ["/admin/portfolio", "Portfólio & Cases"],
   ["/admin/propostas", "Propostas"],
   ["/admin/tarefas", "Tarefas & Suporte"],
   ["/admin/mensagens", "Mensagens"],
