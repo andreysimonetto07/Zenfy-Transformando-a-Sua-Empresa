@@ -30,6 +30,18 @@ const invoiceSchema=z.object({
   due_date:z.string().optional(), status:z.enum(["pendente","pago","atrasado","cancelado"]), payment_url:z.string().trim().max(500).optional(),
 });
 
+const quickTrafficSchema=z.object({
+  client_id:id,
+  date:z.string().min(8),
+  platform:z.string().trim().min(2).max(100),
+  spend:z.coerce.number().min(0),
+  impressions:z.coerce.number().int().min(0),
+  clicks:z.coerce.number().int().min(0),
+  leads:z.coerce.number().int().min(0),
+  conversions:z.coerce.number().int().min(0),
+  revenue:z.coerce.number().min(0),
+});
+
 export async function createProjectAction(raw:unknown):Promise<Result>{
   try{
     const p=projectSchema.safeParse(raw); if(!p.success)return{ok:false,error:"Confira os dados do projeto."};
@@ -77,6 +89,51 @@ export async function deleteTrafficReportAction(raw:unknown):Promise<Result>{
   }catch(e){return{ok:false,error:formatMigrationError(e)}}
 }
 
+export async function quickUpdateTrafficAction(raw:unknown):Promise<Result>{
+  try{
+    const p=quickTrafficSchema.safeParse(raw);
+    if(!p.success)return{ok:false,error:"Confira a data e os números informados."};
+
+    const {supabase}=await requireProfile(ADMIN_ROLES);
+    const d=p.data;
+
+    const {data:existing,error:findError}=await supabase
+      .from("traffic_reports")
+      .select("id")
+      .eq("client_id",d.client_id)
+      .eq("period_start",d.date)
+      .eq("period_end",d.date)
+      .ilike("platform",d.platform)
+      .order("created_at",{ascending:false})
+      .limit(1)
+      .maybeSingle();
+
+    if(findError)throw new Error(findError.message);
+
+    const payload={
+      client_id:d.client_id,
+      period_start:d.date,
+      period_end:d.date,
+      platform:d.platform,
+      spend:d.spend,
+      impressions:d.impressions,
+      clicks:d.clicks,
+      leads:d.leads,
+      conversions:d.conversions,
+      revenue:d.revenue,
+      updated_at:new Date().toISOString(),
+    };
+
+    const result=existing?.id
+      ? await supabase.from("traffic_reports").update(payload).eq("id",existing.id)
+      : await supabase.from("traffic_reports").insert({...payload,notes:"Atualização rápida pelo painel administrativo"});
+
+    if(result.error)throw new Error(result.error.message);
+    refresh(d.client_id);
+    return{ok:true,message:existing?.id?"Métricas do dia atualizadas.":"Métricas do dia publicadas."};
+  }catch(e){return{ok:false,error:formatMigrationError(e)}}
+}
+
 export async function createInvoiceAction(raw:unknown):Promise<Result>{
   try{
     const p=invoiceSchema.safeParse(raw); if(!p.success)return{ok:false,error:"Confira os dados da cobrança."};
@@ -97,6 +154,7 @@ function refresh(clientId:string){
 }
 function formatMigrationError(error:unknown){
   const message=error instanceof Error?error.message:"Operação indisponível.";
-  if(message.includes("does not exist")||message.includes("schema cache")) return "Rode a migration 004_client_portal.sql no Supabase antes de usar este módulo.";
+  if(message.includes("updated_at")) return "Rode a migration 005_portfolio_cases_social.sql no Supabase antes de editar métricas.";
+  if(message.includes("does not exist")||message.includes("schema cache")) return "Rode as migrations 004_client_portal.sql e 005_portfolio_cases_social.sql no Supabase antes de usar este módulo.";
   return message;
 }
