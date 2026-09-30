@@ -75,8 +75,11 @@ export async function updateTrafficReportAction(raw:unknown):Promise<Result>{
     const p=schema.safeParse(raw); if(!p.success)return{ok:false,error:"Confira os números e o período do relatório."};
     const {supabase}=await requireProfile(ADMIN_ROLES); const d=p.data;
     const {report_id,...payload}=d;
-    const {error}=await supabase.from("traffic_reports").update({...payload,project_id:payload.project_id||null,notes:payload.notes||null,updated_at:new Date().toISOString()}).eq("id",report_id);
-    if(error)throw new Error(error.message); refresh(payload.client_id); return{ok:true,message:"Relatório atualizado."};
+    let updateResult=await supabase.from("traffic_reports").update({...payload,project_id:payload.project_id||null,notes:payload.notes||null,updated_at:new Date().toISOString()}).eq("id",report_id);
+    if(updateResult.error?.message.includes("updated_at")){
+      updateResult=await supabase.from("traffic_reports").update({...payload,project_id:payload.project_id||null,notes:payload.notes||null}).eq("id",report_id);
+    }
+    if(updateResult.error)throw new Error(updateResult.error.message); refresh(payload.client_id); return{ok:true,message:"Relatório atualizado."};
   }catch(e){return{ok:false,error:formatMigrationError(e)}}
 }
 
@@ -121,12 +124,19 @@ export async function quickUpdateTrafficAction(raw:unknown):Promise<Result>{
       leads:d.leads,
       conversions:d.conversions,
       revenue:d.revenue,
-      updated_at:new Date().toISOString(),
     };
 
-    const result=existing?.id
-      ? await supabase.from("traffic_reports").update(payload).eq("id",existing.id)
-      : await supabase.from("traffic_reports").insert({...payload,notes:"Atualização rápida pelo painel administrativo"});
+    const payloadWithTimestamp={...payload,updated_at:new Date().toISOString()};
+
+    let result=existing?.id
+      ? await supabase.from("traffic_reports").update(payloadWithTimestamp).eq("id",existing.id)
+      : await supabase.from("traffic_reports").insert({...payloadWithTimestamp,notes:"Atualização rápida pelo painel administrativo"});
+
+    if(result.error?.message.includes("updated_at")){
+      result=existing?.id
+        ? await supabase.from("traffic_reports").update(payload).eq("id",existing.id)
+        : await supabase.from("traffic_reports").insert({...payload,notes:"Atualização rápida pelo painel administrativo"});
+    }
 
     if(result.error)throw new Error(result.error.message);
     refresh(d.client_id);
@@ -154,7 +164,6 @@ function refresh(clientId:string){
 }
 function formatMigrationError(error:unknown){
   const message=error instanceof Error?error.message:"Operação indisponível.";
-  if(message.includes("updated_at")) return "Rode a migration 005_portfolio_cases_social.sql no Supabase antes de editar métricas.";
-  if(message.includes("does not exist")||message.includes("schema cache")) return "Rode as migrations 004_client_portal.sql e 005_portfolio_cases_social.sql no Supabase antes de usar este módulo.";
+  if(message.includes("does not exist")||message.includes("schema cache")) return "Rode a migration 004_client_portal.sql no Supabase antes de usar este módulo.";
   return message;
 }
