@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { PublicAccount } from "@/types/account";
 
@@ -10,7 +9,6 @@ export default function AccountMenu({ account }: { account: PublicAccount }) {
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const wrapper = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const close = (event: MouseEvent) => {
@@ -28,11 +26,19 @@ export default function AccountMenu({ account }: { account: PublicAccount }) {
   }, []);
 
   async function logout() {
+    if (pending) return;
     setPending(true);
-    await createClient().auth.signOut();
-    setOpen(false);
-    router.replace("/");
-    router.refresh();
+    try {
+      await Promise.race([
+        createClient().auth.signOut(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000)),
+      ]);
+    } catch {
+      // Evita deixar o menu preso em "Saindo..." caso a rede demore.
+    } finally {
+      setOpen(false);
+      window.location.assign("/");
+    }
   }
 
   const firstName = account.name.trim().split(/\s+/)[0] || account.name;
