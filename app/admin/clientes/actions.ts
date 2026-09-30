@@ -57,6 +57,26 @@ export async function createTrafficReportAction(raw:unknown):Promise<Result>{
   }catch(e){return{ok:false,error:formatMigrationError(e)}}
 }
 
+export async function updateTrafficReportAction(raw:unknown):Promise<Result>{
+  try{
+    const schema=trafficSchema.extend({report_id:id});
+    const p=schema.safeParse(raw); if(!p.success)return{ok:false,error:"Confira os números e o período do relatório."};
+    const {supabase}=await requireProfile(ADMIN_ROLES); const d=p.data;
+    const {report_id,...payload}=d;
+    const {error}=await supabase.from("traffic_reports").update({...payload,project_id:payload.project_id||null,notes:payload.notes||null,updated_at:new Date().toISOString()}).eq("id",report_id);
+    if(error)throw new Error(error.message); refresh(payload.client_id); return{ok:true,message:"Relatório atualizado."};
+  }catch(e){return{ok:false,error:formatMigrationError(e)}}
+}
+
+export async function deleteTrafficReportAction(raw:unknown):Promise<Result>{
+  try{
+    const p=z.object({report_id:id,client_id:id}).safeParse(raw); if(!p.success)return{ok:false,error:"Relatório inválido."};
+    const {supabase}=await requireProfile(ADMIN_ROLES);
+    const {error}=await supabase.from("traffic_reports").delete().eq("id",p.data.report_id);
+    if(error)throw new Error(error.message); refresh(p.data.client_id); return{ok:true,message:"Relatório excluído."};
+  }catch(e){return{ok:false,error:formatMigrationError(e)}}
+}
+
 export async function createInvoiceAction(raw:unknown):Promise<Result>{
   try{
     const p=invoiceSchema.safeParse(raw); if(!p.success)return{ok:false,error:"Confira os dados da cobrança."};
