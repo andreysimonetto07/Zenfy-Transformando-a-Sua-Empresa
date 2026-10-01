@@ -45,7 +45,10 @@ export default async function Home() {
               A Zenfy une gestão de tráfego pago, landing pages, sites e soluções web para ajudar sua empresa a gerar oportunidades e acompanhar o que realmente está acontecendo.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link href="/solicitar-orcamento" className="btn btn-primary">Solicitar análise gratuita</Link>
+              <Link href="/solicitar-orcamento" className="header-cta w-full sm:w-auto">
+                <span>Solicitar análise gratuita</span>
+                <span className="header-cta-arrow">→</span>
+              </Link>
               <Link href="/servicos" className="btn btn-dark">Conhecer soluções</Link>
             </div>
             <div className="mt-7 flex flex-wrap gap-2 text-xs font-bold text-blue-50/70">
@@ -54,6 +57,11 @@ export default async function Home() {
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Landing Pages</span>
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Relatórios</span>
             </div>
+
+            <Link href="/#como-funciona" className="scroll-cue mt-6">
+              <span>Entenda a estrutura</span>
+              <span className="scroll-cue-dot">↓</span>
+            </Link>
           </div>
 
           <div className="pb-5 pt-2 lg:pb-0">
@@ -110,7 +118,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="zenfy-light-art relative overflow-hidden border-b border-blue-100/80">
+      <section id="como-funciona" className="zenfy-light-art relative scroll-mt-24 overflow-hidden border-b border-blue-100/80">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
           <div className="surface max-w-3xl p-7 sm:p-10">
             <p className="eyebrow">Como trabalhamos</p>
