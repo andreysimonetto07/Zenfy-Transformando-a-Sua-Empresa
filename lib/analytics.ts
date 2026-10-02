@@ -4,6 +4,7 @@ export type AnalyticsMetricRow = {
   impressions: number | string;
   reach: number | string;
   clicks: number | string;
+  link_clicks?: number | string;
   ctr: number | string;
   cpc: number | string;
   cpm: number | string;
@@ -15,6 +16,8 @@ export type AnalyticsMetricRow = {
   roas: number | string;
   campaign_id?: string | null;
   campaign_name?: string | null;
+  ad_id?: string | null;
+  ad_name?: string | null;
 };
 
 export type AnalyticsTotals = {
@@ -43,7 +46,10 @@ export function summarizeAnalytics(rows: AnalyticsMetricRow[]): AnalyticsTotals 
   const spend = rows.reduce((s, r) => s + n(r.spend), 0);
   const impressions = rows.reduce((s, r) => s + n(r.impressions), 0);
   const reach = rows.reduce((s, r) => s + n(r.reach), 0);
-  const clicks = rows.reduce((s, r) => s + n(r.clicks), 0);
+  const clicks = rows.reduce((s, r) => {
+    const linkClicks = n(r.link_clicks);
+    return s + (linkClicks > 0 ? linkClicks : n(r.clicks));
+  }, 0);
   const leads = rows.reduce((s, r) => s + n(r.leads), 0);
   const conversions = rows.reduce((s, r) => s + n(r.conversions), 0);
   const purchases = rows.reduce((s, r) => s + n(r.purchases), 0);
@@ -86,4 +92,22 @@ export function isoDaysAgo(days: number) {
   date.setUTCHours(0,0,0,0);
   date.setUTCDate(date.getUTCDate() - days);
   return date.toISOString().slice(0,10);
+}
+
+
+export function aggregateAds(rows: AnalyticsMetricRow[]) {
+  const map = new Map<string, AnalyticsMetricRow[]>();
+  for (const row of rows) {
+    const key = row.ad_id || row.ad_name || "Sem anúncio";
+    const list = map.get(key) || [];
+    list.push(row);
+    map.set(key, list);
+  }
+
+  return [...map.entries()].map(([key, list]) => ({
+    id: key,
+    name: list[0]?.ad_name || "Anúncio",
+    campaign: list[0]?.campaign_name || "Campanha",
+    ...summarizeAnalytics(list),
+  })).sort((a,b) => b.leads - a.leads || b.clicks - a.clicks || b.spend - a.spend);
 }
