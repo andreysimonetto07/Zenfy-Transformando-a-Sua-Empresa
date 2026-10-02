@@ -42,6 +42,15 @@ const quickTrafficSchema=z.object({
   revenue:z.coerce.number().min(0),
 });
 
+const dailyUpdateSchema=z.object({
+  client_id:id,
+  update_date:z.string().min(8),
+  title:z.string().trim().min(2).max(120),
+  work_done:z.string().trim().min(3).max(4000),
+  results:z.string().trim().max(3000).optional(),
+  next_steps:z.string().trim().max(3000).optional(),
+});
+
 export async function createProjectAction(raw:unknown):Promise<Result>{
   try{
     const p=projectSchema.safeParse(raw); if(!p.success)return{ok:false,error:"Confira os dados do projeto."};
@@ -144,6 +153,47 @@ export async function quickUpdateTrafficAction(raw:unknown):Promise<Result>{
   }catch(e){return{ok:false,error:formatMigrationError(e)}}
 }
 
+export async function saveDailyClientUpdateAction(raw:unknown):Promise<Result>{
+  try{
+    const p=dailyUpdateSchema.safeParse(raw);
+    if(!p.success)return{ok:false,error:"Confira o relatório do dia."};
+    const {supabase,profile}=await requireProfile(ADMIN_ROLES);
+    const d=p.data;
+
+    const {data:existing,error:existingError}=await supabase
+      .from("client_daily_updates")
+      .select("id")
+      .eq("client_id",d.client_id)
+      .eq("update_date",d.update_date)
+      .maybeSingle();
+
+    if(existingError)throw new Error(existingError.message);
+
+    const payload={
+      client_id:d.client_id,
+      author_id:profile.id,
+      update_date:d.update_date,
+      title:d.title,
+      work_done:d.work_done,
+      results:d.results||null,
+      next_steps:d.next_steps||null,
+      updated_at:new Date().toISOString(),
+    };
+
+    const result=existing?.id
+      ? await supabase.from("client_daily_updates").update(payload).eq("id",existing.id)
+      : await supabase.from("client_daily_updates").insert(payload);
+
+    if(result.error)throw new Error(result.error.message);
+    refresh(d.client_id);
+    return{ok:true,message:existing?.id?"Relatório do dia atualizado.":"Relatório do dia publicado para o cliente."};
+  }catch(e){
+    const message=e instanceof Error?e.message:"Não foi possível salvar o relatório.";
+    if(message.includes("client_daily_updates"))return{ok:false,error:"Rode a migration 009_daily_updates_notifications.sql no Supabase."};
+    return{ok:false,error:message};
+  }
+}
+
 export async function createInvoiceAction(raw:unknown):Promise<Result>{
   try{
     const p=invoiceSchema.safeParse(raw); if(!p.success)return{ok:false,error:"Confira os dados da cobrança."};
@@ -161,6 +211,7 @@ function refresh(clientId:string){
   revalidatePath("/cliente/sites");
   revalidatePath("/cliente/projetos");
   revalidatePath("/cliente/faturamento");
+  revalidatePath("/cliente/resultados");
 }
 function formatMigrationError(error:unknown){
   const message=error instanceof Error?error.message:"Operação indisponível.";
