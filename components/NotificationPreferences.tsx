@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 type Prefs = {
   in_app_enabled: boolean;
   browser_enabled: boolean;
+  sound_enabled: boolean;
   messages: boolean;
   files: boolean;
   billing: boolean;
@@ -17,6 +18,7 @@ type Prefs = {
 const defaults: Prefs = {
   in_app_enabled: true,
   browser_enabled: false,
+  sound_enabled: true,
   messages: true,
   files: true,
   billing: true,
@@ -94,6 +96,37 @@ export default function NotificationPreferences({ showLeads = false }: { showLea
     setFeedback("Notificações do Chrome desativadas para esta conta.");
   }
 
+  async function testSound() {
+    try {
+      const audio = new Audio("/sounds/zenfy-notification.mp3");
+      audio.volume = 0.72;
+      await audio.play();
+      setFeedback("Som de notificação reproduzido.");
+      return;
+    } catch {}
+
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) throw new Error();
+      const context = new AudioContextClass();
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(880, context.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(660, context.currentTime + 0.18);
+      gain.gain.setValueAtTime(0.0001, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.14, context.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.24);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + 0.25);
+      setFeedback("Som padrão reproduzido. Quando você adicionar o MP3 da Zenfy, ele será usado automaticamente.");
+    } catch {
+      setFeedback("O navegador bloqueou o áudio. Interaja com a página e tente novamente.");
+    }
+  }
+
   const categories: { key: keyof Prefs; title: string; text: string }[] = [
     { key: "billing", title: "Faturamento", text: "Novas cobranças e alterações de status." },
     { key: "traffic", title: "Resultados", text: "Atualizações de campanhas, leads e investimento." },
@@ -120,6 +153,23 @@ export default function NotificationPreferences({ showLeads = false }: { showLea
           text="Mantém o sininho e o histórico de avisos dentro do portal."
           onChange={(value) => save({ in_app_enabled: value })}
         />
+
+        <div className="grid gap-3 md:grid-cols-2">
+          <Toggle
+            checked={prefs.sound_enabled}
+            disabled={saving}
+            title="Som do sininho"
+            text="Toca um aviso quando chegar uma notificação importante dentro da Zenfy."
+            onChange={(value) => save({ sound_enabled: value })}
+          />
+          <div className="flex items-center justify-between gap-4 rounded-2xl border border-zinc-200 bg-white p-4">
+            <div>
+              <p className="font-black text-[#09113f]">Testar som</p>
+              <p className="mt-1 text-sm leading-relaxed text-zinc-500">Usa o MP3 oficial quando ele existir; até lá toca um aviso padrão.</p>
+            </div>
+            <button type="button" onClick={testSound} className="btn btn-ghost shrink-0">Testar</button>
+          </div>
+        </div>
 
         <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/80 to-violet-50/60 p-4 sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
