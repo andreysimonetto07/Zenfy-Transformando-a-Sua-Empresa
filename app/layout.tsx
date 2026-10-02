@@ -12,11 +12,10 @@ export const metadata: Metadata = {
   description: "Zenfy é uma empresa da Companhia A & P focada em gestão de tráfego, sites, landing pages, sistemas e soluções digitais.",
   icons: {
     icon: [
-      { url: "/brand/zenfy/icon-32.png", sizes: "32x32", type: "image/png" },
-      { url: "/brand/zenfy/icon-64.png", sizes: "64x64", type: "image/png" }
+      { url: "/brand/zenfy/icone-zenfy-transparente.png", type: "image/png" }
     ],
     shortcut: "/brand/zenfy/icon-32.png",
-    apple: "/brand/zenfy/icone-zenfy.png"
+    apple: "/brand/zenfy/icone-zenfy-transparente.png"
   },
   twitter: { card: "summary_large_image", title: "Zenfy | Transformando sua empresa", images: ["/brand/zenfy/Zenfy-BackGround1.webp"] },
   alternates: { canonical: "/" },
