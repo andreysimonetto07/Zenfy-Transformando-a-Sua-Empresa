@@ -210,6 +210,29 @@ export default function NotificationBell() {
     }).catch(() => null);
   }
 
+  async function deleteOne(id:string) {
+    setItems((current)=>current.filter((item)=>item.id!==id));
+    knownIds.current.delete(id);
+    await fetch("/api/notifications",{
+      method:"DELETE",
+      headers:{"Content-Type":"application/json"},
+      credentials:"include",
+      body:JSON.stringify({id}),
+    }).catch(()=>null);
+  }
+
+  async function clearAll() {
+    if (!visibleItems.length) return;
+    setItems((current)=>current.filter((item)=>!visibleItems.some((visible)=>visible.id===item.id)));
+    knownIds.current.clear();
+    await fetch("/api/notifications",{
+      method:"DELETE",
+      headers:{"Content-Type":"application/json"},
+      credentials:"include",
+      body:JSON.stringify({all:true}),
+    }).catch(()=>null);
+  }
+
   return (
     <div ref={wrapper} className="relative z-[120]">
       <button
@@ -236,7 +259,10 @@ export default function NotificationBell() {
             <p className="font-black text-[#09113f]">Notificações</p>
             <p className="text-xs text-zinc-400">{prefs.in_app_enabled ? (unread ? unread + " não lida" + (unread > 1 ? "s" : "") : "Tudo em dia") : "Central interna desativada"}</p>
           </div>
-          {prefs.in_app_enabled && unread > 0 && <button type="button" onClick={markAll} className="text-xs font-black text-brand hover:underline">Marcar todas</button>}
+          {prefs.in_app_enabled && visibleItems.length > 0 && <div className="flex items-center gap-3">
+            {unread > 0 && <button type="button" onClick={markAll} className="text-xs font-black text-brand hover:underline">Marcar lidas</button>}
+            <button type="button" onClick={clearAll} className="text-xs font-black text-red-500 transition hover:text-red-600">Limpar</button>
+          </div>}
         </div>
 
         <div className="max-h-[min(430px,65vh)] overflow-y-auto bg-white">
@@ -251,28 +277,28 @@ export default function NotificationBell() {
           ) : visibleItems.length ? (
             <div className="divide-y divide-zinc-100">
               {visibleItems.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => markOne(item)}
-                  className={`w-full p-4 text-left transition hover:bg-blue-50/60 ${item.read ? "bg-white" : "bg-blue-50/35"}`}
-                >
-                  <div className="flex gap-3">
-                    <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${item.read ? "bg-zinc-200" : "brand-gradient"}`} />
-                    <div className="min-w-0 flex-1">
-                      <p className={`text-sm ${item.read ? "font-bold text-zinc-700" : "font-black text-[#09113f]"}`}>{item.title || "Notificação"}</p>
-                      {item.body && <p className="mt-1 text-sm leading-relaxed text-zinc-500">{item.body}</p>}
-                      <p className="mt-2 text-[11px] font-semibold text-zinc-400">{timeAgo(item.created_at)}</p>
+                <div key={item.id} className={`group flex items-start gap-2 p-3 transition hover:bg-blue-50/60 ${item.read ? "bg-white" : "bg-blue-50/35"}`}>
+                  <button type="button" onClick={() => markOne(item)} className="min-w-0 flex-1 rounded-xl p-1 text-left">
+                    <div className="flex gap-3">
+                      <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${item.read ? "bg-zinc-200" : "brand-gradient"}`} />
+                      <div className="min-w-0 flex-1">
+                        <p className={`text-sm ${item.read ? "font-bold text-zinc-700" : "font-black text-[#09113f]"}`}>{item.title || "Notificação"}</p>
+                        {item.body && <p className="mt-1 text-sm leading-relaxed text-zinc-500">{item.body}</p>}
+                        <p className="mt-2 text-[11px] font-semibold text-zinc-400">{timeAgo(item.created_at)}</p>
+                      </div>
                     </div>
-                  </div>
-                </button>
+                  </button>
+                  <button type="button" onClick={()=>deleteOne(item.id)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-400 opacity-80 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500 sm:opacity-0 sm:group-hover:opacity-100" aria-label="Excluir notificação">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v5M14 11v5"/></svg>
+                  </button>
+                </div>
               ))}
             </div>
           ) : (
             <div className="p-8 text-center">
               <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-brand">✓</div>
               <p className="mt-3 font-bold text-[#09113f]">Nenhuma notificação</p>
-              <p className="mt-1 text-sm text-zinc-400">Novidades da sua conta vão aparecer aqui.</p>
+              <p className="mt-1 text-sm text-zinc-400">Novidades da sua conta aparecem aqui por até 24 horas.</p>
             </div>
           )}
         </div>
