@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     icon: [
       { url: "/brand/zenfy/icone-zenfy-transparente.png", type: "image/png" }
     ],
-    shortcut: "/brand/zenfy/icon-32.png",
+    shortcut: "/brand/zenfy/icone-zenfy-transparente.png",
     apple: "/brand/zenfy/icone-zenfy-transparente.png"
   },
   twitter: { card: "summary_large_image", title: "Zenfy | Transformando sua empresa", images: ["/brand/zenfy/Zenfy-BackGround1.webp"] },
