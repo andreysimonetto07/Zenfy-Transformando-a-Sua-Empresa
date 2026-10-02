@@ -4,6 +4,7 @@ import AdminClientForms from "@/components/AdminClientForms";
 import TrafficReportManager from "@/components/TrafficReportManager";
 import DailyMetricsQuickUpdate from "@/components/DailyMetricsQuickUpdate";
 import MetaIntegrationCard from "@/components/MetaIntegrationCard";
+import DailyClientUpdateForm from "@/components/DailyClientUpdateForm";
 import { requireProfile } from "@/lib/auth";
 import { ADMIN_ROLES } from "@/lib/permissions";
 import { brl, dateBr, statusLabel } from "@/lib/client-portal";
@@ -23,13 +24,14 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
   const profile:any=Array.isArray((client as any).profiles)?(client as any).profiles[0]:(client as any).profiles;
   const company:any=Array.isArray((client as any).companies)?(client as any).companies[0]:(client as any).companies;
 
-  const [projectsRes,sitesRes,trafficRes,invoicesRes,requestsRes,integrationRes]=await Promise.all([
+  const [projectsRes,sitesRes,trafficRes,invoicesRes,requestsRes,integrationRes,dailyUpdatesRes]=await Promise.all([
     supabase.from("projects").select("*").eq("client_id",id).order("created_at",{ascending:false}),
     supabase.from("client_sites").select("*").eq("client_id",id).order("created_at",{ascending:false}),
     supabase.from("traffic_reports").select("*").eq("client_id",id).order("created_at",{ascending:false}).limit(30),
     supabase.from("invoices").select("*").eq("client_id",id).order("created_at",{ascending:false}).limit(10),
     profile?.id?supabase.from("service_requests").select("*").eq("client_id",profile.id).order("created_at",{ascending:false}).limit(10):Promise.resolve({data:[]}),
     supabase.from("analytics_integrations").select("external_account_id,account_name,status,last_synced_at,last_error").eq("client_id",id).eq("provider","meta_ads").maybeSingle(),
+    supabase.from("client_daily_updates").select("*").eq("client_id",id).order("update_date",{ascending:false}).limit(14),
   ]);
 
   const projects=projectsRes.data??[];
@@ -38,8 +40,10 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
   const invoices=invoicesRes.data??[];
   const requests=(requestsRes as any).data??[];
   const integration=(integrationRes as any).data??null;
+  const dailyUpdates=(dailyUpdatesRes as any).data??[];
   const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   const todayReport=traffic.find((r:any)=>r.period_start===today&&r.period_end===today)??null;
+  const todayUpdate=dailyUpdates.find((r:any)=>r.update_date===today)??null;
 
   return <div className="mx-auto max-w-7xl">
     <section className="surface p-6 sm:p-8">
@@ -72,6 +76,10 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
     </div>
 
     <div className="mt-6">
+      <DailyClientUpdateForm clientId={id} today={today} initial={todayUpdate as any} />
+    </div>
+
+    <div className="mt-6">
       <AdminClientForms clientId={id} companyId={(client as any).company_id} projects={projects.map((p:any)=>({id:p.id,name:p.name}))}/>
     </div>
 
@@ -80,6 +88,7 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
       <List title="Sites" empty="Nenhum site vinculado." items={sites.map((s:any)=>({title:s.name,meta:`${statusLabel(s.status)} · ${s.domain||s.url||"sem domínio"}`}))}/>
       <TrafficReportManager clientId={id} reports={traffic as any} />
       <List title="Faturamento" empty="Nenhuma cobrança." items={invoices.map((i:any)=>({title:i.description,meta:`${brl(i.amount)} · ${statusLabel(i.status)} · vence ${dateBr(i.due_date)}`}))}/>
+      <List title="Relatórios diários" empty="Nenhum relatório diário." items={dailyUpdates.slice(0,7).map((u:any)=>({title:`${dateBr(u.update_date)} · ${u.title}`,meta:u.work_done}))}/>
       <List title="Suporte" empty="Nenhuma solicitação." items={requests.map((r:any)=>({title:r.subject,meta:`${r.kind} · ${statusLabel(r.status)} · ${r.priority}`}))}/>
 
       <section className="surface p-6">
