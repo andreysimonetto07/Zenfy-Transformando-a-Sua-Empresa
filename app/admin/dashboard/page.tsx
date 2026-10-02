@@ -9,7 +9,6 @@ const modules=[
   ["/admin/trafego","Gestão de tráfego","Visão consolidada das campanhas"],
   ["/admin/projetos","Projetos","Entregas e progresso"],
   ["/admin/portfolio","Portfólio & Cases","Projetos públicos e avaliações"],
-  ["/admin/arquivos","Arquivos","Materiais enviados aos clientes"],
   ["/admin/propostas","Propostas","Propostas comerciais"],
   ["/admin/tarefas","Tarefas & Suporte","Solicitações e pendências"],
   ["/admin/prospeccao","Prospecção","Rotina comercial"],
@@ -25,13 +24,12 @@ export default async function AdminDashboard() {
     return count??0;
   };
 
-  const [total,news,meetings,clientsCount,activeIntegrations,unreadMessages]=await Promise.all([
+  const [total,news,meetings,clientsCount,activeIntegrations]=await Promise.all([
     countStatus(),
     countStatus("new"),
     countStatus("meeting_scheduled"),
     supabase.from("clients").select("*",{count:"exact",head:true}).then(r=>r.count??0),
     supabase.from("analytics_integrations").select("*",{count:"exact",head:true}).eq("status","active").then(r=>r.count??0),
-    supabase.from("messages").select("*",{count:"exact",head:true}).eq("read",false).then(r=>r.count??0),
   ]);
 
   const {data:clients}=await supabase.from("clients").select("id,status,plan,profiles(name,email),companies(name)").order("created_at",{ascending:false}).limit(5);
@@ -40,7 +38,7 @@ export default async function AdminDashboard() {
     <section className="relative overflow-hidden rounded-[2rem] bg-[#06114f] p-6 text-white shadow-2xl sm:p-8">
       <div className="absolute inset-0 zenfy-dark-art opacity-75"/>
       <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div><p className="text-xs font-black uppercase tracking-[.18em] text-cyan-100">Zenfy Admin</p><h1 className="mt-2 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Controle da operação em um só lugar.</h1><p className="mt-3 max-w-2xl text-blue-50/75">Clientes, campanhas, mensagens e módulos comerciais sem poluir a navegação lateral.</p></div>
+        <div><p className="text-xs font-black uppercase tracking-[.18em] text-cyan-100">Zenfy Admin</p><h1 className="mt-2 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Controle da operação em um só lugar.</h1><p className="mt-3 max-w-2xl text-blue-50/75">Clientes, campanhas e módulos comerciais organizados sem poluir a navegação lateral.</p></div>
         <Link href="/admin/clientes" className="header-cta"><span>Abrir clientes</span><span className="header-cta-arrow">→</span></Link>
       </div>
     </section>
@@ -51,7 +49,6 @@ export default async function AdminDashboard() {
       <StatCard label="Reuniões marcadas" value={meetings}/>
       <StatCard label="Clientes" value={clientsCount}/>
       <StatCard label="Meta Ads conectados" value={activeIntegrations}/>
-      <StatCard label="Mensagens não lidas" value={unreadMessages}/>
     </div>
 
     <section className="mt-6">
