@@ -21,7 +21,27 @@ export default function PasswordResetRequestForm() {
     const email=String(fd.get("email")||"").trim();
     const { error }=await createRecoveryClient().auth.resetPasswordForEmail(email,{ redirectTo:`${productionOrigin()}/redefinir-senha` });
     setPending(false);
-    if(error) return setError("Não foi possível enviar o e-mail agora. Tente novamente em alguns minutos.");
+
+    if(error){
+      const message=String(error.message||"").toLowerCase();
+      const status=(error as any).status;
+      const code=String((error as any).code||"");
+
+      if(status===429 || message.includes("rate limit") || message.includes("too many")){
+        return setError("O limite de e-mails do Supabase foi atingido. Aguarde e tente novamente mais tarde ou configure um SMTP próprio para a Zenfy.");
+      }
+
+      if(message.includes("email address not authorized") || message.includes("not authorized")){
+        return setError("O Supabase não autorizou o envio para este e-mail. É necessário configurar um SMTP próprio para permitir recuperação de senha dos clientes.");
+      }
+
+      if(message.includes("redirect") || message.includes("url")){
+        return setError("A URL de recuperação não foi aceita pelo Supabase. Revise Authentication → URL Configuration.");
+      }
+
+      return setError(`Não foi possível enviar o e-mail. ${error.message}${code?` · ${code}`:""}`);
+    }
+
     setSent(true);
   }
 
