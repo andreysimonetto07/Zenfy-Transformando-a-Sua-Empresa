@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import PublicChrome from "@/components/PublicChrome";
+import WhatsAppSupport from "@/components/WhatsAppSupport";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <PublicChrome><Header /></PublicChrome>
         <PageTransition>{children}</PageTransition>
+        <WhatsAppSupport />
         <PublicChrome><Footer /></PublicChrome>
       </body>
     </html>
