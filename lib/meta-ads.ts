@@ -49,10 +49,11 @@ function firstActionValue(actions: MetaAction[] | undefined, accepted: Set<strin
   return 0;
 }
 
-async function fetchInsights(accountId: string, since: string, until: string, level: "account" | "campaign") {
+async function fetchInsights(accountId: string, since: string, until: string, level: "account" | "campaign" | "ad") {
   const fields = [
     "date_start","date_stop","account_id","account_name",
     ...(level === "campaign" ? ["campaign_id","campaign_name"] : []),
+    ...(level === "ad" ? ["campaign_id","campaign_name","adset_id","adset_name","ad_id","ad_name"] : []),
     "spend","impressions","reach","clicks","unique_clicks","inline_link_clicks",
     "ctr","cpc","cpm","frequency","actions","action_values","purchase_roas"
   ].join(",");
@@ -90,14 +91,16 @@ function formatDate(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 
-function mapInsight(row: MetaInsight, clientId: string, integrationId: string, level: "account" | "campaign") {
+function mapInsight(row: MetaInsight, clientId: string, integrationId: string, level: "account" | "campaign" | "ad") {
   const leads = Math.round(actionValue(row.actions, LEAD_ACTIONS));
   const purchases = Math.round(actionValue(row.actions, PURCHASE_ACTIONS));
   const revenue = actionValue(row.action_values, PURCHASE_ACTIONS);
   const spend = numeric(row.spend);
-  const externalId = level === "campaign"
-    ? String(row.campaign_id || row.account_id || "campaign")
-    : String(row.account_id || "account");
+  const externalId = level === "ad"
+    ? String(row.ad_id || row.campaign_id || row.account_id || "ad")
+    : level === "campaign"
+      ? String(row.campaign_id || row.account_id || "campaign")
+      : String(row.account_id || "account");
 
   return {
     client_id: clientId,
@@ -167,14 +170,16 @@ export async function syncMetaClient(clientId: string, options?: { days?: number
     const since = formatDate(sinceDate);
     const until = formatDate(untilDate);
 
-    const [accountRows, campaignRows] = await Promise.all([
+    const [accountRows, campaignRows, adRows] = await Promise.all([
       fetchInsights(integration.external_account_id, since, until, "account"),
       fetchInsights(integration.external_account_id, since, until, "campaign"),
+      fetchInsights(integration.external_account_id, since, until, "ad"),
     ]);
 
     const rows = [
       ...accountRows.map((row) => mapInsight(row, clientId, integration.id, "account")),
       ...campaignRows.map((row) => mapInsight(row, clientId, integration.id, "campaign")),
+      ...adRows.map((row) => mapInsight(row, clientId, integration.id, "ad")),
     ];
 
     if (rows.length) {
