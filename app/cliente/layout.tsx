@@ -4,13 +4,9 @@ import { requireProfile } from "@/lib/auth";
 
 const items: [string,string][] = [
   ["/cliente/dashboard","Visão Geral"],
-  ["/cliente/trafego","Tráfego"],
-  ["/cliente/sites","Sites"],
-  ["/cliente/projetos","Projetos"],
+  ["/cliente/resultados","Resultados"],
   ["/cliente/mensagens","Mensagens"],
   ["/cliente/suporte","Suporte"],
-  ["/cliente/arquivos","Arquivos"],
-  ["/cliente/faturamento","Faturamento"],
   ["/cliente/perfil","Minha Conta"],
 ];
 

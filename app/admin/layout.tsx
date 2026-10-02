@@ -5,18 +5,9 @@ import { ADMIN_ROLES } from "@/lib/permissions";
 
 const items: [string, string][] = [
   ["/admin/dashboard", "Dashboard"],
-  ["/admin/leads", "Leads"],
-  ["/admin/empresas", "Empresas"],
   ["/admin/clientes", "Clientes"],
-  ["/admin/trafego", "Gestão de tráfego"],
-  ["/admin/projetos", "Projetos"],
-  ["/admin/portfolio", "Portfólio & Cases"],
-  ["/admin/propostas", "Propostas"],
-  ["/admin/tarefas", "Tarefas & Suporte"],
+  ["/admin/trafego", "Campanhas"],
   ["/admin/mensagens", "Mensagens"],
-  ["/admin/arquivos", "Arquivos"],
-  ["/admin/prospeccao", "Prospecção"],
-  ["/admin/modelos", "Modelos"],
   ["/admin/configuracoes", "Configurações"],
 ];
 
