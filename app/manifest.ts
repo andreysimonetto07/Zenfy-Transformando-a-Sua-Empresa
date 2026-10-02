@@ -11,7 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#06114f",
     icons: [
       {
-        src: "/brand/zenfy/icone-zenfy.png",
+        src: "/brand/zenfy/icone-zenfy-transparente.png",
         sizes: "any",
         type: "image/png"
       }
