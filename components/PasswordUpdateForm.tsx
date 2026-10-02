@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { createRecoveryClient } from "@/lib/supabase/recovery";
 
 export default function PasswordUpdateForm() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function PasswordUpdateForm() {
     if (password !== confirm) return setError("As senhas não coincidem.");
 
     setPending(true);
-    const supabase = createClient();
+    const supabase = createRecoveryClient();
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
     if (sessionError || !session) {
