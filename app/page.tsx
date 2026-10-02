@@ -4,6 +4,7 @@ import TrafficShowcase from "@/components/TrafficShowcase";
 import VslSection from "@/components/VslSection";
 import PortfolioCard from "@/components/PortfolioCard";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import PublicPreviewShowcase from "@/components/PublicPreviewShowcase";
 import { getFeaturedProjects, getPublishedTestimonials } from "@/lib/portfolio";
 
 export const revalidate = 300;
@@ -85,7 +86,7 @@ export default async function Home() {
                 ["Campanhas acompanhadas", "Relatórios organizados por período e plataforma."],
                 ["Landing pages", "Estrutura preparada para receber o tráfego das campanhas."],
                 ["Leads e CPL", "Indicadores claros para acompanhar geração de oportunidades."],
-                ["Portal do cliente", "Mensagens, suporte, sites, projetos e faturamento em um só lugar."],
+                ["Portal do cliente", "Resultados, projetos, faturamento e acompanhamento da Zenfy em um só lugar."],
               ].map(([title,text]) => <div key={title} className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm"><p className="font-black text-[#09113f]">{title}</p><p className="mt-1 text-sm leading-relaxed text-zinc-500">{text}</p></div>)}
             </div>
           </div>
@@ -158,6 +159,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <PublicPreviewShowcase />
 
       {featuredProjects.length > 0 && (
         <section className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
