@@ -15,7 +15,7 @@ export default async function Cadastro() {
         <div className="hidden lg:block">
           <p className="eyebrow">Área do cliente</p>
           <h1 className="mt-3 text-5xl font-black tracking-[-0.05em] text-[#09113f]">Sua empresa dentro da Zenfy.</h1>
-          <p className="mt-5 max-w-lg text-lg leading-relaxed text-zinc-600">Crie seu acesso para acompanhar projetos, arquivos, mensagens e solicitações.</p>
+          <p className="mt-5 max-w-lg text-lg leading-relaxed text-zinc-600">Crie seu acesso para acompanhar resultados, projetos, atualizações da Zenfy e faturamento.</p>
           <div className="mt-10"><BrandShowcase compact /></div>
         </div>
 
