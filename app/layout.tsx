@@ -5,6 +5,8 @@ import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import PublicChrome from "@/components/PublicChrome";
 import WhatsAppSupport from "@/components/WhatsAppSupport";
+import ThemeSync, { type ThemeMode } from "@/components/ThemeSync";
+import { cookies } from "next/headers";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -30,10 +32,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const store=await cookies();
+  const saved=store.get("zenfy-theme")?.value;
+  const theme:ThemeMode=saved==="light"||saved==="dark"||saved==="system"?saved:"system";
+
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" data-theme={theme} suppressHydrationWarning>
       <body>
+        <ThemeSync />
         <PublicChrome><Header /></PublicChrome>
         <PageTransition>{children}</PageTransition>
         <WhatsAppSupport />
