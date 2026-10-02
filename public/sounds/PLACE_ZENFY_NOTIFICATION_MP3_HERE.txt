@@ -1,0 +1,1 @@
+Coloque o arquivo de notificação com este nome nesta pasta:\nzenfy-notification.mp3\n\nCaminho final:\n/public/sounds/zenfy-notification.mp3\n
