@@ -1,15 +1,40 @@
 import { NextResponse } from "next/server";
+import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+
+const allowedOtpTypes = new Set<EmailOtpType>(["signup","invite","magiclink","recovery","email_change","email"]);
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const requestedNext = url.searchParams.get("next") || "/cliente/dashboard";
-  const next = requestedNext.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/cliente/dashboard";
+  const tokenHash = url.searchParams.get("token_hash");
+  const typeParam = url.searchParams.get("type");
+  const requestedNext = url.searchParams.get("next");
+  const errorCode = url.searchParams.get("error_code");
+  const errorDescription = url.searchParams.get("error_description");
+
+  if (errorCode || errorDescription) {
+    return NextResponse.redirect(new URL("/login?erro=link", url.origin));
+  }
+
+  const recovery = typeParam === "recovery";
+  const fallbackNext = recovery ? "/redefinir-senha?recovery=1" : "/cliente/dashboard";
+  const next = requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//")
+    ? requestedNext
+    : fallbackNext;
+
+  const supabase = await createClient();
 
   if (code) {
-    const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error) return NextResponse.redirect(new URL(next, url.origin));
+  }
+
+  if (tokenHash && typeParam && allowedOtpTypes.has(typeParam as EmailOtpType)) {
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: typeParam as EmailOtpType,
+    });
     if (!error) return NextResponse.redirect(new URL(next, url.origin));
   }
 
