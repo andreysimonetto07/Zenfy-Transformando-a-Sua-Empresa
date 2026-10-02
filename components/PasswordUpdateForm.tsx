@@ -21,11 +21,18 @@ export default function PasswordUpdateForm() {
 
     setPending(true);
     const supabase = createClient();
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+    if (sessionError || !session) {
+      setPending(false);
+      return setError("Sua sessão de recuperação não está mais válida. Solicite um novo link.");
+    }
+
     const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
       setPending(false);
-      return setError("O link pode ter expirado ou a sessão de recuperação não está válida. Solicite um novo link.");
+      return setError(error.message || "Não foi possível alterar a senha. Solicite um novo link e tente novamente.");
     }
 
     await supabase.auth.signOut();
