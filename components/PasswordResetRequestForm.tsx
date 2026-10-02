@@ -19,7 +19,7 @@ export default function PasswordResetRequestForm() {
     e.preventDefault(); setError(""); setPending(true);
     const fd=new FormData(e.currentTarget);
     const email=String(fd.get("email")||"").trim();
-    const { error }=await createClient().auth.resetPasswordForEmail(email,{ redirectTo:`${productionOrigin()}/auth/recovery` });
+    const { error }=await createClient().auth.resetPasswordForEmail(email,{ redirectTo:`${productionOrigin()}/redefinir-senha` });
     setPending(false);
     if(error) return setError("Não foi possível enviar o e-mail agora. Tente novamente em alguns minutos.");
     setSent(true);
