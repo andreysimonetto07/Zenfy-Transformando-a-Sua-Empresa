@@ -70,8 +70,8 @@ async function fetchInsights(accountId: string, since: string, until: string, le
   const rows: MetaInsight[] = [];
 
   while (next) {
-    const response = await fetch(next, { cache: "no-store" });
-    const json = await response.json();
+    const response: Response = await fetch(next as string, { cache: "no-store" });
+    const json: any = await response.json();
 
     if (!response.ok || json?.error) {
       throw new Error(json?.error?.message || "A Meta não retornou os insights da conta.");
