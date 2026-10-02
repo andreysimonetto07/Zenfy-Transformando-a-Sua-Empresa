@@ -18,13 +18,13 @@ export default async function ConfiguracoesPage() {
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-7">
-        <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand">Zenfy Admin</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight">Configurações e equipe</h1>
+        <p className="eyebrow">Zenfy Admin</p>
+        <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#09113f]">Configurações e equipe</h1>
         <p className="mt-2 text-zinc-600">Gerencie quem pode acessar o painel administrativo da Zenfy.</p>
       </div>
 
-      <section className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-        <h2 className="text-xl font-bold">Equipe administrativa</h2>
+      <section className="surface p-6">
+        <h2 className="text-xl font-black text-[#09113f]">Equipe administrativa</h2>
         <div className="mt-5 overflow-hidden rounded-xl border border-zinc-200">
           {team.map((member) => (
             <div key={member.id} className="flex flex-col gap-1 border-b border-zinc-200 p-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between">
@@ -35,7 +35,7 @@ export default async function ConfiguracoesPage() {
         </div>
       </section>
 
-      <section className="mt-6 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+      <section className="surface mt-6 p-6">
         <h2 className="text-xl font-bold">Adicionar integrante</h2>
         {profile.role === "super_admin" ? (
           <>
@@ -51,7 +51,7 @@ export default async function ConfiguracoesPage() {
         <NotificationPreferences showLeads />
       </div>
 
-      <section className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/60 p-6">
+      <section className="mt-6 rounded-[1.5rem] border border-blue-100 bg-gradient-to-br from-blue-50/80 to-violet-50/50 p-6">
         <h2 className="font-bold text-[#09113f]">Contas de clientes</h2>
         <p className="mt-2 text-sm leading-relaxed text-zinc-600">Empresas não são cadastradas aqui. Elas usam o cadastro público da Zenfy e recebem automaticamente o nível <strong>Cliente</strong>.</p>
       </section>
