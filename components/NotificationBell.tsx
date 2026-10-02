@@ -98,8 +98,8 @@ export default function NotificationBell() {
     const title = item.title || "Zenfy";
     const options: NotificationOptions & { image?: string } = {
       body: item.body || "Você recebeu uma nova atualização.",
-      icon: "/brand/zenfy/icon-64.png",
-      badge: "/brand/zenfy/icon-32.png",
+      icon: "/brand/zenfy/icone-zenfy-transparente.png",
+      badge: "/brand/zenfy/icone-zenfy-transparente.png",
       tag: "zenfy-" + item.id,
       data: { link: item.link || "/" },
     };
