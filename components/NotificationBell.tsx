@@ -15,6 +15,7 @@ type NotificationItem = {
 type Prefs = {
   in_app_enabled: boolean;
   browser_enabled: boolean;
+  sound_enabled: boolean;
   messages: boolean;
   files: boolean;
   billing: boolean;
@@ -27,6 +28,7 @@ type Prefs = {
 const defaultPrefs: Prefs = {
   in_app_enabled: true,
   browser_enabled: false,
+  sound_enabled: true,
   messages: true,
   files: true,
   billing: true,
@@ -58,6 +60,34 @@ export default function NotificationBell() {
       const nextPrefs = { ...defaultPrefs, ...(json.preferences || {}) };
       prefsRef.current = nextPrefs;
       setPrefs(nextPrefs);
+    } catch {}
+  }
+
+  async function playSound(currentPrefs: Prefs) {
+    if (!currentPrefs.sound_enabled) return;
+    try {
+      const audio = new Audio("/sounds/zenfy-notification.mp3");
+      audio.volume = 0.72;
+      await audio.play();
+      return;
+    } catch {}
+
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const context = new AudioContextClass();
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(880, context.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(660, context.currentTime + 0.18);
+      gain.gain.setValueAtTime(0.0001, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.14, context.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.24);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + 0.25);
     } catch {}
   }
 
@@ -100,7 +130,8 @@ export default function NotificationBell() {
         knownIds.current = new Set(nextItems.map((item) => item.id));
         initialized.current = true;
       } else {
-        const fresh = nextItems.filter((item) => !knownIds.current.has(item.id) && !item.read);
+        const fresh = nextItems.filter((item) => !knownIds.current.has(item.id) && !item.read && categoryEnabled(item.type, prefsRef.current));
+        if (fresh.length) playSound(prefsRef.current);
         fresh.forEach((item) => showBrowserNotification(item, prefsRef.current));
         nextItems.forEach((item) => knownIds.current.add(item.id));
       }
@@ -254,8 +285,8 @@ function categoryEnabled(type: string | null, prefs: Prefs) {
   const value = (type || "").toLowerCase();
   if (value === "message" || value === "file") return false;
   if (value === "invoice") return prefs.billing;
-  if (value === "traffic") return prefs.traffic;
-  if (value === "project" || value === "site") return prefs.projects;
+  if (value === "traffic" || value === "lead_milestone") return prefs.traffic;
+  if (value === "project" || value === "site" || value === "daily_update") return prefs.projects;
   if (value === "support") return prefs.support;
   if (value === "lead" || value === "client" || value === "novo_lead") return prefs.leads;
   return true;
