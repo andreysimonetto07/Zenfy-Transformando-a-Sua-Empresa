@@ -39,17 +39,16 @@ export default function CampaignPerformanceTable({campaigns}:{campaigns:Campaign
     {visible.length?<div className="overflow-x-auto">
       <table className="min-w-[980px] w-full text-left text-sm">
         <thead className="bg-zinc-50 text-[11px] uppercase tracking-[.08em] text-zinc-500">
-          <tr><th className="p-4">Campanha</th><th className="p-4">Investimento</th><th className="p-4">Impressões</th><th className="p-4">Cliques</th><th className="p-4">CTR</th><th className="p-4">CPC</th><th className="p-4">Leads</th><th className="p-4">CPL</th><th className="p-4">ROAS</th></tr>
+          <tr><th className="p-4">Campanha</th><th className="p-4">Investimento</th><th className="p-4">Resultados</th><th className="p-4">Impressões</th><th className="p-4">CTR</th><th className="p-4">CPC</th><th className="p-4">CPL</th><th className="p-4">ROAS</th></tr>
         </thead>
         <tbody>
           {visible.map(c=><tr key={c.id} className="border-t border-zinc-100 transition hover:bg-blue-50/35">
             <td className="p-4 font-black text-[#09113f]">{c.name}</td>
             <td className="p-4">{brl(c.spend)}</td>
+            <td className="p-4"><p className="font-black text-brand">{num(c.leads)} leads</p><p className="mt-1 text-xs text-zinc-500">{num(c.clicks)} cliques</p></td>
             <td className="p-4">{num(c.impressions)}</td>
-            <td className="p-4">{num(c.clicks)}</td>
             <td className="p-4">{c.ctr.toFixed(2)}%</td>
             <td className="p-4">{brl(c.cpc)}</td>
-            <td className="p-4 font-black text-brand">{num(c.leads)}</td>
             <td className="p-4">{c.leads?brl(c.cpl):"—"}</td>
             <td className="p-4 font-bold">{c.roas?c.roas.toFixed(2)+"x":"—"}</td>
           </tr>)}
