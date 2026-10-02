@@ -120,12 +120,19 @@ export default async function ClientDashboard() {
         <h2 className="mt-2 text-2xl font-black tracking-[-0.03em] text-[#09113f]">Acesse o que precisar</h2>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Link href="/cliente/resultados" className="group rounded-[1.5rem] border border-zinc-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl">
           <p className="text-xs font-black uppercase tracking-[.12em] text-brand">Campanhas</p>
           <p className="mt-2 text-xl font-black text-[#09113f]">Resultados detalhados</p>
           <p className="mt-2 text-sm leading-relaxed text-zinc-500">Campanhas, anúncios, custos, alcance e comparação por período.</p>
           <span className="mt-4 inline-block font-black text-brand transition-transform group-hover:translate-x-1">Abrir resultados →</span>
+        </Link>
+
+        <Link href="/cliente/inspiracoes" className="group rounded-[1.5rem] border border-blue-200 bg-gradient-to-br from-blue-50/80 to-violet-50/60 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+          <p className="text-xs font-black uppercase tracking-[.12em] text-brand">Sites & Inspirações</p>
+          <p className="mt-2 text-xl font-black text-[#09113f]">Veja o que podemos criar</p>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-500">Entenda Landing Page x Site Completo e explore demonstrações por nicho.</p>
+          <span className="mt-4 inline-block font-black text-brand transition-transform group-hover:translate-x-1">Explorar modelos →</span>
         </Link>
 
         <Link href="/cliente/projetos" className="group rounded-[1.5rem] border border-zinc-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl">
