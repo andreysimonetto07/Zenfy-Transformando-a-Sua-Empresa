@@ -8,20 +8,25 @@ const contacts=[
     role:"Desenvolvedor & Suporte",
     phone:"+55 45 99840-6220",
     wa:"5545998406220",
-    message:(company:string)=>`Olá Andrey! Estou entrando em contato pelo portal da Zenfy e preciso de suporte com meu site/sistema. Minha empresa é ${company}. Pode me ajudar?`,
+    message:(company:string,insidePortal:boolean)=>insidePortal
+      ? `Olá Andrey! Estou no portal da Zenfy e quero falar sobre site, landing page ou suporte para ${company}. Pode me ajudar?`
+      : `Olá Andrey! Vi o site da Zenfy e quero conversar sobre site, landing page ou uma solução digital para ${company}. Pode me ajudar?`,
   },
   {
     name:"Pedro Henrique de Carli Silva",
     role:"Suporte & Gestor de Tráfego",
     phone:"+55 45 9812-2270",
     wa:"554598122270",
-    message:(company:string)=>`Olá Pedro! Estou entrando em contato pelo portal da Zenfy e preciso de suporte relacionado às campanhas/tráfego pago. Minha empresa é ${company}. Pode me ajudar?`,
+    message:(company:string,insidePortal:boolean)=>insidePortal
+      ? `Olá Pedro! Estou no portal da Zenfy e quero falar sobre tráfego pago/campanhas para ${company}. Pode me ajudar?`
+      : `Olá Pedro! Vi o site da Zenfy e quero conversar sobre tráfego pago para ${company}. Pode me explicar como funciona?`,
   },
 ];
 
 export default function WhatsAppSupport({companyName}:{companyName?:string|null}) {
   const [open,setOpen]=useState(false);
   const company=(companyName||"minha empresa").trim();
+  const insidePortal=typeof window!=="undefined" && (window.location.pathname.startsWith("/cliente") || window.location.pathname.startsWith("/admin"));
 
   useEffect(()=>{
     const close=(event:KeyboardEvent)=>{if(event.key==="Escape")setOpen(false)};
@@ -29,7 +34,7 @@ export default function WhatsAppSupport({companyName}:{companyName?:string|null}
     return()=>window.removeEventListener("keydown",close);
   },[]);
 
-  return <div className="fixed bottom-4 right-4 z-[160] sm:bottom-6 sm:right-6">
+  return <div className="fixed bottom-4 right-4 z-[9999] sm:bottom-6 sm:right-6">
     <div className={`absolute bottom-[calc(100%+12px)] right-0 w-[min(92vw,380px)] origin-bottom-right rounded-[1.6rem] border border-zinc-200 bg-white p-3 shadow-[0_24px_80px_rgba(2,6,36,.28)] transition-all duration-200 ${open?"visible translate-y-0 scale-100 opacity-100":"invisible translate-y-2 scale-[.98] opacity-0"}`}>
       <div className="rounded-[1.2rem] bg-[#06114f] p-4 text-white">
         <p className="text-[10px] font-black uppercase tracking-[.16em] text-cyan-100">Suporte Zenfy</p>
@@ -39,7 +44,7 @@ export default function WhatsAppSupport({companyName}:{companyName?:string|null}
 
       <div className="mt-2 grid gap-2">
         {contacts.map(contact=>{
-          const href=`https://wa.me/${contact.wa}?text=${encodeURIComponent(contact.message(company))}`;
+          const href=`https://wa.me/${contact.wa}?text=${encodeURIComponent(contact.message(company,insidePortal))}`;
           return <a key={contact.name} href={href} target="_blank" rel="noopener noreferrer" className="group rounded-[1.2rem] border border-zinc-100 bg-white p-4 transition hover:-translate-y-0.5 hover:border-emerald-200 hover:bg-emerald-50/45">
             <div className="flex items-start gap-3">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-md shadow-emerald-500/20">
@@ -60,9 +65,12 @@ export default function WhatsAppSupport({companyName}:{companyName?:string|null}
     </div>
 
     <button type="button" onClick={()=>setOpen(v=>!v)} className={`group flex items-center gap-3 rounded-full border px-4 py-3.5 font-black shadow-2xl transition duration-300 active:scale-[.98] ${open?"border-[#06114f] bg-[#06114f] text-white":"border-emerald-400/40 bg-emerald-500 text-white shadow-emerald-900/20 hover:-translate-y-1 hover:bg-emerald-600"}`} aria-label="Contate agora o suporte" aria-expanded={open}>
-      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15"><WhatsIcon/></span>
-      <span className="hidden sm:block">Contate agora o suporte</span>
-      <span className="sm:hidden">Suporte</span>
+      <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
+        <WhatsIcon/>
+        <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-emerald-500 bg-white"/>
+      </span>
+      <span className="hidden sm:block">Contate agora pelo WhatsApp</span>
+      <span className="sm:hidden">WhatsApp</span>
     </button>
   </div>;
 }
