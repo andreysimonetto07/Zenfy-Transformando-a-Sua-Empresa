@@ -1,6 +1,5 @@
 import Sidebar from "@/components/Sidebar";
 import InternalTopbar from "@/components/InternalTopbar";
-import WhatsAppSupport from "@/components/WhatsAppSupport";
 import { requireClientPortal } from "@/lib/client-portal";
 
 const items: [string,string][] = [
@@ -13,7 +12,7 @@ const items: [string,string][] = [
 ];
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
-  const { profile, company } = await requireClientPortal();
+  const { profile } = await requireClientPortal();
 
   return (
     <div className="min-h-screen bg-[#f3f7fc] md:flex">
@@ -22,7 +21,6 @@ export default async function ClientLayout({ children }: { children: React.React
         <InternalTopbar mode="client" name={profile.name} />
         <main className="min-w-0 p-4 pb-28 sm:p-6 sm:pb-28 lg:p-8 lg:pb-28">{children}</main>
       </div>
-      <WhatsAppSupport companyName={company?.name} />
     </div>
   );
 }
