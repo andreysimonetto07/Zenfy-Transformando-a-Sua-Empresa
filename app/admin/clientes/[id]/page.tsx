@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import AdminClientForms from "@/components/AdminClientForms";
 import TrafficReportManager from "@/components/TrafficReportManager";
 import DailyMetricsQuickUpdate from "@/components/DailyMetricsQuickUpdate";
+import MetaIntegrationCard from "@/components/MetaIntegrationCard";
 import { requireProfile } from "@/lib/auth";
 import { ADMIN_ROLES } from "@/lib/permissions";
 import { brl, dateBr, statusLabel } from "@/lib/client-portal";
@@ -22,12 +23,13 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
   const profile:any=Array.isArray((client as any).profiles)?(client as any).profiles[0]:(client as any).profiles;
   const company:any=Array.isArray((client as any).companies)?(client as any).companies[0]:(client as any).companies;
 
-  const [projectsRes,sitesRes,trafficRes,invoicesRes,requestsRes]=await Promise.all([
+  const [projectsRes,sitesRes,trafficRes,invoicesRes,requestsRes,integrationRes]=await Promise.all([
     supabase.from("projects").select("*").eq("client_id",id).order("created_at",{ascending:false}),
     supabase.from("client_sites").select("*").eq("client_id",id).order("created_at",{ascending:false}),
     supabase.from("traffic_reports").select("*").eq("client_id",id).order("created_at",{ascending:false}).limit(30),
     supabase.from("invoices").select("*").eq("client_id",id).order("created_at",{ascending:false}).limit(10),
     profile?.id?supabase.from("service_requests").select("*").eq("client_id",profile.id).order("created_at",{ascending:false}).limit(10):Promise.resolve({data:[]}),
+    supabase.from("analytics_integrations").select("external_account_id,account_name,status,last_synced_at,last_error").eq("client_id",id).eq("provider","meta_ads").maybeSingle(),
   ]);
 
   const projects=projectsRes.data??[];
@@ -35,6 +37,7 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
   const traffic=trafficRes.data??[];
   const invoices=invoicesRes.data??[];
   const requests=(requestsRes as any).data??[];
+  const integration=(integrationRes as any).data??null;
   const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   const todayReport=traffic.find((r:any)=>r.period_start===today&&r.period_end===today)??null;
 
@@ -59,6 +62,10 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
         </div>
       </div>
     </section>
+
+    <div className="mt-6">
+      <MetaIntegrationCard clientId={id} integration={integration as any} />
+    </div>
 
     <div className="mt-6">
       <DailyMetricsQuickUpdate clientId={id} today={today} initial={todayReport as any} />
