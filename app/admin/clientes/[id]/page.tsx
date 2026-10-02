@@ -53,8 +53,7 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
           <h1 className="text-3xl font-black text-[#09113f]">{company?.name||profile?.name||"Cliente"}</h1>
           <p className="mt-2 text-zinc-500">{profile?.name} · {profile?.email}</p>
           <div className="mt-4 flex flex-wrap gap-2">
-            {profile?.id && <Link href={`/admin/mensagens?cliente=${profile.id}`} className="btn btn-primary">Enviar mensagem</Link>}
-            {company?.whatsapp && <a href={`https://wa.me/${String(company.whatsapp).replace(/\D/g,"")}`} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Abrir WhatsApp ↗</a>}
+            {company?.whatsapp && <a href={`https://wa.me/${String(company.whatsapp).replace(/\D/g,"")}`} target="_blank" rel="noopener noreferrer" className="btn btn-primary">Falar no WhatsApp ↗</a>}
             <Link href="/admin/trafego" className="btn btn-ghost">Gestão de tráfego</Link>
           </div>
         </div>
