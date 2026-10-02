@@ -95,14 +95,14 @@ export default function NotificationPreferences({ showLeads = false }: { showLea
   }
 
   const categories: { key: keyof Prefs; title: string; text: string }[] = [
-    { key: "messages", title: "Mensagens", text: "Novas mensagens entre cliente e equipe Zenfy." },
-    { key: "files", title: "Arquivos", text: "Envio de documentos, criativos e materiais." },
     { key: "billing", title: "Faturamento", text: "Novas cobranças e alterações de status." },
-    { key: "traffic", title: "Tráfego", text: "Atualizações de leads, investimento e resultados." },
-    { key: "projects", title: "Projetos e sites", text: "Progresso, prazos e alterações nos projetos." },
-    { key: "support", title: "Suporte", text: "Solicitações e movimentações de atendimento." },
+    { key: "traffic", title: "Resultados", text: "Atualizações de campanhas, leads e investimento." },
+    { key: "projects", title: "Projetos e sites", text: "Progresso, prazos e alterações nas entregas." },
   ];
-  if (showLeads) categories.push({ key: "leads", title: "Leads e clientes", text: "Novos contatos do site e novos cadastros." });
+  if (showLeads) {
+    categories.push({ key: "support", title: "Suporte interno", text: "Solicitações administrativas registradas no sistema." });
+    categories.push({ key: "leads", title: "Leads e clientes", text: "Novos contatos do site e novos cadastros." });
+  }
 
   return (
     <section className="surface overflow-hidden">
