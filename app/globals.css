@@ -366,6 +366,7 @@ html[data-theme="dark"] .zenfy-light-art {
   .theme-mini-system-body { background:#0c1538; }
 }
 
+.brand-logo-light { display:inline-flex; }
 .brand-logo-dark { display:none; }
 html[data-theme="dark"] .brand-logo-light { display:none; }
 html[data-theme="dark"] .brand-logo-dark { display:inline-flex; }
