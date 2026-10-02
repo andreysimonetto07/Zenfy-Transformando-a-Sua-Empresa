@@ -6,6 +6,7 @@ import { requireClientPortal } from "@/lib/client-portal";
 const items: [string,string][] = [
   ["/cliente/dashboard","Visão Geral"],
   ["/cliente/resultados","Resultados"],
+  ["/cliente/inspiracoes","Sites & Inspirações"],
   ["/cliente/projetos","Projetos"],
   ["/cliente/faturamento","Faturamento"],
   ["/cliente/perfil","Minha Conta"],
