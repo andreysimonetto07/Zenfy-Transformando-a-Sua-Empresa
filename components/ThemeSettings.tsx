@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { applyTheme, type ThemeMode } from "@/components/ThemeSync";
 
 const options:{value:ThemeMode;title:string;text:string;icon:string}[]=[
@@ -14,6 +14,19 @@ export default function ThemeSettings({initialTheme="system"}:{initialTheme?:The
   const [theme,setTheme]=useState<ThemeMode>(initialTheme);
   const [saving,setSaving]=useState(false);
   const [feedback,setFeedback]=useState("");
+
+  useEffect(()=>{
+    fetch("/api/theme",{cache:"no-store",credentials:"include"})
+      .then(async response=>response.ok?response.json():null)
+      .then(data=>{
+        const value=data?.theme;
+        if(value==="light"||value==="system"||value==="dark"){
+          setTheme(value);
+          applyTheme(value);
+        }
+      })
+      .catch(()=>null);
+  },[]);
 
   async function choose(next:ThemeMode){
     if(saving)return;
