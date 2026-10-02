@@ -1,5 +1,6 @@
 import ClientProfileForm from "@/components/ClientProfileForm";
 import NotificationPreferences from "@/components/NotificationPreferences";
+import ThemeSettings from "@/components/ThemeSettings";
 import { requireClientPortal } from "@/lib/client-portal";
 
 export default async function PerfilPage() {
@@ -19,6 +20,9 @@ export default async function PerfilPage() {
       state:company?.state,
     }}/>
     <p className="mt-4 text-xs text-zinc-400">Para alterar o e-mail de acesso, fale com o suporte da Zenfy.</p>
+    <div className="mt-6">
+      <ThemeSettings />
+    </div>
     <div className="mt-6">
       <NotificationPreferences />
     </div>
