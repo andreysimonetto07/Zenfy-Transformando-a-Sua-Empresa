@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { createRecoveryClient } from "@/lib/supabase/recovery";
 
 function productionOrigin() {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "");
@@ -19,13 +19,13 @@ export default function PasswordResetRequestForm() {
     e.preventDefault(); setError(""); setPending(true);
     const fd=new FormData(e.currentTarget);
     const email=String(fd.get("email")||"").trim();
-    const { error }=await createClient().auth.resetPasswordForEmail(email,{ redirectTo:`${productionOrigin()}/redefinir-senha` });
+    const { error }=await createRecoveryClient().auth.resetPasswordForEmail(email,{ redirectTo:`${productionOrigin()}/redefinir-senha` });
     setPending(false);
     if(error) return setError("Não foi possível enviar o e-mail agora. Tente novamente em alguns minutos.");
     setSent(true);
   }
 
-  if(sent) return <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-sm leading-relaxed text-emerald-900">Se esse e-mail estiver cadastrado, enviamos um link seguro para redefinir a senha. Use sempre o e-mail mais recente recebido.<div className="mt-4"><Link href="/login" className="font-bold underline">Voltar ao login</Link></div></div>;
+  if(sent) return <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-sm leading-relaxed text-emerald-900">Se esse e-mail estiver cadastrado, enviamos um novo link para redefinir a senha. Use somente o e-mail mais recente recebido.<div className="mt-4"><Link href="/login" className="font-bold underline">Voltar ao login</Link></div></div>;
 
   return <form onSubmit={submit} className="space-y-4">
     <label className="block text-sm"><span className="mb-1.5 block font-bold text-zinc-700">E-mail da conta</span><input name="email" type="email" required autoComplete="email" className="input" placeholder="voce@empresa.com" /></label>
