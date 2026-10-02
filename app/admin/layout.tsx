@@ -7,7 +7,6 @@ const items: [string, string][] = [
   ["/admin/dashboard", "Dashboard"],
   ["/admin/clientes", "Clientes"],
   ["/admin/trafego", "Campanhas"],
-  ["/admin/mensagens", "Mensagens"],
   ["/admin/configuracoes", "Configurações"],
 ];
 
