@@ -107,3 +107,16 @@ Depois do primeiro deploy, use a URL de produção em `NEXT_PUBLIC_SITE_URL`, au
 **Zenfy — Uma empresa da Companhia A & P.**
 
 <!-- deployment trigger: Vercel production -->
+
+
+## Integração Meta Ads
+
+A Zenfy possui sincronização automática de métricas da Meta Marketing API, com dados diários e por campanha.
+
+Configuração completa:
+
+- `supabase/migrations/008_meta_ads_analytics.sql`
+- `docs/META_ADS_SETUP.md`
+- `.env.example`
+
+A integração mantém o token da Meta somente no servidor/Vercel e salva no Supabase apenas os dados analíticos e o ID da conta de anúncios.
