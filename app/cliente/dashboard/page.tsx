@@ -15,13 +15,14 @@ export default async function ClientDashboard() {
   const previousStart=isoDaysAgo(59);
   const previousEnd=isoDaysAgo(30);
 
-  const [metricsRes,projectsRes,invoicesRes,sitesRes,integrationRes,manualRes]=await Promise.all([
+  const [metricsRes,projectsRes,invoicesRes,sitesRes,integrationRes,manualRes,dailyUpdatesRes]=await Promise.all([
     supabase.from("ad_daily_metrics").select("*").eq("client_id",clientId).eq("provider","meta_ads").eq("level","account").gte("date",previousStart).order("date",{ascending:true}),
     supabase.from("projects").select("id,name,status,progress,deadline").order("created_at",{ascending:false}).limit(3),
     supabase.from("invoices").select("*").eq("client_id",clientId).in("status",["pendente","atrasado"]).order("due_date",{ascending:true}).limit(1),
     supabase.from("client_sites").select("id",{count:"exact",head:true}).eq("client_id",clientId).eq("status","ativo"),
     supabase.from("analytics_integrations").select("status,last_synced_at,account_name").eq("client_id",clientId).eq("provider","meta_ads").maybeSingle(),
     supabase.from("traffic_reports").select("*").eq("client_id",clientId).order("period_end",{ascending:false}).limit(1),
+    supabase.from("client_daily_updates").select("*").eq("client_id",clientId).order("update_date",{ascending:false}).limit(5),
   ]);
 
   const all=(metricsRes.data??[]) as any[];
@@ -34,6 +35,7 @@ export default async function ClientDashboard() {
   const projects=projectsRes.data??[];
   const invoice=invoicesRes.data?.[0]??null;
   const integration=integrationRes.data??null;
+  const dailyUpdates=dailyUpdatesRes.data??[];
 
   const leadSeries=current.map((row:any)=>({label:shortDate(row.date),value:Number(row.leads||0)}));
 
@@ -88,6 +90,32 @@ export default async function ClientDashboard() {
 
     <section className="mt-6">
       <div className="mb-4">
+        <p className="eyebrow">Acompanhamento da Zenfy</p>
+        <h2 className="mt-2 text-2xl font-black tracking-[-0.03em] text-[#09113f]">O que aconteceu nos últimos dias</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-zinc-500">Um resumo simples do que nossa equipe fez, do que mudou e do que vem a seguir.</p>
+      </div>
+
+      {dailyUpdates.length ? <div className="grid gap-4">
+        {dailyUpdates.map((update:any,index:number)=><article key={update.id} className={`relative overflow-hidden rounded-[1.5rem] border bg-white p-5 shadow-sm ${index===0?"border-blue-200 shadow-blue-950/5":"border-zinc-200"}`}>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[.12em] text-brand">{dateBr(update.update_date)}{index===0?" · Mais recente":""}</p>
+              <h3 className="mt-1.5 text-xl font-black text-[#09113f]">{update.title}</h3>
+            </div>
+            {index===0&&<span className="w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-brand">Atualização da equipe</span>}
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            <UpdateBlock label="O que fizemos" value={update.work_done}/>
+            <UpdateBlock label="O que aconteceu" value={update.results||"Sem observações adicionais neste dia."}/>
+            <UpdateBlock label="Próximos passos" value={update.next_steps||"A equipe seguirá acompanhando a operação."}/>
+          </div>
+        </article>)}
+      </div> : <div className="surface p-6 text-sm text-zinc-500">A equipe ainda não publicou um relatório diário para esta conta.</div>}
+    </section>
+
+    <section className="mt-6">
+      <div className="mb-4">
         <p className="eyebrow">Sua conta</p>
         <h2 className="mt-2 text-2xl font-black tracking-[-0.03em] text-[#09113f]">Acesse o que precisar</h2>
       </div>
@@ -138,5 +166,6 @@ export default async function ClientDashboard() {
   </div>;
 }
 
+function UpdateBlock({label,value}:{label:string;value:string}){return <div className="rounded-2xl bg-zinc-50 p-4"><p className="text-[10px] font-black uppercase tracking-[.12em] text-zinc-400">{label}</p><p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-zinc-600">{value}</p></div>}
 function Mini({label,value}:{label:string;value:string}){return <div className="rounded-2xl bg-blue-50/70 p-4"><p className="text-xs font-bold text-zinc-500">{label}</p><p className="mt-1 truncate text-lg font-black text-[#09113f]">{value}</p></div>}
 function shortDate(value:string){return new Date(value+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});}
