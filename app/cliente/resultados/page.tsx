@@ -1,10 +1,11 @@
 import Link from "next/link";
 import AnalyticsMetricCard from "@/components/AnalyticsMetricCard";
 import CampaignPerformanceTable from "@/components/CampaignPerformanceTable";
+import CreativePerformanceTable from "@/components/CreativePerformanceTable";
 import PerformanceChart from "@/components/PerformanceChart";
 import ResultsTabs from "@/components/ResultsTabs";
 import { requireClientPortal, brl, dateBr, numberBr } from "@/lib/client-portal";
-import { aggregateCampaigns, comparisonPercent, isoDaysAgo, summarizeAnalytics } from "@/lib/analytics";
+import { aggregateAds, aggregateCampaigns, comparisonPercent, isoDaysAgo, summarizeAnalytics } from "@/lib/analytics";
 import { syncMetaIfStale } from "@/lib/meta-ads";
 
 const periods=[7,30,90];
@@ -25,10 +26,11 @@ export default async function ResultadosPage({searchParams}:{searchParams:Promis
   const previousEnd=isoDaysAgo(period);
   const previousStart=isoDaysAgo(period*2-1);
 
-  const [integrationRes,accountRes,campaignRes,manualRes]=await Promise.all([
+  const [integrationRes,accountRes,campaignRes,adRes,manualRes]=await Promise.all([
     supabase.from("analytics_integrations").select("provider,external_account_id,account_name,status,last_synced_at,last_error").eq("client_id",clientId),
     supabase.from("ad_daily_metrics").select("*").eq("client_id",clientId).eq("provider","meta_ads").eq("level","account").gte("date",previousStart).lte("date",today).order("date",{ascending:true}),
     supabase.from("ad_daily_metrics").select("*").eq("client_id",clientId).eq("provider","meta_ads").eq("level","campaign").gte("date",currentStart).lte("date",today).order("date",{ascending:true}),
+    supabase.from("ad_daily_metrics").select("*").eq("client_id",clientId).eq("provider","meta_ads").eq("level","ad").gte("date",currentStart).lte("date",today).order("date",{ascending:true}),
     supabase.from("traffic_reports").select("*").eq("client_id",clientId).order("period_end",{ascending:false}).limit(100),
   ]);
 
@@ -38,6 +40,7 @@ export default async function ResultadosPage({searchParams}:{searchParams:Promis
   const currentRows=accountRows.filter((row:any)=>row.date>=currentStart);
   const previousRows=accountRows.filter((row:any)=>row.date>=previousStart&&row.date<=previousEnd);
   const campaigns=aggregateCampaigns((campaignRes.data??[]) as any[]);
+  const creatives=aggregateAds((adRes.data??[]) as any[]);
   const totals=summarizeAnalytics(currentRows as any[]);
   const previous=summarizeAnalytics(previousRows as any[]);
   const manual=manualRes.data??[];
@@ -96,35 +99,37 @@ export default async function ResultadosPage({searchParams}:{searchParams:Promis
         {currentRows.length ? <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <AnalyticsMetricCard label="Investimento" value={brl(totals.spend)} comparison={comparisonPercent(totals.spend,previous.spend)} hint={`Últimos ${period} dias`}/>
-            <AnalyticsMetricCard label="Leads" value={numberBr(totals.leads)} comparison={comparisonPercent(totals.leads,previous.leads)} hint={totals.leads?`CPL ${brl(totals.cpl)}`:"Sem leads registrados"}/>
-            <AnalyticsMetricCard label="Cliques" value={numberBr(totals.clicks)} comparison={comparisonPercent(totals.clicks,previous.clicks)} hint={`CPC ${brl(totals.cpc)}`}/>
-            <AnalyticsMetricCard label="ROAS" value={totals.roas?totals.roas.toFixed(2)+"x":"—"} comparison={comparisonPercent(totals.roas,previous.roas)} hint={`Receita atribuída ${brl(totals.revenue)}`}/>
+            <AnalyticsMetricCard label="Resultados" value={numberBr(totals.leads)+" leads"} comparison={comparisonPercent(totals.leads,previous.leads)} hint={numberBr(totals.clicks)+" cliques · CPL "+(totals.leads?brl(totals.cpl):"—")}/>
+            <AnalyticsMetricCard label="Alcance" value={numberBr(totals.reach)} comparison={comparisonPercent(totals.reach,previous.reach)} hint={numberBr(totals.impressions)+" impressões"}/>
+            <AnalyticsMetricCard label="Retorno" value={totals.roas?totals.roas.toFixed(2)+"x":"—"} comparison={comparisonPercent(totals.roas,previous.roas)} hint={totals.revenue?`Faturamento atribuído ${brl(totals.revenue)}`:"Sem faturamento atribuído"}/>
           </div>
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {tab==="meta"&&<div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <Small label="Impressões" value={numberBr(totals.impressions)}/>
-            <Small label="Alcance" value={numberBr(totals.reach)}/>
+            <Small label="Cliques" value={numberBr(totals.clicks)}/>
             <Small label="CTR" value={totals.ctr.toFixed(2)+"%"}/>
+            <Small label="CPC" value={brl(totals.cpc)}/>
             <Small label="CPM" value={brl(totals.cpm)}/>
             <Small label="Frequência" value={totals.frequency.toFixed(2)+"x"}/>
             <Small label="Conversões" value={numberBr(totals.conversions)}/>
             <Small label="Compras" value={numberBr(totals.purchases)}/>
-            <Small label="Faturamento atribuído" value={brl(totals.revenue)}/>
-          </div>
+          </div>}
 
           <div className="mt-6 grid gap-6 xl:grid-cols-2">
             <PerformanceChart title="Leads por dia" description="Evolução diária registrada pela Meta." data={dailyLeads}/>
             <PerformanceChart title="Investimento por dia" description="Valor investido em mídia ao longo do período." data={dailySpend} format="currency"/>
           </div>
 
-          {tab==="meta"&&<div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Detail label="CPC" value={brl(totals.cpc)} text="Custo médio por clique."/>
-            <Detail label="CPL" value={totals.leads?brl(totals.cpl):"—"} text="Custo médio por lead."/>
-            <Detail label="CTR" value={totals.ctr.toFixed(2)+"%"} text="Cliques em relação às impressões."/>
-            <Detail label="Frequência" value={totals.frequency.toFixed(2)+"x"} text="Média de vezes que cada pessoa foi impactada."/>
-          </div>}
-
-          <div className="mt-6"><CampaignPerformanceTable campaigns={campaigns as any}/></div>
+          {tab==="meta"&&<>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Detail label="CPC" value={brl(totals.cpc)} text="Custo médio por clique."/>
+              <Detail label="CPL" value={totals.leads?brl(totals.cpl):"—"} text="Custo médio por lead."/>
+              <Detail label="CTR" value={totals.ctr.toFixed(2)+"%"} text="Cliques em relação às impressões."/>
+              <Detail label="Frequência" value={totals.frequency.toFixed(2)+"x"} text="Média de vezes que cada pessoa foi impactada."/>
+            </div>
+            <div className="mt-6"><CampaignPerformanceTable campaigns={campaigns as any}/></div>
+            <div className="mt-6"><CreativePerformanceTable items={creatives as any}/></div>
+          </>}
         </> : (
           <section className="surface p-8 text-center">
             <p className="eyebrow">Aguardando dados</p>
