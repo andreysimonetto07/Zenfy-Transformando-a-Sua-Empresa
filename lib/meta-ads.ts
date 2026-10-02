@@ -17,7 +17,9 @@ const PURCHASE_ACTIONS = new Set([
 ]);
 
 function graphVersion() {
-  return process.env.META_GRAPH_VERSION?.trim() || "v24.0";
+  const version = process.env.META_GRAPH_VERSION?.trim();
+  if (!version) throw new Error("META_GRAPH_VERSION não configurado na Vercel.");
+  return version;
 }
 
 function accessToken() {
@@ -50,7 +52,7 @@ function firstActionValue(actions: MetaAction[] | undefined, accepted: Set<strin
 async function fetchInsights(accountId: string, since: string, until: string, level: "account" | "campaign") {
   const fields = [
     "date_start","date_stop","account_id","account_name",
-    "campaign_id","campaign_name","adset_id","adset_name","ad_id","ad_name",
+    ...(level === "campaign" ? ["campaign_id","campaign_name"] : []),
     "spend","impressions","reach","clicks","unique_clicks","inline_link_clicks",
     "ctr","cpc","cpm","frequency","actions","action_values","purchase_roas"
   ].join(",");
@@ -176,10 +178,13 @@ export async function syncMetaClient(clientId: string, options?: { days?: number
     ];
 
     if (rows.length) {
-      const { error: upsertError } = await service
-        .from("ad_daily_metrics")
-        .upsert(rows, { onConflict: "client_id,provider,date,level,external_id" });
-      if (upsertError) throw new Error(upsertError.message);
+      for (let index = 0; index < rows.length; index += 400) {
+        const chunk = rows.slice(index, index + 400);
+        const { error: upsertError } = await service
+          .from("ad_daily_metrics")
+          .upsert(chunk, { onConflict: "client_id,provider,date,level,external_id" });
+        if (upsertError) throw new Error(upsertError.message);
+      }
     }
 
     const accountName = accountRows.find((row) => row.account_name)?.account_name || integration.account_name || null;
