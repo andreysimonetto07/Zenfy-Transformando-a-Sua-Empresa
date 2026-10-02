@@ -252,8 +252,7 @@ export default function NotificationBell() {
 
 function categoryEnabled(type: string | null, prefs: Prefs) {
   const value = (type || "").toLowerCase();
-  if (value === "message") return prefs.messages;
-  if (value === "file") return prefs.files;
+  if (value === "message" || value === "file") return false;
   if (value === "invoice") return prefs.billing;
   if (value === "traffic") return prefs.traffic;
   if (value === "project" || value === "site") return prefs.projects;
