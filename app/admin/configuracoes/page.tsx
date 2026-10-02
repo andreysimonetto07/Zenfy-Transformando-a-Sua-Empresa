@@ -1,5 +1,6 @@
 import TeamMemberForm from "@/components/TeamMemberForm";
 import NotificationPreferences from "@/components/NotificationPreferences";
+import ThemeSettings from "@/components/ThemeSettings";
 import { requireProfile } from "@/lib/auth";
 import { ADMIN_ROLES } from "@/lib/permissions";
 
@@ -46,6 +47,10 @@ export default async function ConfiguracoesPage() {
           <p className="mt-3 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">Somente um super administrador pode criar novos acessos administrativos.</p>
         )}
       </section>
+
+      <div className="mt-6">
+        <ThemeSettings />
+      </div>
 
       <div className="mt-6">
         <NotificationPreferences showLeads />
