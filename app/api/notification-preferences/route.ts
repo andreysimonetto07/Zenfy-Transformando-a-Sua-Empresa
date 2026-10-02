@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 const defaults = {
   in_app_enabled: true,
   browser_enabled: false,
+  sound_enabled: true,
   messages: true,
   files: true,
   billing: true,
@@ -20,7 +21,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("notification_preferences")
-    .select("in_app_enabled,browser_enabled,messages,files,billing,traffic,projects,support,leads")
+    .select("in_app_enabled,browser_enabled,sound_enabled,messages,files,billing,traffic,projects,support,leads")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.json({ ok: false }, { status: 401 });
 
   const body = await request.json().catch(() => ({}));
-  const allowed = ["in_app_enabled","browser_enabled","messages","files","billing","traffic","projects","support","leads"] as const;
+  const allowed = ["in_app_enabled","browser_enabled","sound_enabled","messages","files","billing","traffic","projects","support","leads"] as const;
   const payload: Record<string, boolean | string> = { user_id: user.id, updated_at: new Date().toISOString() };
 
   for (const key of allowed) {
