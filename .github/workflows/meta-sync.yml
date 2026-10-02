@@ -1,0 +1,23 @@
+name: Meta Ads hourly sync
+
+on:
+  schedule:
+    - cron: "12 * * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync Meta Ads
+        env:
+          ZENFY_SITE_URL: ${{ secrets.ZENFY_SITE_URL }}
+          ZENFY_CRON_SECRET: ${{ secrets.ZENFY_CRON_SECRET }}
+        run: |
+          if [ -z "$ZENFY_SITE_URL" ] || [ -z "$ZENFY_CRON_SECRET" ]; then
+            echo "Secrets ZENFY_SITE_URL e ZENFY_CRON_SECRET não configurados; sincronização ignorada."
+            exit 0
+          fi
+          curl --fail --show-error --silent \
+            -H "Authorization: Bearer $ZENFY_CRON_SECRET" \
+            "$ZENFY_SITE_URL/api/meta/sync"
