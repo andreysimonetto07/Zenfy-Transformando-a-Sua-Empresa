@@ -15,11 +15,9 @@ export default async function ClientDashboard() {
   const previousStart=isoDaysAgo(59);
   const previousEnd=isoDaysAgo(30);
 
-  const [metricsRes,projectsRes,messagesRes,requestsRes,invoicesRes,sitesRes,integrationRes,manualRes]=await Promise.all([
+  const [metricsRes,projectsRes,invoicesRes,sitesRes,integrationRes,manualRes]=await Promise.all([
     supabase.from("ad_daily_metrics").select("*").eq("client_id",clientId).eq("provider","meta_ads").eq("level","account").gte("date",previousStart).order("date",{ascending:true}),
     supabase.from("projects").select("id,name,status,progress,deadline").order("created_at",{ascending:false}).limit(3),
-    supabase.from("messages").select("id",{count:"exact",head:true}).eq("receiver_id",profile.id).eq("read",false),
-    supabase.from("service_requests").select("id",{count:"exact",head:true}).eq("client_id",profile.id).neq("status","concluida"),
     supabase.from("invoices").select("*").eq("client_id",clientId).in("status",["pendente","atrasado"]).order("due_date",{ascending:true}).limit(1),
     supabase.from("client_sites").select("id",{count:"exact",head:true}).eq("client_id",clientId).eq("status","ativo"),
     supabase.from("analytics_integrations").select("status,last_synced_at,account_name").eq("client_id",clientId).eq("provider","meta_ads").maybeSingle(),
@@ -38,7 +36,6 @@ export default async function ClientDashboard() {
   const integration=integrationRes.data??null;
 
   const leadSeries=current.map((row:any)=>({label:shortDate(row.date),value:Number(row.leads||0)}));
-  const spendSeries=current.map((row:any)=>({label:shortDate(row.date),value:Number(row.spend||0)}));
 
   return <div className="mx-auto max-w-7xl">
     <section className="relative overflow-hidden rounded-[2rem] bg-[#06114f] p-6 text-white shadow-2xl shadow-blue-950/10 sm:p-8 lg:p-10">
@@ -47,69 +44,99 @@ export default async function ClientDashboard() {
         <div>
           <p className="text-xs font-black uppercase tracking-[.18em] text-cyan-100">Visão geral</p>
           <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] sm:text-4xl">Olá, {profile.name}.</h1>
-          <p className="mt-3 max-w-2xl text-blue-50/80">{company?.name||"Sua empresa"} tem resultados, projetos e atendimento concentrados aqui.</p>
-          {integration?.last_synced_at&&<p className="mt-4 text-xs font-bold text-cyan-100/70">Meta Ads sincronizado em {new Date(integration.last_synced_at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</p>}
+          <p className="mt-3 max-w-2xl text-blue-50/80">Aqui você vê o que realmente importa sobre {company?.name||"sua empresa"} sem precisar procurar informação em várias telas.</p>
+          {integration?.last_synced_at&&<p className="mt-4 text-xs font-bold text-cyan-100/70">Meta Ads atualizado em {new Date(integration.last_synced_at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</p>}
         </div>
-        <Link href="/cliente/resultados" className="header-cta w-full lg:w-auto"><span>Ver resultados completos</span><span className="header-cta-arrow">→</span></Link>
+        <Link href="/cliente/resultados" className="header-cta w-full lg:w-auto"><span>Ver resultados detalhados</span><span className="header-cta-arrow">→</span></Link>
       </div>
     </section>
 
     {!hasAuto&&!manual ? (
       <section className="surface mt-6 p-6 sm:p-8">
         <p className="eyebrow">Sua área está pronta</p>
-        <h2 className="mt-3 max-w-3xl text-3xl font-black tracking-[-0.04em] text-[#09113f]">Os números aparecem assim que a equipe conectar ou publicar sua primeira campanha.</h2>
-        <p className="mt-4 max-w-3xl leading-relaxed text-zinc-600">Enquanto isso, você já pode falar com a Zenfy, enviar materiais, abrir suporte e acompanhar seus projetos.</p>
-        <QuickGrid messages={messagesRes.count??0} requests={requestsRes.count??0}/>
+        <h2 className="mt-3 max-w-3xl text-3xl font-black tracking-[-0.04em] text-[#09113f]">Assim que a primeira campanha for conectada, seus resultados aparecem aqui.</h2>
+        <p className="mt-4 max-w-3xl leading-relaxed text-zinc-600">Enquanto isso, você já consegue acompanhar projetos, faturamento e falar com o suporte pelo botão de WhatsApp no canto da tela.</p>
       </section>
     ) : (
       <>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {hasAuto ? <>
-            <AnalyticsMetricCard label="Investimento · 30 dias" value={brl(totals.spend)} comparison={comparisonPercent(totals.spend,prev.spend)} hint="Meta Ads"/>
-            <AnalyticsMetricCard label="Leads · 30 dias" value={numberBr(totals.leads)} comparison={comparisonPercent(totals.leads,prev.leads)} hint={totals.leads?`CPL ${brl(totals.cpl)}`:"Sem leads"}/>
-            <AnalyticsMetricCard label="CTR" value={totals.ctr.toFixed(2)+"%"} comparison={comparisonPercent(totals.ctr,prev.ctr)} hint={`CPC ${brl(totals.cpc)}`}/>
-            <AnalyticsMetricCard label="ROAS" value={totals.roas?totals.roas.toFixed(2)+"x":"—"} comparison={comparisonPercent(totals.roas,prev.roas)} hint={`Receita ${brl(totals.revenue)}`}/>
-          </> : <>
-            <AnalyticsMetricCard label="Investimento" value={brl(manual.spend)} hint={manual.platform}/>
-            <AnalyticsMetricCard label="Leads" value={numberBr(manual.leads)} hint={Number(manual.leads)?`CPL ${brl(Number(manual.spend)/Number(manual.leads))}`:"Sem leads"}/>
-            <AnalyticsMetricCard label="Cliques" value={numberBr(manual.clicks)} hint="Dado manual"/>
-            <AnalyticsMetricCard label="ROAS" value={Number(manual.spend)?(Number(manual.revenue)/Number(manual.spend)).toFixed(2)+"x":"—"} hint="Dado manual"/>
-          </>}
-        </div>
+        <section className="mt-6">
+          <div className="mb-4">
+            <p className="eyebrow">Resumo dos últimos 30 dias</p>
+            <h2 className="mt-2 text-2xl font-black tracking-[-0.03em] text-[#09113f]">Seus principais números</h2>
+          </div>
 
-        {hasAuto&&<div className="mt-6 grid gap-6 xl:grid-cols-2">
-          <PerformanceChart title="Leads nos últimos 30 dias" data={leadSeries} description="Resultado diário importado da Meta."/>
-          <PerformanceChart title="Investimento nos últimos 30 dias" data={spendSeries} description="Quanto foi investido por dia." format="currency"/>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {hasAuto ? <>
+              <AnalyticsMetricCard label="Investimento" value={brl(totals.spend)} comparison={comparisonPercent(totals.spend,prev.spend)} hint="Valor investido em anúncios"/>
+              <AnalyticsMetricCard label="Resultados" value={numberBr(totals.leads)+" leads"} comparison={comparisonPercent(totals.leads,prev.leads)} hint={numberBr(totals.clicks)+" cliques · CPL "+(totals.leads?brl(totals.cpl):"—")}/>
+              <AnalyticsMetricCard label="Alcance" value={numberBr(totals.reach)} comparison={comparisonPercent(totals.reach,prev.reach)} hint={numberBr(totals.impressions)+" impressões"}/>
+              <AnalyticsMetricCard label="Retorno" value={totals.roas?totals.roas.toFixed(2)+"x":"—"} comparison={comparisonPercent(totals.roas,prev.roas)} hint={totals.revenue?"Faturamento atribuído "+brl(totals.revenue):"Sem faturamento atribuído"}/>
+            </> : <>
+              <AnalyticsMetricCard label="Investimento" value={brl(manual.spend)} hint={manual.platform}/>
+              <AnalyticsMetricCard label="Resultados" value={numberBr(manual.leads)+" leads"} hint={numberBr(manual.clicks)+" cliques · CPL "+(Number(manual.leads)?brl(Number(manual.spend)/Number(manual.leads)):"—")}/>
+              <AnalyticsMetricCard label="Alcance" value={numberBr(manual.impressions)} hint="Dado publicado pela Zenfy"/>
+              <AnalyticsMetricCard label="Retorno" value={Number(manual.spend)?(Number(manual.revenue)/Number(manual.spend)).toFixed(2)+"x":"—"} hint={manual.revenue?"Faturamento "+brl(manual.revenue):"Sem faturamento atribuído"}/>
+            </>}
+          </div>
+        </section>
+
+        {hasAuto&&<div className="mt-6">
+          <PerformanceChart title="Leads ao longo do mês" data={leadSeries} description="Uma visão simples da evolução dos contatos gerados pelas campanhas."/>
         </div>}
       </>
     )}
 
-    <QuickGrid messages={messagesRes.count??0} requests={requestsRes.count??0}/>
+    <section className="mt-6">
+      <div className="mb-4">
+        <p className="eyebrow">Sua conta</p>
+        <h2 className="mt-2 text-2xl font-black tracking-[-0.03em] text-[#09113f]">Acesse o que precisar</h2>
+      </div>
 
-    <div className="mt-6 grid gap-6 xl:grid-cols-[1.25fr_.75fr]">
+      <div className="grid gap-4 md:grid-cols-3">
+        <Link href="/cliente/resultados" className="group rounded-[1.5rem] border border-zinc-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl">
+          <p className="text-xs font-black uppercase tracking-[.12em] text-brand">Campanhas</p>
+          <p className="mt-2 text-xl font-black text-[#09113f]">Resultados detalhados</p>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-500">Campanhas, anúncios, custos, alcance e comparação por período.</p>
+          <span className="mt-4 inline-block font-black text-brand transition-transform group-hover:translate-x-1">Abrir resultados →</span>
+        </Link>
+
+        <Link href="/cliente/projetos" className="group rounded-[1.5rem] border border-zinc-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl">
+          <p className="text-xs font-black uppercase tracking-[.12em] text-brand">Projetos</p>
+          <p className="mt-2 text-xl font-black text-[#09113f]">{projects.length?projects.length+" em acompanhamento":"Nenhum projeto ativo"}</p>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-500">Veja andamento, prazo e progresso das entregas da Zenfy.</p>
+          <span className="mt-4 inline-block font-black text-brand transition-transform group-hover:translate-x-1">Ver projetos →</span>
+        </Link>
+
+        <Link href="/cliente/faturamento" className="group rounded-[1.5rem] border border-zinc-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl">
+          <p className="text-xs font-black uppercase tracking-[.12em] text-brand">Faturamento</p>
+          <p className="mt-2 text-xl font-black text-[#09113f]">{invoice?brl(invoice.amount):"Tudo em dia"}</p>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-500">{invoice?invoice.description+" · vence "+dateBr(invoice.due_date):"Nenhuma cobrança pendente no momento."}</p>
+          <span className="mt-4 inline-block font-black text-brand transition-transform group-hover:translate-x-1">Abrir faturamento →</span>
+        </Link>
+      </div>
+    </section>
+
+    <div className="mt-6 grid gap-6 xl:grid-cols-[1.3fr_.7fr]">
       <section className="surface p-5 sm:p-6">
-        <div className="flex items-center justify-between gap-3"><div><p className="eyebrow">Projetos</p><h2 className="mt-1 text-2xl font-black text-[#09113f]">Em andamento</h2></div><Link href="/cliente/projetos" className="text-sm font-black text-brand hover:underline">Ver todos →</Link></div>
-        {projects.length?<div className="mt-5 grid gap-4">{projects.map(p=><article key={p.id} className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="flex items-center justify-between gap-3"><div><p className="font-black text-[#09113f]">{p.name}</p><p className="mt-1 text-sm text-zinc-500">{p.status}</p></div><span className="text-sm font-black text-brand">{p.progress??0}%</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full brand-gradient" style={{width:`${p.progress??0}%`}}/></div>{p.deadline&&<p className="mt-2 text-xs text-zinc-400">Prazo: {dateBr(p.deadline)}</p>}</article>)}</div>:<p className="mt-5 rounded-2xl bg-zinc-50 p-5 text-sm text-zinc-500">Nenhum projeto ativo.</p>}
+        <div className="flex items-center justify-between gap-3">
+          <div><p className="eyebrow">Projetos recentes</p><h2 className="mt-1 text-xl font-black text-[#09113f]">Andamento</h2></div>
+          <Link href="/cliente/projetos" className="text-sm font-black text-brand hover:underline">Ver todos →</Link>
+        </div>
+        {projects.length?<div className="mt-5 grid gap-4">{projects.map(p=><article key={p.id} className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="flex items-center justify-between gap-3"><div><p className="font-black text-[#09113f]">{p.name}</p><p className="mt-1 text-sm text-zinc-500">{p.status}</p></div><span className="text-sm font-black text-brand">{p.progress??0}%</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full brand-gradient" style={{width:`${p.progress??0}%`}}/></div>{p.deadline&&<p className="mt-2 text-xs text-zinc-400">Prazo: {dateBr(p.deadline)}</p>}</article>)}</div>:<p className="mt-5 rounded-2xl bg-zinc-50 p-5 text-sm text-zinc-500">Nenhum projeto ativo no momento.</p>}
       </section>
 
-      <div className="grid gap-6">
-        <section className="surface p-5"><p className="eyebrow">Estrutura</p><div className="mt-4 grid grid-cols-2 gap-3"><Mini label="Sites ativos" value={String(sitesRes.count??0)}/><Mini label="Plano" value={client?.plan||"—"}/></div><Link href="/cliente/sites" className="btn btn-ghost mt-4 w-full">Ver sites e páginas</Link></section>
-        <section className="surface p-5"><p className="eyebrow">Financeiro</p>{invoice?<><p className="mt-3 text-2xl font-black text-[#09113f]">{brl(invoice.amount)}</p><p className="mt-1 text-sm text-zinc-500">{invoice.description}</p><p className="mt-1 text-xs text-zinc-400">Vence {dateBr(invoice.due_date)}</p></>:<p className="mt-3 text-sm text-zinc-500">Nenhuma cobrança pendente.</p>}<Link href="/cliente/faturamento" className="btn btn-ghost mt-4 w-full">Faturamento</Link></section>
-      </div>
+      <section className="surface p-5 sm:p-6">
+        <p className="eyebrow">Estrutura digital</p>
+        <h2 className="mt-2 text-xl font-black text-[#09113f]">Sites e plano</h2>
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <Mini label="Sites ativos" value={String(sitesRes.count??0)}/>
+          <Mini label="Plano" value={client?.plan||"—"}/>
+        </div>
+        <Link href="/cliente/sites" className="btn btn-ghost mt-4 w-full">Ver sites e páginas</Link>
+      </section>
     </div>
   </div>;
 }
 
-function QuickGrid({messages,requests}:{messages:number;requests:number}) {
-  const items=[
-    ["/cliente/resultados","Resultados","Gráficos, campanhas e métricas","↗"],
-    ["/cliente/mensagens","Mensagens",messages?messages+" nova(s)":"Fale com a equipe","→"],
-    ["/cliente/suporte","Suporte",requests?requests+" solicitação(ões)":"Abrir atendimento","→"],
-    ["/cliente/arquivos","Arquivos","Enviar ou acessar materiais","→"],
-    ["/cliente/faturamento","Faturamento","Cobranças e pagamentos","→"],
-    ["/cliente/perfil","Minha conta","Dados e notificações","→"],
-  ];
-  return <section className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{items.map(([href,title,text,arrow])=><Link key={href} href={href} className="group rounded-[1.4rem] border border-zinc-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl"><div className="flex items-start justify-between gap-3"><div><p className="font-black text-[#09113f]">{title}</p><p className="mt-1 text-sm text-zinc-500">{text}</p></div><span className="text-lg font-black text-brand transition-transform group-hover:translate-x-1">{arrow}</span></div></Link>)}</section>;
-}
 function Mini({label,value}:{label:string;value:string}){return <div className="rounded-2xl bg-blue-50/70 p-4"><p className="text-xs font-bold text-zinc-500">{label}</p><p className="mt-1 truncate text-lg font-black text-[#09113f]">{value}</p></div>}
 function shortDate(value:string){return new Date(value+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});}
