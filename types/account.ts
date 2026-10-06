@@ -5,4 +5,5 @@ export type PublicAccount = {
   roleLabel: string;
   dashboardHref: string;
   initials: string;
+  companyName?: string | null;
 };
