@@ -62,7 +62,7 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
       </button>
 
       <div
-        className={`fixed inset-x-0 bottom-0 top-[76px] z-40 transition-opacity duration-250 ${open ? "visible opacity-100" : "invisible pointer-events-none opacity-0"}`}
+        className={`fixed inset-x-0 bottom-0 top-[72px] z-[10000] transition-opacity duration-250 ${open ? "visible opacity-100" : "invisible pointer-events-none opacity-0"}`}
         aria-hidden={!open}
       >
         <button type="button" aria-label="Fechar menu" onClick={() => setOpen(false)} className="absolute inset-0 bg-[#020624]/45 backdrop-blur-[2px]" />
@@ -79,9 +79,9 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
                     {account.initials}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate font-black text-[#09113f]">{account.name}</p>
+                    <div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-emerald-500"/><p className="truncate font-black text-[#09113f]">{account.name}</p></div>
                     <p className="truncate text-xs text-zinc-500">{account.email}</p>
-                    <p className="mt-1 text-[11px] font-bold text-brand">{account.roleLabel}</p>
+                    <p className="mt-1 text-[11px] font-bold text-emerald-700">Conta conectada · {account.roleLabel}</p>
                   </div>
                 </div>
                 <Link href={account.dashboardHref} onClick={() => setOpen(false)} className="mt-3 flex items-center justify-between rounded-xl bg-white px-3 py-3 text-sm font-extrabold text-[#09113f] shadow-sm">
@@ -128,7 +128,7 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
             ) : (
               <>
                 <Link href="/solicitar-orcamento" onClick={() => setOpen(false)} className="header-cta w-full">
-                  <span>Solicitar análise gratuita</span>
+                  <span>Pedir orçamento</span>
                   <span className="header-cta-arrow">→</span>
                 </Link>
 
