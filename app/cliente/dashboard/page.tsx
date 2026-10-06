@@ -162,10 +162,10 @@ export default async function ClientDashboard() {
 
       <section className="surface p-5 sm:p-6">
         <p className="eyebrow">Estrutura digital</p>
-        <h2 className="mt-2 text-xl font-black text-[#09113f]">Sites e plano</h2>
+        <h2 className="mt-2 text-xl font-black text-[#09113f]">Presença digital</h2>
         <div className="mt-4 grid grid-cols-2 gap-3">
           <Mini label="Sites ativos" value={String(sitesRes.count??0)}/>
-          <Mini label="Plano" value={client?.plan||"—"}/>
+          <Mini label="Status da conta" value={client?.status||"—"}/>
         </div>
         <Link href="/cliente/sites" className="btn btn-ghost mt-4 w-full">Ver sites e páginas</Link>
       </section>
