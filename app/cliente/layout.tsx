@@ -12,13 +12,13 @@ const items: [string,string][] = [
 ];
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
-  const { profile } = await requireClientPortal();
+  const { profile, company } = await requireClientPortal();
 
   return (
     <div className="min-h-screen bg-[#f3f7fc] md:flex">
       <Sidebar items={items} title="Zenfy" subtitle="Área do Cliente" userName={profile.name} />
       <div className="min-w-0 flex-1">
-        <InternalTopbar mode="client" name={profile.name} />
+        <InternalTopbar mode="client" name={profile.name} companyName={company?.name} />
         <main className="min-w-0 p-4 pb-28 sm:p-6 sm:pb-28 lg:p-8 lg:pb-28">{children}</main>
       </div>
     </div>
