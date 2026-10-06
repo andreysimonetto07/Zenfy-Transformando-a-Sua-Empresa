@@ -56,7 +56,7 @@ export default async function SolicitarOrcamento({searchParams}:{searchParams:Pr
   return <main>
     <PageHero
       title="Orçamento sob medida para o que sua empresa precisa."
-      text="A Zenfy não trabalha com pacotes fixos no site. Você explica seu objetivo e nós entendemos o cenário antes de montar uma proposta."
+      text="Cada empresa recebe um orçamento personalizado. Você explica o que quer melhorar e a Zenfy entende o cenário antes de montar uma proposta."
     />
 
     <section className="mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-20">
@@ -78,8 +78,8 @@ export default async function SolicitarOrcamento({searchParams}:{searchParams:Pr
 
       <div className="mb-7 max-w-3xl">
         <p className="eyebrow">Escolha por onde começar</p>
-        <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#09113f]">O orçamento começa com uma conversa rápida.</h2>
-        <p className="mt-3 leading-relaxed text-zinc-600">Selecione o tipo de solução mais próximo do que você procura. O WhatsApp abre com uma mensagem pronta e você só completa com os detalhes da sua empresa.</p>
+        <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-[#09113f]">Conte o que você quer para sua empresa.</h2>
+        <p className="mt-3 leading-relaxed text-zinc-600">Escolha o assunto mais próximo do que você procura. O WhatsApp abre com uma mensagem pronta e você explica os detalhes. A proposta é montada depois dessa conversa, de forma personalizada.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
