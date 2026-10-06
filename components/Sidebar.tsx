@@ -18,7 +18,7 @@ export default function Sidebar({ items, title, subtitle, userName }: { items: [
         <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
           <p className="font-extrabold tracking-tight text-white">{title}</p>
           {subtitle&&<p className="mt-1 text-[10px] font-medium uppercase tracking-[0.14em] text-cyan-200/70">{subtitle}</p>}
-          {userName&&<p className="mt-2 truncate text-xs text-white/50">Conectado como {userName}</p>}
+          {userName&&<div className="mt-2 flex items-center gap-2 rounded-xl bg-emerald-400/10 px-2.5 py-2"><span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400"/><p className="truncate text-xs font-bold text-emerald-100">Conectado como {userName}</p></div>}
         </div>
       </div>
 
