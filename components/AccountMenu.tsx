@@ -50,7 +50,7 @@ export default function AccountMenu({ account }: { account: PublicAccount }) {
         </span>
         <span className="hidden min-w-0 xl:block">
           <span className="block max-w-[130px] truncate text-sm font-extrabold text-[#09113f]">{firstName}</span>
-          <span className="block text-[10px] font-semibold text-zinc-400">{account.roleLabel}</span>
+          <span className="block text-[10px] font-semibold text-zinc-400">{account.companyName||account.roleLabel}</span>
         </span>
         <span className={`hidden text-xs text-zinc-400 transition-transform duration-200 xl:block ${open ? "rotate-180" : ""}`}>⌄</span>
       </button>
@@ -65,6 +65,7 @@ export default function AccountMenu({ account }: { account: PublicAccount }) {
               <p className="truncate font-black text-[#09113f]">{account.name}</p>
               <p className="truncate text-xs text-zinc-500">{account.email}</p>
               <p className="mt-1 text-[11px] font-bold text-brand">{account.roleLabel}</p>
+              {account.companyName&&<p className="mt-1 truncate text-xs font-black text-emerald-700">Conectado à empresa: {account.companyName}</p>}
             </div>
           </div>
         </div>
