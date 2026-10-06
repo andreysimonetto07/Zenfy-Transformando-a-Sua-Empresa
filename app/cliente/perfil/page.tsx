@@ -8,7 +8,7 @@ export default async function PerfilPage() {
 
   return <div className="mx-auto max-w-5xl">
     <div className="mb-7"><p className="eyebrow">Minha conta</p><h1 className="mt-2 text-3xl font-black text-[#09113f]">Dados da conta e empresa</h1><p className="mt-2 text-zinc-600">Mantenha as informações usadas pela equipe Zenfy atualizadas.</p></div>
-    <div className="mb-5 grid gap-4 sm:grid-cols-3"><Card label="E-mail de acesso" value={profile.email || "—"}/><Card label="Plano" value={client?.plan || "Não definido"}/><Card label="Status" value={client?.status || "—"}/></div>
+    <div className="mb-5 grid gap-4 sm:grid-cols-3"><Card label="E-mail de acesso" value={profile.email || "—"}/><Card label="Empresa" value={company?.name || "—"}/><Card label="Status da conta" value={client?.status || "—"}/></div>
     <ClientProfileForm initial={{
       name:profile.name,
       phone:profile.phone,
