@@ -119,7 +119,7 @@ export default async function Home(){
           <div>
             <p className="text-xs font-black uppercase tracking-[.18em] text-cyan-100">Próximo passo</p>
             <h2 className="mt-3 max-w-2xl text-3xl font-black tracking-[-0.04em] sm:text-4xl">Quer entender o que faria mais sentido para sua empresa hoje?</h2>
-            <p className="mt-4 max-w-xl text-blue-50/80">Conte o que sua empresa precisa. A Zenfy entende o cenário e monta uma proposta personalizada, sem pacotes fixos.</p>
+            <p className="mt-4 max-w-xl text-blue-50/80">Conte o que sua empresa precisa. A Zenfy entende o cenário e monta uma proposta personalizada para o objetivo da sua empresa.</p>
           </div>
           <Link href="/solicitar-orcamento" className="header-cta w-full lg:w-auto"><span>Pedir orçamento</span><span className="header-cta-arrow">→</span></Link>
         </div>
