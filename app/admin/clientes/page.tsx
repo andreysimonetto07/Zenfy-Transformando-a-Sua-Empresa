@@ -6,7 +6,7 @@ export default async function ClientesPage(){
   const {supabase}=await requireProfile(ADMIN_ROLES);
 
   const [{data,error},{data:reports}] = await Promise.all([
-    supabase.from("clients").select("id,profile_id,company_id,plan,status,value,created_at,profiles(name,email,phone),companies(name,whatsapp,city,state)").order("created_at",{ascending:false}),
+    supabase.from("clients").select("id,profile_id,company_id,status,created_at,profiles(name,email,phone),companies(name,whatsapp,city,state)").order("created_at",{ascending:false}),
     supabase.from("traffic_reports").select("client_id,platform,period_end,leads,spend,created_at").order("period_end",{ascending:false}).order("created_at",{ascending:false}).limit(500),
   ]);
 
@@ -28,8 +28,6 @@ export default async function ClientesPage(){
       city:company?.city||"",
       state:company?.state||"",
       status:client.status||"cliente",
-      plan:client.plan||"",
-      value:client.value!=null?Number(client.value):null,
       leads:latest?Number(latest.leads||0):null,
       spend:latest?Number(latest.spend||0):null,
       lastDate:latest?.period_end||null,
