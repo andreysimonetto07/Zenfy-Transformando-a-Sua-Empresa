@@ -1,3 +1,4 @@
+import PublicPreviewShowcase from "@/components/PublicPreviewShowcase";
 import PageHero from "@/components/PageHero";
 import PortfolioFilters from "@/components/PortfolioFilters";
 import TestimonialsSection from "@/components/TestimonialsSection";
@@ -13,19 +14,13 @@ export default async function Portfolio() {
 
   return (
     <main>
-      <PageHero title="Trabalhos, cases e resultados construídos pela Zenfy." text="Sites, landing pages, sistemas, edições, criativos e cases reais publicados pela equipe." />
+      <PageHero title="Ideias que ganham forma. Projetos para inspirar sua empresa." text="Explore nossas demonstrações de sites e landing pages. Escolha referências e converse com a Zenfy sobre um projeto feito para seu negócio." />
 
-      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
-        {projects.length ? (
-          <PortfolioFilters projects={projects} />
-        ) : (
-          <div className="surface mx-auto max-w-2xl p-10 text-center">
-            <p className="eyebrow">Portfólio em construção</p>
-            <h2 className="mt-3 text-2xl font-black text-[#09113f]">Os próximos projetos vão aparecer aqui.</h2>
-            <p className="mt-3 text-zinc-600">A equipe publica apenas trabalhos e resultados reais.</p>
-          </div>
-        )}
-      </section>
+      <PublicPreviewShowcase />
+      {projects.length > 0 && <section className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
+        <p className="eyebrow mb-6">Projetos publicados</p>
+        <PortfolioFilters projects={projects} />
+      </section>}
 
       <TestimonialsSection testimonials={testimonials} />
       <CtaBanner />

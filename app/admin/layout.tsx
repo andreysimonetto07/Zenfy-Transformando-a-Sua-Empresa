@@ -17,7 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-[#eef3fb] md:flex">
       <Sidebar items={items} title="Zenfy Admin" subtitle="Companhia A & P" userName={profile.name} />
       <div className="min-w-0 flex-1">
-        <InternalTopbar mode="admin" name={profile.name} />
+        <InternalTopbar mode="admin" name={profile.name} email={profile.email} />
         <main className="min-w-0 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>

@@ -18,7 +18,7 @@ export default async function ClientLayout({ children }: { children: React.React
     <div className="min-h-screen bg-[#f3f7fc] md:flex">
       <Sidebar items={items} title="Zenfy" subtitle="Área do Cliente" userName={profile.name} />
       <div className="min-w-0 flex-1">
-        <InternalTopbar mode="client" name={profile.name} companyName={company?.name} />
+        <InternalTopbar mode="client" name={profile.name} email={profile.email} companyName={company?.name} />
         <main className="min-w-0 p-4 pb-28 sm:p-6 sm:pb-28 lg:p-8 lg:pb-28">{children}</main>
       </div>
     </div>

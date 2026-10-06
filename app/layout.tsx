@@ -8,6 +8,7 @@ import WhatsAppSupport from "@/components/WhatsAppSupport";
 import ThemeSync, { type ThemeMode } from "@/components/ThemeSync";
 import { cookies } from "next/headers";
 import { SITE_URL } from "@/lib/seo";
+import { getCurrentAccount } from "@/lib/account";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -36,6 +37,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const store=await cookies();
   const saved=store.get("zenfy-theme")?.value;
   const theme:ThemeMode=saved==="light"||saved==="dark"||saved==="system"?saved:"system";
+  const account = await getCurrentAccount();
 
   return (
     <html lang="pt-BR" data-theme={theme} suppressHydrationWarning>
@@ -43,7 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ThemeSync />
         <PublicChrome><Header /></PublicChrome>
         <PageTransition>{children}</PageTransition>
-        <WhatsAppSupport />
+        <WhatsAppSupport account={account} />
         <PublicChrome><Footer /></PublicChrome>
       </body>
     </html>

@@ -1,38 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import type { PublicAccount } from "@/types/account";
 
 const links = [
   { href: "/servicos", label: "Soluções", text: "Tráfego pago, sites, landing pages, sistemas e automações." },
   { href: "/#como-funciona", label: "Como funciona", text: "Veja como a Zenfy transforma estratégia em execução e acompanhamento." },
-  { href: "/portfolio", label: "Projetos & Cases", text: "Conheça trabalhos, resultados e projetos publicados pela equipe." },
+  { href: "/portfolio", label: "Projetos", text: "Explore demonstrações e projetos publicados pela equipe." },
   { href: "/sobre", label: "A Zenfy", text: "Conheça a empresa, a Companhia A & P e quem está por trás da operação." },
   { href: "/contato", label: "Contato", text: "Fale com a equipe e explique o que sua empresa precisa." },
 ];
 
 export default function MobileMenu({ account }: { account: PublicAccount | null }) {
   const [open, setOpen] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [mounted, setMounted] = useState(false);
   const [pending, setPending] = useState(false);
   const pathname = usePathname();
 
+  useEffect(() => setMounted(true), []);
   useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
+    if (!mounted) return;
+    const element = dialog.current;
+    if (open && !element?.open) element?.showModal();
+    if (!open && element?.open) element.close();
     if (!open) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
+    const query = window.matchMedia("(min-width: 640px)");
+    const resize = () => { if (query.matches) setOpen(false); };
+    query.addEventListener("change", resize);
     return () => {
       document.body.style.overflow = previous;
-      window.removeEventListener("keydown", onKey);
+      query.removeEventListener("change", resize);
     };
-  }, [open]);
+  }, [open, mounted]);
 
   async function logout() {
     if (pending) return;
@@ -61,16 +68,15 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
         </span>
       </button>
 
-      <div
-        className={`fixed inset-x-0 bottom-0 ${account?"top-[112px]":"top-[68px]"} z-[10000] transition-opacity duration-250 ${open ? "visible opacity-100" : "invisible pointer-events-none opacity-0"}`}
-        aria-hidden={!open}
-      >
-        <button type="button" aria-label="Fechar menu" onClick={() => setOpen(false)} className="absolute inset-0 bg-[#020624]/45 backdrop-blur-[2px]" />
-
-        <nav
-          className={`absolute left-3 right-3 top-3 max-h-[calc(100vh-92px)] overflow-y-auto rounded-[1.75rem] border border-white/60 bg-white p-3 shadow-[0_28px_90px_rgba(2,6,36,.28)] transition-all duration-300 ease-out ${open ? "translate-y-0 scale-100 opacity-100" : "-translate-y-4 scale-[.98] opacity-0"}`}
-          aria-label="Menu mobile"
-        >
+      {mounted && createPortal(
+        <dialog ref={dialog} onClose={() => setOpen(false)} onCancel={() => setOpen(false)}
+          aria-label="Navegação da Zenfy"
+          className="mobile-menu-dialog fixed inset-0 m-0 h-[100dvh] max-h-[100dvh] w-full max-w-none overflow-y-auto border-0 bg-white p-4 text-[#09113f] sm:hidden">
+          <div className="mx-auto mb-4 flex max-w-md items-center justify-between">
+            <p className="font-black">Zenfy · Menu</p>
+            <button type="button" onClick={() => setOpen(false)} className="btn btn-ghost" autoFocus>Fechar ×</button>
+          </div>
+          <nav aria-label="Menu mobile">
           <div className="mx-auto max-w-md">
             {account ? (
               <div className="mb-3 rounded-[1.4rem] bg-gradient-to-br from-blue-50 to-violet-50 p-4">
@@ -80,9 +86,9 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
                   </span>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-emerald-500"/><p className="truncate font-black text-[#09113f]">{account.name}</p></div>
-                    <p className="truncate text-xs text-zinc-500">{account.email}</p>
+                    <p className="break-all text-xs text-zinc-500">{account.email}</p>
                     <p className="mt-1 text-[11px] font-bold text-emerald-700">Conta conectada · {account.roleLabel}</p>
-                    {account.companyName&&<p className="mt-1 truncate text-xs font-black text-brand">Empresa: {account.companyName}</p>}
+                    {account.companyName&&<p className="mt-1 break-words text-xs font-black text-brand">Empresa: {account.companyName}</p>}
                   </div>
                 </div>
                 <Link href={account.dashboardHref} onClick={() => setOpen(false)} className="mt-3 flex items-center justify-between rounded-xl bg-white px-3 py-3 text-sm font-extrabold text-[#09113f] shadow-sm">
@@ -123,9 +129,12 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
             <div className="my-3 h-px bg-zinc-100" />
 
             {account ? (
+              <div className="grid gap-2">
+              <Link href="/solicitar-orcamento" onClick={() => setOpen(false)} className="btn btn-primary">Pedir orçamento personalizado</Link>
               <button type="button" onClick={logout} disabled={pending} className="w-full rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-left text-sm font-extrabold text-red-600 transition active:scale-[.99] disabled:opacity-60">
                 {pending ? "Saindo..." : "Sair da conta"}
               </button>
+              </div>
             ) : (
               <>
                 <Link href="/solicitar-orcamento" onClick={() => setOpen(false)} className="header-cta w-full">
@@ -140,8 +149,9 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
               </>
             )}
           </div>
-        </nav>
-      </div>
+          </nav>
+        </dialog>, document.body
+      )}
     </div>
   );
 }

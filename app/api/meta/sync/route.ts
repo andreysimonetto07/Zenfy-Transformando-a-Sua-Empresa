@@ -13,7 +13,8 @@ export async function GET(request: Request) {
 
   try {
     const results = await syncAllMetaClients();
-    return NextResponse.json({ ok:true, results });
+    const ok = results.every(result => result.ok);
+    return NextResponse.json({ ok, results }, { status: ok ? 200 : 502 });
   } catch (error) {
     return NextResponse.json({
       ok:false,

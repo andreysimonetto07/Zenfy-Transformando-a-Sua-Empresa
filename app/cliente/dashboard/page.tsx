@@ -53,11 +53,13 @@ export default async function ClientDashboard() {
       </div>
     </section>
 
+    {integration?.status === "error" && <div role="status" className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">A atualização do Meta Ads está temporariamente indisponível. Exibimos os últimos dados salvos enquanto a conexão é restabelecida pela equipe.</div>}
+
     {!hasAuto&&!manual ? (
       <section className="surface mt-6 p-6 sm:p-8">
         <p className="eyebrow">Sua área está pronta</p>
         <h2 className="mt-3 max-w-3xl text-3xl font-black tracking-[-0.04em] text-[#09113f]">Assim que a primeira campanha for conectada, seus resultados aparecem aqui.</h2>
-        <p className="mt-4 max-w-3xl leading-relaxed text-zinc-600">Enquanto isso, você já consegue acompanhar projetos, faturamento e falar com o suporte pelo botão de WhatsApp no canto da tela.</p>
+        <p className="mt-4 max-w-3xl leading-relaxed text-zinc-600">Enquanto isso, você já consegue acompanhar projetos, faturamento e falar com o suporte pelo botão de WhatsApp.</p>
       </section>
     ) : (
       <>

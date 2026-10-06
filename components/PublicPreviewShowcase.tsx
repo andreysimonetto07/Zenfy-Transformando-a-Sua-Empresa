@@ -1,5 +1,3 @@
-"use client";
-
 const projects=[
   {title:"Climatização",tag:"Serviços locais",url:"https://preview-climatizacao.vercel.app/",text:"Página comercial focada em orçamento, confiança e contato rápido."},
   {title:"Estética & Beleza",tag:"Beleza",url:"https://preview-estetica-beleza.vercel.app/",text:"Visual elegante para apresentar procedimentos, serviços e agendamentos."},
@@ -14,9 +12,9 @@ export default function PublicPreviewShowcase(){
     <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-3xl">
-          <p className="eyebrow">Projetos criados pela Zenfy</p>
+          <p className="eyebrow">Demonstrações da Zenfy</p>
           <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-[#09113f] sm:text-4xl lg:text-5xl">Veja na prática alguns estilos que podemos construir.</h2>
-          <p className="mt-4 max-w-2xl leading-relaxed text-zinc-600">Não precisa imaginar como ficaria. Abra uma demonstração, navegue pelo projeto e use como referência para explicar o que você gostaria de ter na sua empresa.</p>
+          <p className="mt-4 max-w-2xl leading-relaxed text-zinc-600">Estes modelos demonstrativos apresentam possibilidades de design e estrutura. Abra uma demonstração, navegue pelo projeto e use como referência para explicar o que você gostaria de ter na sua empresa.</p>
         </div>
         <div className="rounded-2xl border border-blue-100 bg-white px-4 py-3 text-sm leading-relaxed text-zinc-500 shadow-sm lg:max-w-xs">
           <strong className="text-[#09113f]">Landing Page ou Site?</strong><br/>
@@ -35,7 +33,7 @@ export default function PublicPreviewShowcase(){
                 <span className="h-2.5 w-2.5 rounded-full bg-red-300"/>
                 <span className="h-2.5 w-2.5 rounded-full bg-amber-300"/>
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-300"/>
-                <span className="ml-2 truncate rounded-full bg-white px-3 py-1 text-[10px] font-bold text-zinc-400">Projeto Zenfy · {String(index+1).padStart(2,"0")}</span>
+                <span className="ml-2 truncate rounded-full bg-white px-3 py-1 text-[10px] font-bold text-zinc-400">Demonstração · {String(index+1).padStart(2,"0")}</span>
               </div>
             </div>
 

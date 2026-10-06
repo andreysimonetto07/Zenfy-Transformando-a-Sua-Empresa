@@ -34,8 +34,6 @@ export default function AccountMenu({ account }: { account: PublicAccount }) {
     }
   }
 
-  const firstName = account.name.trim().split(/\s+/)[0] || account.name;
-
   return (
     <div ref={wrapper} className="relative">
       <button
@@ -43,19 +41,20 @@ export default function AccountMenu({ account }: { account: PublicAccount }) {
         onClick={() => setOpen((value) => !value)}
         className={`flex items-center gap-3 rounded-2xl border px-2.5 py-2 text-left transition duration-200 ${open ? "border-blue-200 bg-blue-50/70 shadow-md" : "border-zinc-200 bg-white hover:border-blue-200 hover:bg-blue-50/50"}`}
         aria-expanded={open}
-        aria-haspopup="menu"
+        aria-label={`Conta conectada: ${account.name}, ${account.email}`}
       >
         <span className="flex h-9 w-9 items-center justify-center rounded-xl brand-gradient text-xs font-black text-white shadow-md">
           {account.initials}
         </span>
-        <span className="hidden min-w-0 xl:block">
-          <span className="block max-w-[130px] truncate text-sm font-extrabold text-[#09113f]">{firstName}</span>
-          <span className="block text-[10px] font-semibold text-zinc-400">{account.companyName||account.roleLabel}</span>
+        <span className="min-w-0">
+          <span className="block text-[10px] font-bold text-emerald-700">● Conta conectada</span>
+          <span className="block max-w-[150px] truncate text-sm font-extrabold text-[#09113f]">{account.name}</span>
+          <span className="block max-w-[150px] truncate text-[10px] font-semibold text-zinc-500">{account.companyName||account.email}</span>
         </span>
         <span className={`hidden text-xs text-zinc-400 transition-transform duration-200 xl:block ${open ? "rotate-180" : ""}`}>⌄</span>
       </button>
 
-      <div className={`absolute right-0 top-[calc(100%+10px)] z-[70] w-72 origin-top-right rounded-2xl border border-zinc-200 bg-white p-3 shadow-2xl shadow-blue-950/15 transition-all duration-200 ${open ? "visible translate-y-0 scale-100 opacity-100" : "invisible -translate-y-2 scale-[.98] opacity-0"}`} role="menu">
+      <div className={`absolute right-0 top-[calc(100%+10px)] z-[70] max-h-[70dvh] w-[min(18rem,calc(100vw-2rem))] overflow-y-auto origin-top-right rounded-2xl border border-zinc-200 bg-white p-3 shadow-2xl shadow-blue-950/15 transition-all duration-200 ${open ? "visible translate-y-0 scale-100 opacity-100" : "invisible -translate-y-2 scale-[.98] opacity-0"}`}>
         <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-violet-50 p-4">
           <div className="flex items-center gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl brand-gradient text-sm font-black text-white shadow-md">

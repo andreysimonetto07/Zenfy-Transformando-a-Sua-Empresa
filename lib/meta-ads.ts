@@ -146,7 +146,7 @@ export async function syncMetaClient(clientId: string, options?: { days?: number
     .select("*")
     .eq("client_id", clientId)
     .eq("provider", "meta_ads")
-    .eq("status", "active")
+    .in("status", ["active", "error"])
     .maybeSingle();
 
   if (integrationError) throw new Error(integrationError.message);
@@ -241,7 +241,7 @@ export async function syncAllMetaClients() {
     .from("analytics_integrations")
     .select("client_id")
     .eq("provider", "meta_ads")
-    .eq("status", "active")
+    .in("status", ["active", "error"])
     .eq("sync_mode", "auto");
 
   if (error) throw new Error(error.message);

@@ -9,10 +9,12 @@ const founders = [
   {
     name: "Andrey Simoneto",
     role: "Desenvolvimento Web & Soluções Digitais",
-    text: "Desenvolvimento de landing pages estratégicas e de alta conversão, sistemas personalizados, integrações com plataformas e ferramentas, automações e soluções web sob medida para as necessidades de cada negócio. Cada projeto é planejado para transformar demandas operacionais em experiências digitais modernas, seguras, responsivas e eficientes, contribuindo para a otimização de processos, o fortalecimento da presença online e resultados consistentes para a sua empresa."
+    initials: "AS",
+    text: "Cria sites, landing pages, sistemas e automações sob medida. Conecta design e tecnologia para apresentar empresas com clareza, facilitar o atendimento e organizar a operação."
   },
   {
     name: "Pedro Henrique",
+    initials: "PH",
     role: "Estratégia, Marketing & Desenvolvimento de Negócios",
     text: "Responsável por estratégia comercial, comunicação, marketing e desenvolvimento de oportunidades."
   },
@@ -37,7 +39,7 @@ export default function Sobre() {
               A Companhia A &amp; P funciona como a estrutura institucional que pode reunir diferentes empresas, produtos e projetos. A Zenfy é sua operação voltada a soluções digitais.
             </p>
             <p className="mt-4 leading-relaxed text-zinc-600">
-              Isso permite que produtos futuros, inclusive SaaS, tenham identidade própria sem perder a ligação com a companhia.
+              Nosso foco é entender o cenário de cada empresa e construir uma solução que conecte presença digital, atendimento e acompanhamento de resultados.
             </p>
           </div>
           <div className="py-5"><BrandShowcase compact /></div>
@@ -51,8 +53,8 @@ export default function Sobre() {
         <div className="mt-8 grid gap-5 md:grid-cols-2">
           {founders.map((f) => (
             <article key={f.name} className="surface p-6 transition duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-8">
-              <div className="flex aspect-[16/9] items-center justify-center rounded-2xl border border-dashed border-blue-200 bg-gradient-to-br from-blue-50 via-white to-violet-50 text-sm font-semibold text-zinc-400">
-                Foto de {f.name}
+              <div className="flex h-24 w-24 items-center justify-center rounded-3xl brand-gradient text-3xl font-black text-white shadow-lg" aria-hidden="true">
+                {f.initials}
               </div>
               <h3 className="mt-5 text-2xl font-black tracking-tight text-[#09113f]">{f.name}</h3>
               <p className="mt-1 text-sm font-bold text-brand">{f.role}</p>

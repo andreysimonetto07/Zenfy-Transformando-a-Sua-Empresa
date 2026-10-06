@@ -48,7 +48,7 @@ export default async function Home(){
           <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.16em] text-cyan-50 backdrop-blur-md">
             Tráfego · Sites · Sistemas
           </span>
-          <h1 className="mt-6 max-w-3xl text-[2.7rem] font-black leading-[.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+          <h1 className="mt-6 max-w-3xl text-[2.35rem] min-[380px]:text-[2.7rem] font-black leading-[.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
             Estrutura digital para sua empresa <span className="text-cyan-200">crescer com mais clareza.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-blue-50/85 sm:text-lg">
@@ -86,6 +86,17 @@ export default async function Home(){
           <p className="mt-3 min-h-[72px] text-sm leading-relaxed text-zinc-600">{item.text}</p>
           <Link href={item.href} className="mt-5 inline-flex font-black text-brand transition-transform group-hover:translate-x-1">{item.action} →</Link>
         </article>)}
+      </div>
+    </section>
+
+    <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-6 sm:pb-24">
+      <div className="surface grid items-center gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_auto]">
+        <div>
+          <p className="eyebrow">Portal do cliente</p>
+          <h2 className="mt-3 text-2xl font-black tracking-tight text-[#09113f] sm:text-3xl">Sua empresa, seus projetos e seus resultados em um só lugar.</h2>
+          <p className="mt-3 max-w-3xl leading-relaxed text-zinc-600">Depois de contratar a Zenfy, acompanhe o desempenho das campanhas, o andamento dos projetos e as atualizações da equipe na área da sua empresa. O acesso é vinculado à conta de cada cliente.</p>
+        </div>
+        <Link href="/login" className="btn btn-ghost">Já sou cliente · Entrar →</Link>
       </div>
     </section>
 

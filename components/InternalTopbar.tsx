@@ -1,15 +1,18 @@
+import LogoutButton from "@/components/LogoutButton";
 import NotificationBell from "@/components/NotificationBell";
 
 export default function InternalTopbar({
   mode,
   name,
   companyName,
+  email,
 }:{
   mode:"admin"|"client";
   name:string;
+  email:string;
   companyName?:string|null;
 }) {
-  const firstName = name.trim().split(/\s+/)[0] || name;
+
   const initials=name.trim().split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join("").toUpperCase()||"Z";
   const admin = mode === "admin";
 
@@ -30,18 +33,25 @@ export default function InternalTopbar({
         </div>
 
         <div className="relative z-[110] flex min-w-0 items-center gap-2">
-          <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-emerald-300/20 bg-emerald-300/[0.08] px-2 py-1.5 sm:px-3 sm:py-2">
+          <div className="hidden min-w-0 items-center gap-2 rounded-2xl sm:flex border border-emerald-300/20 bg-emerald-300/[0.08] px-2 py-1.5 sm:px-3 sm:py-2">
             <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl brand-gradient text-[10px] font-black text-white">
               {initials}
               <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#06114f] bg-emerald-400"/>
             </span>
             <div className="min-w-0 pr-1">
-              <p className="max-w-[76px] truncate text-xs font-black sm:max-w-[150px] sm:text-sm">{firstName}</p>
+              <p className="max-w-[76px] truncate text-xs font-black sm:max-w-[150px] sm:text-sm">{name}</p>
               <p className="text-[9px] font-bold text-emerald-300 sm:text-[10px]">● Conectado</p>
             </div>
           </div>
           <NotificationBell />
         </div>
+      </div>
+      <div className="relative flex items-center justify-between gap-3 border-t border-white/10 px-3 pb-3 pt-2 sm:px-6 lg:px-8">
+        <div className="min-w-0">
+          <p className="truncate text-xs font-bold text-white" title={name}>Conectado como {name}</p>
+          <p className="mt-1 truncate text-[11px] text-blue-100/80" title={email}>{email}{companyName ? ` · Empresa: ${companyName}` : ""}</p>
+        </div>
+        <div className="shrink-0 md:hidden [&_button]:mt-0"><LogoutButton /></div>
       </div>
     </header>
   );

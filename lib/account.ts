@@ -1,5 +1,6 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 import type { PublicAccount } from "@/types/account";
+import { cache } from "react";
 
 function roleLabel(role: PublicAccount["role"]) {
   if (role === "super_admin") return "Super administrador";
@@ -13,7 +14,7 @@ function initials(name: string) {
   return (parts[0][0] + (parts[1]?.[0] || "")).toUpperCase();
 }
 
-export async function getCurrentAccount(): Promise<PublicAccount | null> {
+export const getCurrentAccount = cache(async (): Promise<PublicAccount | null> => {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -56,4 +57,4 @@ export async function getCurrentAccount(): Promise<PublicAccount | null> {
     initials: initials(name),
     companyName,
   };
-}
+});

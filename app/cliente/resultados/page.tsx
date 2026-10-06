@@ -87,7 +87,7 @@ export default async function ResultadosPage({searchParams}:{searchParams:Promis
       <>
         <section className="mb-6 flex flex-col gap-3 rounded-[1.5rem] border border-zinc-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-black text-[#09113f]">{metaIntegration?.status==="active"?"Meta Ads conectado":"Meta Ads ainda não conectado"}</p>
+            <p className="text-sm font-black text-[#09113f]">{metaIntegration?.status==="active"?"Meta Ads conectado":metaIntegration?.status==="error"?"Meta Ads · atualização indisponível":"Meta Ads ainda não conectado"}</p>
             <p className="mt-1 text-xs text-zinc-500">{metaIntegration?.account_name||metaIntegration?.external_account_id||"A equipe Zenfy pode conectar a conta de anúncios no painel administrativo."}</p>
           </div>
           <div className="text-left sm:text-right">
@@ -95,6 +95,8 @@ export default async function ResultadosPage({searchParams}:{searchParams:Promis
             <p className="mt-1 text-sm font-black text-[#09113f]">{metaIntegration?.last_synced_at?new Date(metaIntegration.last_synced_at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"—"}</p>
           </div>
         </section>
+
+        {metaIntegration?.status === "error" && <div role="status" className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">A atualização automática está temporariamente indisponível. Os números abaixo são os últimos dados salvos; consulte a data de sincronização. Fale com a equipe Zenfy pelo WhatsApp para acompanhar a reconexão.</div>}
 
         {currentRows.length ? <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

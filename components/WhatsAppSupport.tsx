@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import type { PublicAccount } from "@/types/account";
 import { usePathname } from "next/navigation";
 
 const contacts=[
@@ -24,23 +26,36 @@ const contacts=[
   },
 ];
 
-export default function WhatsAppSupport({companyName}:{companyName?:string|null}) {
+export default function WhatsAppSupport({account}:{account:PublicAccount|null}) {
+  const dialog = useRef<HTMLDialogElement>(null);
   const [open,setOpen]=useState(false);
   const pathname=usePathname();
-  const company=(companyName||"minha empresa").trim();
+  const company=(account?.companyName||"minha empresa").trim();
   const insidePortal=pathname.startsWith("/cliente") || pathname.startsWith("/admin");
 
-  useEffect(()=>{
-    const close=(event:KeyboardEvent)=>{if(event.key==="Escape")setOpen(false)};
-    window.addEventListener("keydown",close);
-    return()=>window.removeEventListener("keydown",close);
-  },[]);
+  useEffect(() => {
+    const element = dialog.current;
+    if (open && !element?.open) element?.showModal();
+    if (!open && element?.open) element.close();
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previous; };
+  }, [open]);
+  useEffect(() => setOpen(false), [pathname]);
 
-  return <div className={`fixed right-3 z-[90] sm:bottom-6 sm:right-6 ${insidePortal?"bottom-[calc(5.75rem+env(safe-area-inset-bottom))]":"bottom-[calc(1rem+env(safe-area-inset-bottom))]"}`}>
-    <div className={`absolute bottom-[calc(100%+12px)] right-0 w-[min(92vw,380px)] origin-bottom-right rounded-[1.6rem] border border-zinc-200 bg-white p-3 shadow-[0_24px_80px_rgba(2,6,36,.28)] transition-all duration-200 ${open?"visible translate-y-0 scale-100 opacity-100":"invisible translate-y-2 scale-[.98] opacity-0"}`}>
+  return <div className="support-dock fixed inset-x-0 bottom-0 z-[120] border-t border-zinc-200 bg-white/95 px-3 pt-2 backdrop-blur-xl md:inset-x-auto md:bottom-6 md:right-6 md:border-0 md:bg-transparent md:p-0">
+    <dialog ref={dialog} onClose={() => setOpen(false)} onCancel={() => setOpen(false)}
+      onClick={event => { if (event.target === dialog.current) setOpen(false); }}
+      aria-labelledby="support-title"
+      className="support-dialog fixed m-0 w-[min(calc(100vw-24px),380px)] overflow-y-auto rounded-3xl border border-zinc-200 bg-white p-3 shadow-2xl">
+      <div className="mb-2 flex items-center justify-between gap-3 px-1">
+        <p className="text-xs font-bold text-zinc-500">Atendimento Zenfy</p>
+        <button type="button" onClick={() => setOpen(false)} className="min-h-11 rounded-xl px-3 text-sm font-bold text-zinc-600" autoFocus>Fechar ×</button>
+      </div>
       <div className="rounded-[1.2rem] bg-[#06114f] p-4 text-white">
-        <p className="text-[10px] font-black uppercase tracking-[.16em] text-cyan-100">Suporte Zenfy</p>
-        <h3 className="mt-1 text-lg font-black">Com quem você precisa falar?</h3>
+        <p className="text-[10px] font-black uppercase tracking-[.16em] text-cyan-100">{insidePortal ? "Suporte à sua empresa" : "Orçamento personalizado"}</p>
+        <h3 id="support-title" className="mt-1 text-lg font-black">Com quem você precisa falar?</h3>
         <p className="mt-1 text-xs leading-relaxed text-blue-50/65">Escolha o contato certo e o WhatsApp já abre com uma mensagem pronta.</p>
       </div>
 
@@ -63,16 +78,25 @@ export default function WhatsAppSupport({companyName}:{companyName?:string|null}
         })}
       </div>
 
-      <p className="px-2 pb-1 pt-3 text-center text-[11px] leading-relaxed text-zinc-400">Mais pra frente este canal pode ser substituído pelo WhatsApp oficial da Zenfy.</p>
-    </div>
+      <p className="px-2 pb-1 pt-3 text-center text-[11px] leading-relaxed text-zinc-400">Conte seu objetivo e receba orientação da nossa equipe.</p>
+    </dialog>
 
-    <button type="button" onClick={()=>setOpen(v=>!v)} className={`group flex h-[52px] w-[52px] items-center justify-center gap-3 rounded-full border p-0 font-black shadow-2xl transition duration-300 active:scale-[.98] sm:h-auto sm:w-auto sm:px-4 sm:py-3.5 ${open?"border-[#06114f] bg-[#06114f] text-white":"border-emerald-400/40 bg-emerald-500 text-white shadow-emerald-900/20 hover:-translate-y-1 hover:bg-emerald-600"}`} aria-label="Contate agora o suporte" aria-expanded={open}>
+    <div className="flex h-14 items-center gap-2 md:h-auto">
+      <Link href={account?.dashboardHref || "/login"} className="flex min-h-12 min-w-0 flex-1 items-center gap-2 rounded-xl px-2 py-1.5 text-[#09113f] md:hidden" aria-label={account ? `Conta conectada: ${account.name}. Abrir painel` : "Entrar na área do cliente"}>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl brand-gradient text-xs font-black text-white">{account?.initials || "Z"}</span>
+        <span className="min-w-0">
+          <span className={`block text-[10px] font-bold ${account ? "text-emerald-700" : "text-zinc-500"}`}>{account ? "● Conta conectada" : "Já é cliente?"}</span>
+          <span className="block truncate text-xs font-black">{account?.companyName || account?.name || "Acessar meu portal"}</span>
+        </span>
+      </Link>
+    <button type="button" onClick={()=>setOpen(v=>!v)} className={`group flex h-12 shrink-0 items-center justify-center gap-3 rounded-full border px-3 text-sm font-black shadow-2xl transition duration-300 active:scale-[.98] md:h-auto md:w-auto md:px-4 md:py-3.5 ${open?"border-[#06114f] bg-[#06114f] text-white":"border-emerald-400/40 bg-emerald-500 text-white shadow-emerald-900/20 hover:-translate-y-1 hover:bg-emerald-600"}`} aria-label={insidePortal ? "Falar com a equipe pelo WhatsApp" : "Pedir orçamento pelo WhatsApp"} aria-expanded={open}>
       <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
         <WhatsIcon/>
         <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-emerald-500 bg-white"/>
       </span>
-      <span className="hidden sm:block">Contate agora pelo WhatsApp</span>
+      <span>{insidePortal ? "WhatsApp" : "Orçamento"}<span className="hidden md:inline"> pelo WhatsApp</span></span>
     </button>
+    </div>
   </div>;
 }
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const simpleLinks = [
   { href: "/#como-funciona", label: "Como funciona" },
-  { href: "/portfolio", label: "Projetos & Cases" },
+  { href: "/portfolio", label: "Projetos" },
   { href: "/sobre", label: "A Zenfy" },
 ];
 
@@ -21,7 +21,7 @@ export default function DesktopNavigation() {
             </svg>
           </Link>
 
-          <div className="invisible absolute left-1/2 top-[calc(100%+12px)] z-[80] w-[560px] -translate-x-1/2 translate-y-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+          <div className="invisible absolute left-1/2 top-[calc(100%+12px)] z-[80] w-[560px] -translate-x-1/2 translate-y-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
             <div className="overflow-hidden rounded-[1.6rem] border border-zinc-200 bg-white p-3 shadow-[0_24px_80px_rgba(2,6,36,.18)]">
               <div className="grid grid-cols-3 gap-2">
                 <SolutionCard href="/servicos" eyebrow="Aquisição" title="Tráfego Pago" text="Campanhas, acompanhamento e métricas para gerar oportunidades." />

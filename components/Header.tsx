@@ -4,16 +4,20 @@ import MobileMenu from "@/components/MobileMenu";
 import AccountMenu from "@/components/AccountMenu";
 import DesktopNavigation from "@/components/DesktopNavigation";
 import { getCurrentAccount } from "@/lib/account";
+import type { PublicAccount } from "@/types/account";
 
 export default async function Header() {
   const account = await getCurrentAccount();
-  const firstName = account?.name.trim().split(/\s+/)[0] || "";
+  return <HeaderView account={account} />;
+}
+
+export function HeaderView({ account }: { account: PublicAccount | null }) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/70 bg-white/92 shadow-sm shadow-blue-950/[0.03] backdrop-blur-xl">
       <div className="mx-auto flex min-h-[68px] max-w-7xl items-center justify-between gap-3 px-3 sm:min-h-[76px] sm:px-6">
         <div className="sm:hidden">
-          <BrandLogo compact />
+          <BrandLogo />
         </div>
         <div className="hidden sm:block">
           <BrandLogo />
@@ -62,8 +66,9 @@ export default async function Header() {
                 Conta conectada
               </span>
               <span className="mt-0.5 block truncate text-xs font-black text-[#09113f]">
-                {firstName}{account.companyName ? ` · ${account.companyName}` : ""}
+                {account.name}{account.companyName ? ` · ${account.companyName}` : ""}
               </span>
+              <span className="block truncate text-[11px] text-zinc-600">{account.email}</span>
             </span>
           </div>
           <span className="shrink-0 text-xs font-black text-brand">Abrir →</span>
