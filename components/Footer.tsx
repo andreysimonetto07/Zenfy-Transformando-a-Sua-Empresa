@@ -12,7 +12,7 @@ export default function Footer() {
       <div className="relative mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4">
         <div><BrandLogo light /><p className="mt-5 max-w-xs text-sm leading-relaxed text-blue-50/65">Sites, landing pages, sistemas e soluções digitais para empresas que querem crescer com mais presença e profissionalismo.</p><p className="mt-5 inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/75">Uma empresa da Companhia A &amp; P</p></div>
         {col("Navegação", [["/","Início"],["/servicos","Serviços"],["/portfolio","Portfólio"],["/sobre","Sobre"],["/contato","Contato"]])}
-        {col("Acesso", [["/login","Entrar"],["/cadastro","Criar conta"],["/recuperar-senha","Recuperar senha"],["/solicitar-orcamento","Solicitar análise"]])}
+        {col("Acesso", [["/login","Entrar"],["/cadastro","Criar conta"],["/recuperar-senha","Recuperar senha"],["/solicitar-orcamento","Pedir orçamento"]])}
         {col("Soluções", [["/servicos","Sites"],["/servicos","Landing Pages"],["/servicos","Sistemas"],["/servicos","Automação"]])}
       </div>
       <div className="relative border-t border-white/10 px-5 py-5 text-center text-xs text-blue-100/40">© {new Date().getFullYear()} Zenfy · Companhia A &amp; P.</div>
