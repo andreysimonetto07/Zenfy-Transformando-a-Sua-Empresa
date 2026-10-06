@@ -16,8 +16,9 @@ export function HeaderView({ account }: { account: PublicAccount | null }) {
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/70 bg-white/92 shadow-sm shadow-blue-950/[0.03] backdrop-blur-xl">
       <div className="mx-auto flex min-h-[68px] max-w-7xl items-center justify-between gap-3 px-3 sm:min-h-[76px] sm:px-6">
-        <div className="sm:hidden">
-          <BrandLogo />
+        <div className="flex items-center gap-2 sm:hidden">
+          <BrandLogo compact />
+          <span className="text-[1.8rem] font-black tracking-[-0.06em] text-[#09113f]">Zenfy</span>
         </div>
         <div className="hidden sm:block">
           <BrandLogo />
@@ -32,7 +33,7 @@ export function HeaderView({ account }: { account: PublicAccount | null }) {
             <>
               <Link
                 href="/login"
-                className="rounded-2xl px-4 py-3 text-sm font-extrabold text-zinc-600 transition hover:bg-zinc-100 hover:text-[#09113f]"
+                className="hidden rounded-2xl px-4 py-3 text-sm font-extrabold text-zinc-600 md:inline-flex transition hover:bg-zinc-100 hover:text-[#09113f]"
               >
                 Área do cliente
               </Link>
@@ -44,7 +45,7 @@ export function HeaderView({ account }: { account: PublicAccount | null }) {
           )}
         </div>
 
-        <div className="ml-auto sm:hidden">
+        <div className="ml-auto xl:hidden">
           <MobileMenu account={account} />
         </div>
       </div>

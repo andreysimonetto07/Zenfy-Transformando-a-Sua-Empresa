@@ -32,7 +32,7 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
     if (!open) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const query = window.matchMedia("(min-width: 640px)");
+    const query = window.matchMedia("(min-width: 1280px)");
     const resize = () => { if (query.matches) setOpen(false); };
     query.addEventListener("change", resize);
     return () => {
@@ -53,7 +53,7 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
   }
 
   return (
-    <div className="sm:hidden">
+    <div className="xl:hidden">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -71,7 +71,7 @@ export default function MobileMenu({ account }: { account: PublicAccount | null 
       {mounted && createPortal(
         <dialog ref={dialog} onClose={() => setOpen(false)} onCancel={() => setOpen(false)}
           aria-label="Navegação da Zenfy"
-          className="mobile-menu-dialog fixed inset-0 m-0 h-[100dvh] max-h-[100dvh] w-full max-w-none overflow-y-auto border-0 bg-white p-4 text-[#09113f] sm:hidden">
+          className="mobile-menu-dialog fixed inset-0 m-0 h-[100dvh] max-h-[100dvh] w-full max-w-none overflow-y-auto border-0 bg-white p-4 text-[#09113f] xl:hidden">
           <div className="mx-auto mb-4 flex max-w-md items-center justify-between">
             <p className="font-black">Zenfy · Menu</p>
             <button type="button" onClick={() => setOpen(false)} className="btn btn-ghost" autoFocus>Fechar ×</button>

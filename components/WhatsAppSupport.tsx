@@ -48,7 +48,7 @@ export default function WhatsAppSupport({account}:{account:PublicAccount|null}) 
     <dialog ref={dialog} onClose={() => setOpen(false)} onCancel={() => setOpen(false)}
       onClick={event => { if (event.target === dialog.current) setOpen(false); }}
       aria-labelledby="support-title"
-      className="support-dialog fixed m-0 w-[min(calc(100vw-24px),380px)] overflow-y-auto rounded-3xl border border-zinc-200 bg-white p-3 shadow-2xl">
+      className="support-dialog fixed m-0 max-w-none w-[min(calc(100vw-24px),380px)] overflow-y-auto rounded-3xl border border-zinc-200 bg-white p-3 shadow-2xl">
       <div className="mb-2 flex items-center justify-between gap-3 px-1">
         <p className="text-xs font-bold text-zinc-500">Atendimento Zenfy</p>
         <button type="button" onClick={() => setOpen(false)} className="min-h-11 rounded-xl px-3 text-sm font-bold text-zinc-600" autoFocus>Fechar ×</button>

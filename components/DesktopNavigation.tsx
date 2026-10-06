@@ -8,7 +8,7 @@ const simpleLinks = [
 
 export default function DesktopNavigation() {
   return (
-    <nav className="hidden items-center lg:flex" aria-label="Navegação principal">
+    <nav className="hidden items-center xl:flex" aria-label="Navegação principal">
       <div className="flex items-center gap-1 rounded-2xl border border-zinc-200/80 bg-white/85 p-1.5 shadow-sm shadow-blue-950/[0.03] backdrop-blur-xl">
         <div className="group relative">
           <Link
