@@ -12,7 +12,7 @@ export default function ServiceCard({ s }: { s: Service }) {
         <div className="rounded-2xl bg-violet-50/60 p-4"><p className="font-bold text-[#09113f]">Benefícios</p><ul className="mt-2 space-y-1.5 text-zinc-600">{s.benefits.map((b) => <li key={b}>• {b}</li>)}</ul></div>
         <div className="rounded-2xl bg-cyan-50/60 p-4"><p className="font-bold text-[#09113f]">Ideal para</p><p className="mt-1 text-zinc-600">{s.audience}</p></div>
       </div>
-      <Link href="/solicitar-orcamento" className="btn btn-primary mt-6 w-full sm:w-auto">Quero esta solução</Link>
+      <Link href={`/solicitar-orcamento?servico=${encodeURIComponent(s.title)}`} className="btn btn-primary mt-6 w-full sm:w-auto">Pedir orçamento desta solução</Link>
     </article>
   );
 }
