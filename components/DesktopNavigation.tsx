@@ -34,7 +34,7 @@ export default function DesktopNavigation() {
                   <p className="mt-0.5 text-sm font-semibold text-blue-50/80">Tráfego, página e acompanhamento trabalhando juntos.</p>
                 </div>
                 <Link href="/solicitar-orcamento" className="rounded-xl bg-white px-3 py-2 text-xs font-black text-[#09113f] transition hover:-translate-y-0.5">
-                  Ver meu cenário →
+                  Pedir orçamento →
                 </Link>
               </div>
             </div>
