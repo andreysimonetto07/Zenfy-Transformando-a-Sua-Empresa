@@ -34,7 +34,7 @@ export default function WhatsAppSupport({companyName}:{companyName?:string|null}
     return()=>window.removeEventListener("keydown",close);
   },[]);
 
-  return <div className="fixed bottom-4 right-4 z-[9999] sm:bottom-6 sm:right-6">
+  return <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[90] sm:bottom-6 sm:right-6">
     <div className={`absolute bottom-[calc(100%+12px)] right-0 w-[min(92vw,380px)] origin-bottom-right rounded-[1.6rem] border border-zinc-200 bg-white p-3 shadow-[0_24px_80px_rgba(2,6,36,.28)] transition-all duration-200 ${open?"visible translate-y-0 scale-100 opacity-100":"invisible translate-y-2 scale-[.98] opacity-0"}`}>
       <div className="rounded-[1.2rem] bg-[#06114f] p-4 text-white">
         <p className="text-[10px] font-black uppercase tracking-[.16em] text-cyan-100">Suporte Zenfy</p>
@@ -64,13 +64,12 @@ export default function WhatsAppSupport({companyName}:{companyName?:string|null}
       <p className="px-2 pb-1 pt-3 text-center text-[11px] leading-relaxed text-zinc-400">Mais pra frente este canal pode ser substituído pelo WhatsApp oficial da Zenfy.</p>
     </div>
 
-    <button type="button" onClick={()=>setOpen(v=>!v)} className={`group flex items-center gap-3 rounded-full border px-4 py-3.5 font-black shadow-2xl transition duration-300 active:scale-[.98] ${open?"border-[#06114f] bg-[#06114f] text-white":"border-emerald-400/40 bg-emerald-500 text-white shadow-emerald-900/20 hover:-translate-y-1 hover:bg-emerald-600"}`} aria-label="Contate agora o suporte" aria-expanded={open}>
+    <button type="button" onClick={()=>setOpen(v=>!v)} className={`group flex h-14 w-14 items-center justify-center gap-3 rounded-full border p-0 font-black shadow-2xl transition duration-300 active:scale-[.98] sm:h-auto sm:w-auto sm:px-4 sm:py-3.5 ${open?"border-[#06114f] bg-[#06114f] text-white":"border-emerald-400/40 bg-emerald-500 text-white shadow-emerald-900/20 hover:-translate-y-1 hover:bg-emerald-600"}`} aria-label="Contate agora o suporte" aria-expanded={open}>
       <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
         <WhatsIcon/>
         <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-emerald-500 bg-white"/>
       </span>
       <span className="hidden sm:block">Contate agora pelo WhatsApp</span>
-      <span className="sm:hidden">WhatsApp</span>
     </button>
   </div>;
 }
