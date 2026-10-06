@@ -55,7 +55,7 @@ export default async function Home(){
             A Zenfy conecta campanhas, páginas e tecnologia para sua empresa atrair oportunidades, passar mais confiança e acompanhar o que realmente está acontecendo.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/solicitar-orcamento" className="header-cta w-full sm:w-auto"><span>Solicitar análise gratuita</span><span className="header-cta-arrow">→</span></Link>
+            <Link href="/solicitar-orcamento" className="header-cta w-full sm:w-auto"><span>Pedir orçamento no WhatsApp</span><span className="header-cta-arrow">→</span></Link>
             <Link href="/portfolio" className="btn btn-dark">Ver projetos criados</Link>
           </div>
           <div className="mt-7 flex flex-wrap gap-2 text-xs font-bold text-blue-50/70">
@@ -106,7 +106,7 @@ export default async function Home(){
         </div>
         <div className="mt-7 flex flex-col gap-3 sm:flex-row">
           <Link href="/sobre" className="btn btn-ghost">Conhecer a Zenfy</Link>
-          <Link href="/solicitar-orcamento" className="btn btn-primary">Quero analisar minha empresa</Link>
+          <Link href="/solicitar-orcamento" className="btn btn-primary">Quero um orçamento</Link>
         </div>
       </div>
     </section>
@@ -119,9 +119,9 @@ export default async function Home(){
           <div>
             <p className="text-xs font-black uppercase tracking-[.18em] text-cyan-100">Próximo passo</p>
             <h2 className="mt-3 max-w-2xl text-3xl font-black tracking-[-0.04em] sm:text-4xl">Quer entender o que faria mais sentido para sua empresa hoje?</h2>
-            <p className="mt-4 max-w-xl text-blue-50/80">Conte como sua empresa vende atualmente. A Zenfy analisa o cenário e indica uma direção inicial, sem complicar.</p>
+            <p className="mt-4 max-w-xl text-blue-50/80">Conte o que sua empresa precisa. A Zenfy entende o cenário e monta uma proposta personalizada, sem pacotes fixos.</p>
           </div>
-          <Link href="/solicitar-orcamento" className="header-cta w-full lg:w-auto"><span>Solicitar análise</span><span className="header-cta-arrow">→</span></Link>
+          <Link href="/solicitar-orcamento" className="header-cta w-full lg:w-auto"><span>Pedir orçamento</span><span className="header-cta-arrow">→</span></Link>
         </div>
       </div>
     </section>
