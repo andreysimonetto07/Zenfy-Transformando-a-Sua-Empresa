@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 import type { PublicAccount } from "@/types/account";
 
 function roleLabel(role: PublicAccount["role"]) {
@@ -30,6 +30,22 @@ export async function getCurrentAccount(): Promise<PublicAccount | null> {
   const role = profile.role as PublicAccount["role"];
   const name = profile.name || user.user_metadata?.name || user.email?.split("@")[0] || "Conta Zenfy";
   const email = profile.email || user.email || "";
+  let companyName:string|null=null;
+
+  if(role==="client"){
+    const service=createServiceClient();
+    const {data:client}=await service
+      .from("clients")
+      .select("company_id,companies(name)")
+      .eq("profile_id",user.id)
+      .maybeSingle();
+
+    const company=Array.isArray((client as any)?.companies)
+      ? (client as any).companies[0]
+      : (client as any)?.companies;
+
+    companyName=company?.name||null;
+  }
 
   return {
     name,
@@ -38,5 +54,6 @@ export async function getCurrentAccount(): Promise<PublicAccount | null> {
     roleLabel: roleLabel(role),
     dashboardHref: role === "client" ? "/cliente/dashboard" : "/admin/dashboard",
     initials: initials(name),
+    companyName,
   };
 }
