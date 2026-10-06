@@ -2,6 +2,8 @@
 
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
+let recoveryClient: ReturnType<typeof createSupabaseClient> | undefined;
+
 /**
  * Cliente isolado usado SOMENTE na recuperação de senha.
  *
@@ -10,7 +12,8 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
  * do code_verifier salvo no navegador onde o pedido foi iniciado.
  */
 export function createRecoveryClient() {
-  return createSupabaseClient(
+  if(recoveryClient)return recoveryClient;
+  recoveryClient = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -23,4 +26,5 @@ export function createRecoveryClient() {
       },
     },
   );
+  return recoveryClient;
 }

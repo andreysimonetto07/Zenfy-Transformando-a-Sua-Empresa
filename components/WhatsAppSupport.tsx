@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { PublicAccount } from "@/types/account";
 import { usePathname } from "next/navigation";
+import { SUPPORT_EMAIL, SUPPORT_EMAIL_HREF } from "@/lib/contact";
 
 const contacts=[
   {
@@ -78,7 +79,10 @@ export default function WhatsAppSupport({account}:{account:PublicAccount|null}) 
         })}
       </div>
 
-      <p className="px-2 pb-1 pt-3 text-center text-[11px] leading-relaxed text-zinc-400">Conte seu objetivo e receba orientação da nossa equipe.</p>
+      <div className="mt-3 border-t border-zinc-100 px-2 pb-1 pt-3 text-center">
+        <p className="text-xs text-zinc-500">Prefere falar por e-mail?</p>
+        <a href={SUPPORT_EMAIL_HREF} className="mt-1 inline-block break-all text-sm font-bold text-brand hover:underline">{SUPPORT_EMAIL}</a>
+      </div>
     </dialog>
 
     <div className="flex h-14 items-center gap-2 md:h-auto">

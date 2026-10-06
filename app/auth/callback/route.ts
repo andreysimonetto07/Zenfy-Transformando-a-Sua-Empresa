@@ -18,8 +18,14 @@ export async function GET(request: Request) {
   }
 
   const recovery = typeParam === "recovery";
+  if(recovery && tokenHash){
+    const recoveryUrl = new URL("/redefinir-senha",url.origin);
+    recoveryUrl.searchParams.set("token_hash",tokenHash);
+    recoveryUrl.searchParams.set("type","recovery");
+    return NextResponse.redirect(recoveryUrl);
+  }
   const fallbackNext = recovery ? "/redefinir-senha?recovery=1" : "/cliente/dashboard";
-  const next = requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//")
+  const next = requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//") && !requestedNext.includes("\\")
     ? requestedNext
     : fallbackNext;
 
