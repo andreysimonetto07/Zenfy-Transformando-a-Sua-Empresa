@@ -58,10 +58,9 @@ export default async function ClienteDetalhe({params}:{params:Promise<{id:string
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          <Badge label="Plano" value={(client as any).plan||"—"}/>
-          <Badge label="Status" value={(client as any).status||"—"}/>
-          <Badge label="Mensalidade" value={(client as any).value!=null?brl((client as any).value):"—"}/>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <Badge label="Status da conta" value={(client as any).status||"—"}/>
+          <Badge label="Portal" value="Monitoramento ativo"/>
         </div>
       </div>
     </section>
