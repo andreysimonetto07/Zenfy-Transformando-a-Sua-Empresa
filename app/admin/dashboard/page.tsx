@@ -32,7 +32,7 @@ export default async function AdminDashboard() {
     supabase.from("analytics_integrations").select("*",{count:"exact",head:true}).eq("status","active").then(r=>r.count??0),
   ]);
 
-  const {data:clients}=await supabase.from("clients").select("id,status,plan,profiles(name,email),companies(name)").order("created_at",{ascending:false}).limit(5);
+  const {data:clients}=await supabase.from("clients").select("id,status,profiles(name,email),companies(name)").order("created_at",{ascending:false}).limit(5);
 
   return <div className="mx-auto max-w-7xl">
     <section className="relative overflow-hidden rounded-[2rem] bg-[#06114f] p-6 text-white shadow-2xl sm:p-8">
@@ -60,7 +60,7 @@ export default async function AdminDashboard() {
 
     <section className="surface mt-6 overflow-hidden">
       <div className="flex items-center justify-between border-b border-zinc-100 p-5 sm:p-6"><div><p className="eyebrow">Clientes recentes</p><h2 className="mt-1 text-xl font-black text-[#09113f]">Painéis das empresas</h2></div><Link href="/admin/clientes" className="text-sm font-black text-brand">Ver todos →</Link></div>
-      {(clients??[]).length?<div className="divide-y divide-zinc-100">{(clients??[]).map((client:any)=>{const profile=Array.isArray(client.profiles)?client.profiles[0]:client.profiles;const company=Array.isArray(client.companies)?client.companies[0]:client.companies;return <Link key={client.id} href={`/admin/clientes/${client.id}`} className="flex items-center justify-between gap-3 p-5 transition hover:bg-blue-50/40"><div><p className="font-black text-[#09113f]">{company?.name||profile?.name||"Cliente"}</p><p className="mt-1 text-sm text-zinc-500">{profile?.email||""}</p></div><div className="text-right"><p className="text-sm font-bold text-brand">{client.plan||"Sem plano"}</p><p className="mt-1 text-xs text-zinc-400">{client.status||"—"}</p></div></Link>})}</div>:<div className="p-10 text-center text-sm text-zinc-500">Nenhum cliente ainda.</div>}
+      {(clients??[]).length?<div className="divide-y divide-zinc-100">{(clients??[]).map((client:any)=>{const profile=Array.isArray(client.profiles)?client.profiles[0]:client.profiles;const company=Array.isArray(client.companies)?client.companies[0]:client.companies;return <Link key={client.id} href={`/admin/clientes/${client.id}`} className="flex items-center justify-between gap-3 p-5 transition hover:bg-blue-50/40"><div><p className="font-black text-[#09113f]">{company?.name||profile?.name||"Cliente"}</p><p className="mt-1 text-sm text-zinc-500">{profile?.email||""}</p></div><div className="text-right"><p className="text-sm font-bold text-brand">Abrir painel →</p><p className="mt-1 text-xs text-zinc-400">{client.status||"—"}</p></div></Link>})}</div>:<div className="p-10 text-center text-sm text-zinc-500">Nenhum cliente ainda.</div>}
     </section>
   </div>;
 }
