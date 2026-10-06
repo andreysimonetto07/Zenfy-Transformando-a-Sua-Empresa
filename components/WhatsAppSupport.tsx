@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const contacts=[
   {
@@ -25,8 +26,9 @@ const contacts=[
 
 export default function WhatsAppSupport({companyName}:{companyName?:string|null}) {
   const [open,setOpen]=useState(false);
+  const pathname=usePathname();
   const company=(companyName||"minha empresa").trim();
-  const insidePortal=typeof window!=="undefined" && (window.location.pathname.startsWith("/cliente") || window.location.pathname.startsWith("/admin"));
+  const insidePortal=pathname.startsWith("/cliente") || pathname.startsWith("/admin");
 
   useEffect(()=>{
     const close=(event:KeyboardEvent)=>{if(event.key==="Escape")setOpen(false)};
@@ -34,7 +36,7 @@ export default function WhatsAppSupport({companyName}:{companyName?:string|null}
     return()=>window.removeEventListener("keydown",close);
   },[]);
 
-  return <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[90] sm:bottom-6 sm:right-6">
+  return <div className={`fixed right-3 z-[90] sm:bottom-6 sm:right-6 ${insidePortal?"bottom-[calc(5.75rem+env(safe-area-inset-bottom))]":"bottom-[calc(1rem+env(safe-area-inset-bottom))]"}`}>
     <div className={`absolute bottom-[calc(100%+12px)] right-0 w-[min(92vw,380px)] origin-bottom-right rounded-[1.6rem] border border-zinc-200 bg-white p-3 shadow-[0_24px_80px_rgba(2,6,36,.28)] transition-all duration-200 ${open?"visible translate-y-0 scale-100 opacity-100":"invisible translate-y-2 scale-[.98] opacity-0"}`}>
       <div className="rounded-[1.2rem] bg-[#06114f] p-4 text-white">
         <p className="text-[10px] font-black uppercase tracking-[.16em] text-cyan-100">Suporte Zenfy</p>
@@ -64,7 +66,7 @@ export default function WhatsAppSupport({companyName}:{companyName?:string|null}
       <p className="px-2 pb-1 pt-3 text-center text-[11px] leading-relaxed text-zinc-400">Mais pra frente este canal pode ser substituído pelo WhatsApp oficial da Zenfy.</p>
     </div>
 
-    <button type="button" onClick={()=>setOpen(v=>!v)} className={`group flex h-14 w-14 items-center justify-center gap-3 rounded-full border p-0 font-black shadow-2xl transition duration-300 active:scale-[.98] sm:h-auto sm:w-auto sm:px-4 sm:py-3.5 ${open?"border-[#06114f] bg-[#06114f] text-white":"border-emerald-400/40 bg-emerald-500 text-white shadow-emerald-900/20 hover:-translate-y-1 hover:bg-emerald-600"}`} aria-label="Contate agora o suporte" aria-expanded={open}>
+    <button type="button" onClick={()=>setOpen(v=>!v)} className={`group flex h-[52px] w-[52px] items-center justify-center gap-3 rounded-full border p-0 font-black shadow-2xl transition duration-300 active:scale-[.98] sm:h-auto sm:w-auto sm:px-4 sm:py-3.5 ${open?"border-[#06114f] bg-[#06114f] text-white":"border-emerald-400/40 bg-emerald-500 text-white shadow-emerald-900/20 hover:-translate-y-1 hover:bg-emerald-600"}`} aria-label="Contate agora o suporte" aria-expanded={open}>
       <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
         <WhatsIcon/>
         <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-emerald-500 bg-white"/>
