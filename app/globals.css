@@ -376,15 +376,17 @@ html[data-theme="dark"] .brand-logo-dark { display:inline-flex; }
 }
 
 /* A barra mobile tem espaço próprio; seus botões nunca cobrem o fim da página. */
-.support-dialog { top: auto; left: auto; right: 12px; bottom: calc(80px + env(safe-area-inset-bottom)); max-height: calc(100dvh - 100px - env(safe-area-inset-bottom)); color: var(--theme-text); }
+.support-dock { background: var(--theme-surface-translucent); backdrop-filter: blur(16px); }
+.support-dialog { top: auto; left: auto; right: 12px; bottom: calc(90px + env(safe-area-inset-bottom)); max-height: calc(100dvh - 110px - env(safe-area-inset-bottom)); color: var(--theme-text); }
 dialog::backdrop { background: rgba(2,6,36,.55); backdrop-filter: blur(3px); }
 @media (max-width: 767px) {
-  body { padding-bottom: calc(73px + env(safe-area-inset-bottom)); }
-  .support-dock { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+  body { padding-bottom: calc(89px + env(safe-area-inset-bottom)); }
+  .support-dock { bottom: calc(8px + env(safe-area-inset-bottom)); }
   .mobile-menu-dialog { padding-top: max(16px, env(safe-area-inset-top)); padding-bottom: max(16px, env(safe-area-inset-bottom)); }
   html { scroll-padding-top: 160px; }
 }
 @media (min-width: 768px) {
+  .support-dock { background: transparent; backdrop-filter: none; }
   .support-dialog { right: 24px; bottom: 100px; max-height: calc(100dvh - 124px); }
 }
 button:focus-visible, a:focus-visible { outline: 2px solid #1769ff; outline-offset: 3px; }

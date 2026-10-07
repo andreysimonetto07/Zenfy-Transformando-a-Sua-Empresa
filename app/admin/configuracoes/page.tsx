@@ -40,7 +40,7 @@ export default async function ConfiguracoesPage() {
         <h2 className="text-xl font-bold">Adicionar integrante</h2>
         {profile.role === "super_admin" ? (
           <>
-            <p className="mb-5 mt-2 text-sm leading-relaxed text-zinc-600">Crie o acesso do Pedro ou de outro integrante. Use uma senha temporária e envie a senha para a pessoa por um canal privado.</p>
+            <p className="mb-5 mt-2 text-sm leading-relaxed text-zinc-600">Crie o acesso do Pedro Henrique ou de outro integrante. Use uma senha temporária e envie a senha para a pessoa por um canal privado.</p>
             <TeamMemberForm />
           </>
         ) : (

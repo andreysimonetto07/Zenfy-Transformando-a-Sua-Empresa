@@ -1,12 +1,13 @@
 import Link from "next/link";
 import ClientShowcaseGallery from "@/components/ClientShowcaseGallery";
 import { requireClientPortal } from "@/lib/client-portal";
+import { BUSINESS_CONTACT, whatsappHref } from "@/lib/contact";
 
 export default async function InspiracoesPage(){
   const { company } = await requireClientPortal();
   const companyName=company?.name||"sua empresa";
-  const message=`Olá Andrey! Sou cliente da Zenfy e quero entender qual estrutura faz mais sentido para ${companyName}: uma Landing Page ou um Site Completo. Pode me orientar?`;
-  const whatsapp=`https://wa.me/5545998406220?text=${encodeURIComponent(message)}`;
+  const message=`Olá ${BUSINESS_CONTACT.name}! Sou cliente da Zenfy e quero entender qual estrutura faz mais sentido para ${companyName}: uma Landing Page ou um Site Completo. Pode me orientar?`;
+  const whatsapp=whatsappHref(message);
 
   return <div className="mx-auto max-w-7xl">
     <section className="relative overflow-hidden rounded-[2rem] bg-[#06114f] p-6 text-white shadow-2xl shadow-blue-950/10 sm:p-8 lg:p-10">
