@@ -1,5 +1,5 @@
 "use client";
-import { BUSINESS_CONTACT, whatsappHref } from "@/lib/contact";
+import { ANDREY_CONTACT, whatsappHref } from "@/lib/contact";
 
 const previews=[
   {title:"Climatização",tag:"Serviços locais",url:"https://preview-climatizacao.vercel.app/",text:"Página focada em orçamento, confiança e atendimento rápido."},
@@ -20,8 +20,8 @@ export default function ClientShowcaseGallery(){
 
     <div className="mt-7 grid gap-6 lg:grid-cols-2">
       {previews.map((preview,index)=>{
-        const message=`Olá ${BUSINESS_CONTACT.name}! Sou cliente da Zenfy e vi no portal a demonstração "${preview.title} - ${preview.tag}". Gostei desse estilo e quero conversar sobre algo parecido para minha empresa.`;
-        const whatsapp=whatsappHref(message);
+        const message=`Olá ${ANDREY_CONTACT.name}! Sou cliente da Zenfy e vi no portal a demonstração "${preview.title} - ${preview.tag}". Gostei desse estilo e quero conversar sobre algo parecido para minha empresa.`;
+        const whatsapp=whatsappHref(message, ANDREY_CONTACT);
 
         return <article key={preview.url} className="group overflow-hidden rounded-[1.7rem] border border-zinc-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-2xl">
           <div className="border-b border-zinc-100 bg-zinc-50 px-4 py-3">

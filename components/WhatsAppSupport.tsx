@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { PublicAccount } from "@/types/account";
 import { usePathname } from "next/navigation";
-import { BUSINESS_CONTACT, whatsappHref } from "@/lib/contact";
+import { BUSINESS_CONTACTS, whatsappHref } from "@/lib/contact";
 
 export default function WhatsAppSupport({account}:{account:PublicAccount|null}) {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -12,9 +12,6 @@ export default function WhatsAppSupport({account}:{account:PublicAccount|null}) 
   const pathname=usePathname();
   const company=(account?.companyName||"minha empresa").trim();
   const insidePortal=pathname.startsWith("/cliente") || pathname.startsWith("/admin");
-  const message=insidePortal
-    ? `Olá ${BUSINESS_CONTACT.name}! Estou no portal da Zenfy e preciso de ajuda com os projetos ou resultados de ${company}. Pode me orientar?`
-    : `Olá ${BUSINESS_CONTACT.name}! Vi o site da Zenfy e quero conversar sobre uma solução digital para ${company}. Posso explicar o que preciso?`;
 
   useEffect(() => {
     const element = dialog.current;
@@ -38,24 +35,29 @@ export default function WhatsAppSupport({account}:{account:PublicAccount|null}) 
       </div>
       <div className="rounded-[1.2rem] bg-[#06114f] p-4 text-white">
         <p className="text-[10px] font-black uppercase tracking-[.16em] text-cyan-100">{insidePortal ? "Suporte à sua empresa" : "Orçamento personalizado"}</p>
-        <h3 id="support-title" className="mt-1 text-lg font-black">Converse com {BUSINESS_CONTACT.name}</h3>
-        <p className="mt-1 text-xs leading-relaxed text-blue-50/65">Conte o que sua empresa precisa. O WhatsApp abre com uma mensagem pronta para começar a conversa.</p>
+        <h3 id="support-title" className="mt-1 text-lg font-black">Com quem você precisa falar?</h3>
+        <p className="mt-1 text-xs leading-relaxed text-blue-50/65">Escolha o contato e o WhatsApp abre com uma mensagem pronta para começar a conversa.</p>
       </div>
 
       <div className="mt-2 grid gap-2">
-        <a href={whatsappHref(message)} target="_blank" rel="noopener noreferrer" className="group rounded-[1.2rem] border border-zinc-100 bg-white p-4 transition hover:-translate-y-0.5 hover:border-emerald-200 hover:bg-emerald-50/45">
+        {BUSINESS_CONTACTS.map(contact => {
+          const message = insidePortal
+            ? `Olá ${contact.name}! Estou no portal da Zenfy e preciso de ajuda com os projetos ou resultados de ${company}. Pode me orientar?`
+            : `Olá ${contact.name}! Vi o site da Zenfy e quero conversar sobre uma solução digital para ${company}. Posso explicar o que preciso?`;
+          return <a key={contact.whatsapp} href={whatsappHref(message, contact)} target="_blank" rel="noopener noreferrer" className="group rounded-[1.2rem] border border-zinc-100 bg-white p-4 transition hover:-translate-y-0.5 hover:border-emerald-200 hover:bg-emerald-50/45">
             <div className="flex items-start gap-3">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-md shadow-emerald-500/20">
                 <WhatsIcon/>
               </span>
               <div className="min-w-0 flex-1">
-                <p className="font-black text-[#09113f]">{BUSINESS_CONTACT.name}</p>
-                <p className="mt-0.5 text-xs font-bold text-brand">{BUSINESS_CONTACT.role}</p>
-                <p className="mt-1 text-sm text-zinc-500">{BUSINESS_CONTACT.phone}</p>
+                <p className="font-black text-[#09113f]">{contact.name}</p>
+                <p className="mt-0.5 text-xs font-bold text-brand">{contact.role}</p>
+                <p className="mt-1 text-sm text-zinc-500">{contact.phone}</p>
               </div>
               <span className="mt-2 font-black text-emerald-600 transition-transform group-hover:translate-x-1">→</span>
             </div>
-          </a>
+          </a>;
+        })}
       </div>
 
       <div className="mt-3 border-t border-zinc-100 px-2 pb-1 pt-3 text-center">
@@ -72,7 +74,7 @@ export default function WhatsAppSupport({account}:{account:PublicAccount|null}) 
           <span className="block truncate text-xs font-black">{account?.companyName || account?.name || "Acessar meu portal"}</span>
         </span>
       </Link>
-    <button type="button" onClick={()=>setOpen(v=>!v)} className={`group flex h-12 w-12 shrink-0 items-center justify-center gap-2 rounded-full border p-0 text-sm font-black shadow-2xl transition duration-300 active:scale-[.98] sm:w-auto sm:px-3 md:h-auto md:gap-3 md:px-4 md:py-3.5 ${open?"border-[#06114f] bg-[#06114f] text-white":"border-emerald-400/40 bg-emerald-500 text-white shadow-emerald-900/20 hover:-translate-y-1 hover:bg-emerald-600"}`} aria-label={insidePortal ? "Falar com Pedro Henrique pelo WhatsApp" : "Pedir orçamento pelo WhatsApp"} aria-controls="zenfy-whatsapp-dialog" aria-expanded={open}>
+    <button type="button" onClick={()=>setOpen(v=>!v)} className={`group flex h-12 w-12 shrink-0 items-center justify-center gap-2 rounded-full border p-0 text-sm font-black shadow-2xl transition duration-300 active:scale-[.98] sm:w-auto sm:px-3 md:h-auto md:gap-3 md:px-4 md:py-3.5 ${open?"border-[#06114f] bg-[#06114f] text-white":"border-emerald-400/40 bg-emerald-500 text-white shadow-emerald-900/20 hover:-translate-y-1 hover:bg-emerald-600"}`} aria-label={insidePortal ? "Falar com a equipe pelo WhatsApp" : "Pedir orçamento pelo WhatsApp"} aria-controls="zenfy-whatsapp-dialog" aria-expanded={open}>
       <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
         <WhatsIcon/>
         <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-emerald-500 bg-white"/>

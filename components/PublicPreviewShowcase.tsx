@@ -1,4 +1,4 @@
-import { BUSINESS_CONTACT, whatsappHref } from "@/lib/contact";
+import { ANDREY_CONTACT, whatsappHref } from "@/lib/contact";
 
 const projects=[
   {title:"Climatização",tag:"Serviços locais",url:"https://preview-climatizacao.vercel.app/",text:"Página comercial focada em orçamento, confiança e contato rápido."},
@@ -26,8 +26,8 @@ export default function PublicPreviewShowcase(){
 
       <div className="mt-9 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
         {projects.map((project,index)=>{
-          const message=`Olá ${BUSINESS_CONTACT.name}! Vi no site da Zenfy a demonstração "${project.title} - ${project.tag}". Gostei desse estilo e quero entender como ficaria algo parecido para minha empresa.`;
-          const whatsapp=whatsappHref(message);
+          const message=`Olá ${ANDREY_CONTACT.name}! Vi no site da Zenfy a demonstração "${project.title} - ${project.tag}". Gostei desse estilo e quero entender como ficaria algo parecido para minha empresa.`;
+          const whatsapp=whatsappHref(message, ANDREY_CONTACT);
 
           return <article key={project.url} className="group overflow-hidden rounded-[1.7rem] border border-zinc-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-950/10">
             <div className="border-b border-zinc-100 bg-zinc-50 px-4 py-3">
@@ -68,7 +68,7 @@ export default function PublicPreviewShowcase(){
           <p className="font-black">Gostou de partes de projetos diferentes?</p>
           <p className="mt-1 text-sm text-blue-50/70">A referência serve para orientar. O projeto final pode misturar ideias e ser construído sob medida para sua empresa.</p>
         </div>
-        <a href={whatsappHref(`Olá ${BUSINESS_CONTACT.name}! Vi os projetos no site da Zenfy e quero conversar sobre um site ou landing page para minha empresa.`)} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#09113f] transition hover:-translate-y-0.5">Falar sobre meu projeto →</a>
+        <a href={whatsappHref(`Olá ${ANDREY_CONTACT.name}! Vi os projetos no site da Zenfy e quero conversar sobre um site ou landing page para minha empresa.`, ANDREY_CONTACT)} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#09113f] transition hover:-translate-y-0.5">Falar sobre meu projeto →</a>
       </div>
     </div>
   </section>;

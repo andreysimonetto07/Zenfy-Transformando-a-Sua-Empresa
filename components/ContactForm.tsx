@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { BUSINESS_CONTACT, whatsappHref } from "@/lib/contact";
+import { ANDREY_CONTACT, whatsappHref } from "@/lib/contact";
 
 const services=["Site completo","Landing Page","Tráfego Pago","Automação","Criativos","Copywriting","Consultoria","Outro"];
 
@@ -26,7 +26,7 @@ export default function ContactForm(){
   {field("instagram","Instagram","text",false,"@empresa")}{field("website","Site atual","text",false,"seusite.com.br")}
   <label className="block text-sm sm:col-span-2"><span className="mb-1.5 block font-bold text-zinc-700">Serviço desejado</span><select name="service" required className="input">{services.map(s=><option key={s}>{s}</option>)}</select></label>
   <label className="block text-sm sm:col-span-2"><span className="mb-1.5 block font-bold text-zinc-700">Conte um pouco sobre o que precisa</span><textarea name="message" rows={5} className="input" placeholder="Ex.: quero um site mais profissional para apresentar meus serviços e receber contatos..."/></label>
-  {state==="error"&&<p role="alert" className="rounded-2xl bg-red-50 p-3 text-sm text-red-700 sm:col-span-2">Não foi possível enviar sua mensagem. Tente novamente ou <a href={whatsappHref(`Olá ${BUSINESS_CONTACT.name}! Não consegui enviar o formulário da Zenfy e gostaria de conversar sobre minha empresa.`)} target="_blank" rel="noopener noreferrer" className="font-bold underline">fale pelo WhatsApp</a>.</p>}
+  {state==="error"&&<p role="alert" className="rounded-2xl bg-red-50 p-3 text-sm text-red-700 sm:col-span-2">Não foi possível enviar sua mensagem. Tente novamente ou <a href={whatsappHref(`Olá ${ANDREY_CONTACT.name}! Não consegui enviar o formulário da Zenfy e gostaria de conversar sobre minha empresa.`, ANDREY_CONTACT)} target="_blank" rel="noopener noreferrer" className="font-bold underline">fale pelo WhatsApp</a>.</p>}
   <button disabled={state==="sending"} className="btn btn-primary sm:col-span-2">{state==="sending"?"Enviando...":"Enviar para a Zenfy"}</button>
  </form>
 }
